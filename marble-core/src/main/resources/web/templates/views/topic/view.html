@@ -1,0 +1,393 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <i class="fa fa-tags fa-fw"></i> Details for Topic {{topic.name}}
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div>
+    <form id="topic">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="alert alert-danger alert-dismissable" data-ng-show="error">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <i class="fa fa-exclamation-circle"></i> {{error}}
+                            </div>
+                            <div class="alert alert-success alert-dismissable" data-ng-show="success">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <i class="fa fa-check"></i> {{success}}
+                            </div>
+                            <p>Modify the properties you would like to change, and click on the Save button.</p>
+                            <div class="form-group">
+                                <div class="right-buttons">
+                                    <a data-ng-click="cancel()" class="btn btn-default"><i class="fa fa-fw fa-arrow-left"></i> Go back</a> <a
+                                        data-ng-click="update()" class="btn btn-primary"
+                                    ><i class="fa fa-fw fa-floppy-o"></i> Save</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row"></div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12" data-ng-show="topicInfo">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Information</div>
+                    <!-- .panel-heading -->
+                    <div class="panel-body">
+                        <div class="list-group">
+                            <a class="list-group-item"> <i class="fa fa-sign-in fa-fw"></i> Total Posts Extracted <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.totalPostsExtracted}}</em> </span>
+                            </a> <a class="list-group-item"> <i class="fa fa-calendar fa-fw"></i> Oldest Post Publication Date <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.oldestPostDate}}</em> </span>
+                            </a> <a class="list-group-item"> <i class="fa fa-barcode fa-fw"></i> Oldest Post Id <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.oldestPostId}}</em> </span>
+                            </a> <a class="list-group-item"> <i class="fa fa-calendar fa-fw"></i> Newest Post Publication Date <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.newestPostDate}}</em> </span>
+                            </a> <a class="list-group-item"> <i class="fa fa-barcode fa-fw"></i> Newest Post Id <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.newestPostId}}</em> </span>
+                            </a> <a class="list-group-item"> <i class="fa fa-scissors fa-fw"></i> Total Posts Processed <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.totalPostsProcessed}}</em> </span>
+                            </a> <a class="list-group-item"> <i class="fa fa-briefcase fa-fw"></i> Total Jobs <span
+                                class="pull-right text-muted small"
+                            ><em>{{topicInfo.totalJobs}}</em> </span>
+                            </a>
+
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list-ul fa-fw"></i> General Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="name">Name</label> <input data-ng-model="topic.name" id="name" class="form-control" type="text"
+                                    data-ng-disabled="true"
+                                />
+                                <p class="help-block">Short name of the topic.</p>
+                            </div>
+
+
+
+                            <div class="form-group ">
+                                <label for="description">Description</label> <input data-ng-model="topic.description" id="description"
+                                    class="form-control" type="text"
+                                />
+                                <p class="help-block">Short description of the topic.</p>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-sign-in fa-fw"></i> Extractor Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="keywords">Keywords</label> <input id="keywords" data-ng-model="topic.keywords"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Keywords to search.</p>
+                            </div>
+
+
+                            <div class="form-group ">
+                                <label for="upperLimit">Upper Limit</label> <input id="upperLimit" data-ng-model="topic.upperLimit"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Id of newest post to extract.</p>
+                            </div>
+
+
+                            <div class="form-group ">
+                                <label for="lowerLimit">Lower Limit</label> <input id="lowerLimit" data-ng-model="topic.lowerLimit"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Id of oldest post to extract.</p>
+                            </div>
+
+
+                            <div class="form-group ">
+                                <label for="language">Language</label> <input id="language" data-ng-model="topic.language"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Two letters language code.</p>
+                            </div>
+
+
+                            <div class="form-group ">
+                                <label for="postsPerCall">Posts Per Call</label> <input id="postsPerCall"
+                                    data-ng-model="topic.postsPerCall" class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Number of posts to extract on each API call.</p>
+                            </div>
+
+
+                            <div class="form-group ">
+                                <label for="postsPerFullExtraction">Posts Per Full Extraction</label> <input
+                                    id="postsPerFullExtraction" data-ng-model="topic.postsPerFullExtraction" class="form-control"
+                                    type="text"
+                                />
+
+                                <p class="help-block">Total number of posts to extract in a single extraction.</p>
+                            </div>
+
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-scissors fa-fw"></i> Processor Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="processorPositiveBoundary">Processor Positive Boundary</label> <input
+                                    id="processorPositiveBoundary" data-ng-model="topic.processorPositiveBoundary" class="form-control"
+                                    type="text"
+                                />
+
+                                <p class="help-block">Posts above this value will be considered positive.</p>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="processorNegativeBoundary">Processor Negative Boundary</label> <input
+                                    id="processorNegativeBoundary" data-ng-model="topic.processorNegativeBoundary" class="form-control"
+                                    type="text"
+                                />
+
+                                <p class="help-block">Posts below this value will be considered negative.</p>
+                            </div>
+
+                        </fieldset>
+
+
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Plotter Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="plotterLeftDateBoundary">Plotter Left Date Boundary</label> <input id="plotterLeftDateBoundary"
+                                    data-ng-model="topic.plotterLeftDateBoundary" class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Oldest date to include in the plots.</p>
+                            </div>
+
+
+
+                            <div class="form-group ">
+                                <label for="plotterRightDateBoundary">Plotter Right Date Boundary</label> <input
+                                    id="plotterRightDateBoundary" data-ng-model="topic.plotterRightDateBoundary" class="form-control"
+                                    type="text"
+                                />
+
+                                <p class="help-block">Newest date to include in the plots.</p>
+                            </div>
+
+
+
+                            <div class="form-group ">
+                                <label for="plotterStepSize">Plotter Step Size</label> <input id="plotterStepSize"
+                                    data-ng-model="topic.plotterStepSize" class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Width of bars in the plots, in ms.</p>
+                            </div>
+
+                        </fieldset>
+
+
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-info-circle fa-fw"></i> Get Information
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><a data-ng-click="stats()" class="btn btn-default btn-block"><i
+                                                class="fa fa-fw fa fa-area-chart"
+                                            ></i> Statistics</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a data-ng-click="posts()" class="btn btn-default btn-block"><i
+                                                class="fa fa-fw fa-twitter"
+                                            ></i> Posts</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a data-ng-click="jobs()" class="btn btn-default btn-block"><i
+                                                class="fa fa-fw fa-briefcase"
+                                            ></i> Jobs</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a data-ng-click="plots()" class="btn btn-default btn-block"><i
+                                                class="fa fa-fw fa-bar-chart-o"
+                                            ></i> Plots</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-rocket fa-fw"></i> Perform Actions
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><a data-ng-click="extract()" class="btn btn-default btn-block"
+                                            uib-tooltip="Remember to save your changes, if any, before executing the extraction."
+                                            tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-sign-in"></i> Extract</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td> <app-modal modal-button="Process" modal-title="Process Topic" modal-action="process(options)"
+                                                modal-type="process" modal-icon="fa-scissors" modal-options="topic.lastProcessParameters"
+                                            ></app-modal> 
+                                            </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <app-modal modal-button="Plot" modal-title="Generate a new Plot" modal-action="plot(options)"
+                                                modal-type="plot" modal-icon="fa-bar-chart-o" modal-options="plotOptions"
+                                            ></app-modal> 
+                                            </td>
+
+                                    </tr>
+                                    <tr data-ng-show="hidDangerActions">
+                                        <td><a data-ng-click="showDangerActions()" class="btn btn-outline btn-block btn-danger"
+                                            uib-tooltip="The actions behind this button are dangerous and do not have an undo button.
+                                             Proceed with care."
+                                            tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-exclamation-triangle"></i> Dangerous Actions</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a class="btn btn-outline btn-block disabled"><i
+                                                class="fa fa-fw fa-exclamation-triangle"
+                                            ></i> Dangerous Actions</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deletePostsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-twitter"></i> Cleanup Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deleteJobsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-briefcase"></i> Cleanup Jobs</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deletePlotsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-bar-chart-o"></i> Cleanup Plots</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="delete()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-trash-o"></i> Delete Topic</a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-rocket fa-fw"></i> Shortcuts
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><a data-ng-click="rebootExtraction()" class="btn btn-default btn-block"
+                                            uib-tooltip="After you have reached the API history limit, you can restart the extraction from the 
+                                            current date until the most recent tweet you already extracted. This shortcut will take care 
+                                            of the ids accordingly."
+                                            tooltip-placement="left"
+                                        ><i class="fa fa-fw fa fa-sign-in"></i> Reboot Extraction</a></td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+        </div>
+        <!-- /.row -->
+    </form>
+</div>

@@ -1,0 +1,178 @@
+<div ui-view="">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                <i class="fa fa-book fa-fw"></i> Corpora
+            </h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <fieldset>
+                        <p>You will find below a list of available corpora you can use in Marble.</p>
+                        <p>For each one you will need to upload the corpus before using it in the processors. You
+                            will find options to browse each uploaded corpus, if the browse option is implemented for it.</p>
+                    </fieldset>
+                </div>
+                <!-- .panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-book fa-fw"></i> SenticNet Corpus
+                </div>
+                <div class="panel-body">
+                    <fieldset>
+                        <div class="alert alert-info alert-dismissable" data-ng-show="senticnet.progress">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-spinner fa-pulse"></i> {{senticnet.progress}}
+                        </div>
+                        <div class="alert alert-danger alert-dismissable" data-ng-show="senticnet.error">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-exclamation-circle"></i> {{senticnet.error}}
+                        </div>
+                        <div class="alert alert-success alert-dismissable" data-ng-show="senticnet.success">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-check"></i> {{senticnet.success}}
+                        </div>
+                        <p>
+                            The SenticNet Corpus is available <a href="http://sentic.net/" target="_blank">here</a>. You can download the
+                            most recent version and upload it using the form below (the process can take a few minutes).
+                        </p>
+                        <form class="form" name="form" novalidate="true">
+                            <div class="form-group">
+                                <input type="file" ngf-select="true" data-ng-model="senticnet.file" name="senticnet.file" />
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-10 col-lg-2">
+                                    <a ng-disabled="senticnet.file == null" data-ng-click="!senticnet.file || uploadSenticnet()" class="btn btn-primary pull-right"><i
+                                        class="fa fa-upload"
+                                    ></i> Upload</a>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <!-- .panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-book fa-fw"></i> SentiWordNet Corpus
+                </div>
+                <div class="panel-body">
+                    <fieldset>
+                        <div class="alert alert-info alert-dismissable" data-ng-show="sentiWordNet.progress">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-spinner fa-pulse"></i> {{sentiWordNet.progress}}
+                        </div>
+                        <div class="alert alert-danger alert-dismissable" data-ng-show="sentiWordNet.error">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-exclamation-circle"></i> {{sentiWordNet.error}}
+                        </div>
+                        <div class="alert alert-success alert-dismissable" data-ng-show="sentiWordNet.success">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-check"></i> {{sentiWordNet.success}}
+                        </div>
+                        <p>
+                            The SentiWordNet Corpus is available <a href="http://sentiwordnet.isti.cnr.it/" target="_blank">here</a>. You can download the
+                            most recent version and upload the txt file using the form below (the process can take a few minutes).
+                        </p>
+                        <form class="form" name="form" novalidate="true">
+                            <div class="form-group">
+                                <input type="file" ngf-select="true" data-ng-model="sentiWordNet.file" name="sentiWordNet.file" />
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-10 col-lg-2">
+                                    <a ng-disabled="sentiWordNet.file == null" data-ng-click="!sentiWordNet.file || uploadSentiWordNet()" class="btn btn-primary pull-right"><i
+                                        class="fa fa-upload"
+                                    ></i> Upload</a>
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <!-- .panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-book fa-fw"></i> Validation Corpus
+                </div>
+                <div class="panel-body">
+                    <fieldset>
+                        <div class="alert alert-info alert-dismissable" data-ng-show="validation.progress">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-spinner fa-pulse"></i> {{validation.progress}}
+                        </div>
+                        <div class="alert alert-danger alert-dismissable" data-ng-show="validation.error">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-exclamation-circle"></i> {{validation.error}}
+                        </div>
+                        <div class="alert alert-success alert-dismissable" data-ng-show="validation.success">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <i class="fa fa-check"></i> {{validation.success}}
+                        </div>
+                        <p>
+                            The validation corpus is used to validate the results of the processors against a known set of results. This
+                            corpus needs to comply with a specific format for it to be used by marble. The syntax is shown below.
+                        </p>
+                        <pre>"&lt;polarity&gt;";"&lt;text to evaluate&gt;"</pre>
+                        <p>Where <code>&lt;polarity&gt;</code> could be "1" (positive), "0" (neutral) or "-1" (negative).</p>
+                        <p>You can download the
+                            most recent version and upload it using the form below.
+                        </p>
+                        <form class="form" name="form" novalidate="true">
+                            <div class="form-group">
+                                <input type="file" ngf-select="true" data-ng-model="validation.file" name="validation.file" />
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-lg-offset-10 col-lg-2">
+                                    <a ng-disabled="validation.file == null" data-ng-click="!validation.file || uploadValidation()" class="btn btn-primary pull-right"><i
+                                        class="fa fa-upload"
+                                    ></i> Upload</a>
+                                    <app-modal modal-button="Validate" modal-title="Validate Processor" modal-action="validate(options)"
+                                                modal-type="process" modal-icon="fa-check" modal-options="validateOptions"
+                                            ></app-modal> 
+                                </div>
+                            </div>
+                        </form>
+                    </fieldset>
+                </div>
+                <!-- .panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+</div>

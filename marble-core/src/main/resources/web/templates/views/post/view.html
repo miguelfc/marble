@@ -1,0 +1,351 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <i class="fa fa-key fa-fw"></i> Details for Post {{post.id}}
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div>
+    <form id="post">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset>
+                            <p>This page shows the details of the selected post.</p>
+                            <div class="form-group">
+                                <div class="right-buttons">
+                                    <a data-ng-click="viewTopic()" class="btn btn-default"><i class="fa fa-tags"></i> View
+                                        Topic</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list-ul fa-fw"></i> Post Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="name">text</label>
+                                <textarea data-ng-model="post.text" id="text" class="form-control" disabled="disabled"
+                                    style="resize: vertical;"
+                                ></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">topicName</label> <input data-ng-model="post.topicName" id="topicName"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">createdAt</label> <input data-ng-model="post.createdAt" id="createdAt"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">id</label> <input data-ng-model="post.id" id="id" class="form-control" type="text"
+                                    disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">source</label> <input data-ng-model="post.source" id="source" class="form-control"
+                                    type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">inReplyToPostId</label> <input data-ng-model="post.inReplyToPostId"
+                                    id="inReplyToPostId" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">inReplyToUserId</label> <input data-ng-model="post.inReplyToUserId" id="inReplyToUserId"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">favoriteCount</label> <input data-ng-model="post.favoriteCount" id="favoriteCount"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">inReplyToScreenName</label> <input data-ng-model="post.inReplyToScreenName"
+                                    id="inReplyToScreenName" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">geoLocation</label> <input data-ng-model="post.geoLocation" id="geoLocation"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">place</label> <input data-ng-model="post.place" id="place" class="form-control"
+                                    type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">retweetCount</label> <input data-ng-model="post.retweetCount" id="retweetCount"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">lang</label> <input data-ng-model="post.lang" id="lang" class="form-control" type="text"
+                                    disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">contributorsIDs</label> <input data-ng-model="post.contributorsIDs" id="contributorsIDs"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">retweetedPost</label> <input data-ng-model="post.retweetedPost" id="retweetedPost"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">userMentionEntities</label> <input data-ng-model="post.userMentionEntities"
+                                    id="userMentionEntities" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">urlEntities</label> <input data-ng-model="post.urlEntities" id="urlEntities"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">start</label> <input data-ng-model="post.start" id="start" class="form-control"
+                                    type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">end</label> <input data-ng-model="post.end" id="end" class="form-control" type="text"
+                                    disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">url</label> <input data-ng-model="post.url" id="url" class="form-control" type="text"
+                                    disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">expandedURL</label> <input data-ng-model="post.expandedURL" id="expandedURL"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">displayURL</label> <input data-ng-model="post.displayURL" id="displayURL"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list-ul fa-fw"></i> User Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="name">rateLimitPost</label> <input data-ng-model="post.user.rateLimitPost"
+                                    id="userrateLimitPost" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">accessLevel</label> <input data-ng-model="post.user.accessLevel" id="useraccessLevel"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">name</label> <input data-ng-model="post.user.name" id="username" class="form-control"
+                                    type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">screenName</label> <input data-ng-model="post.user.screenName" id="userscreenName"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">location</label> <input data-ng-model="post.user.location" id="userlocation"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">description</label> <input data-ng-model="post.user.description" id="userdescription"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">descriptionURLEntities</label> <input data-ng-model="post.user.descriptionURLEntities"
+                                    id="userdescriptionURLEntities" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">url</label> <input data-ng-model="post.user.url" id="userurl" class="form-control"
+                                    type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">followersCount</label> <input data-ng-model="post.user.followersCount"
+                                    id="userfollowersCount" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">post</label> <input data-ng-model="post.user.post" id="userpost"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileBackgroundColor</label> <input data-ng-model="post.user.profileBackgroundColor"
+                                    id="userprofileBackgroundColor" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileTextColor</label> <input data-ng-model="post.user.profileTextColor"
+                                    id="userprofileTextColor" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileLinkColor</label> <input data-ng-model="post.user.profileLinkColor"
+                                    id="userprofileLinkColor" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileSidebarFillColor</label> <input data-ng-model="post.user.profileSidebarFillColor"
+                                    id="userprofileSidebarFillColor" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileSidebarBorderColor</label> <input
+                                    data-ng-model="post.user.profileSidebarBorderColor" id="userprofileSidebarBorderColor"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileUseBackgroundImage</label> <input
+                                    data-ng-model="post.user.profileUseBackgroundImage" id="userprofileUseBackgroundImage"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">showAllInlineMedia</label> <input data-ng-model="post.user.showAllInlineMedia"
+                                    id="usershowAllInlineMedia" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">friendsCount</label> <input data-ng-model="post.user.friendsCount" id="userfriendsCount"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">createdAt</label> <input data-ng-model="post.user.createdAt" id="usercreatedAt"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">favouritesCount</label> <input data-ng-model="post.user.favouritesCount"
+                                    id="userfavouritesCount" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">utcOffset</label> <input data-ng-model="post.user.utcOffset" id="userutcOffset"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">timeZone</label> <input data-ng-model="post.user.timeZone" id="usertimeZone"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileBackgroundImageUrlHttps</label> <input
+                                    data-ng-model="post.user.profileBackgroundImageUrlHttps" id="userprofileBackgroundImageUrlHttps"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">profileBackgroundTiled</label> <input data-ng-model="post.user.profileBackgroundTiled"
+                                    id="userprofileBackgroundTiled" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">lang</label> <input data-ng-model="post.user.lang" id="userlang" class="form-control"
+                                    type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">postsCount</label> <input data-ng-model="post.user.postsCount"
+                                    id="userpostsCount" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">translator</label> <input data-ng-model="post.user.translator" id="usertranslator"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">listedCount</label> <input data-ng-model="post.user.listedCount" id="userlistedCount"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">withheldInCountries</label> <input data-ng-model="post.user.withheldInCountries"
+                                    id="userwithheldInCountries" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">protected</label> <input data-ng-model="post.user.protected" id="userprotected"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">defaultProfile</label> <input data-ng-model="post.user.defaultProfile"
+                                    id="userdefaultProfile" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">geoEnabled</label> <input data-ng-model="post.user.geoEnabled" id="usergeoEnabled"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">verified</label> <input data-ng-model="post.user.verified" id="userverified"
+                                    class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">contributorsEnabled</label> <input data-ng-model="post.user.contributorsEnabled"
+                                    id="usercontributorsEnabled" class="form-control" type="text" disabled="disabled"
+                                />
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+        <!-- /.row -->
+    </form>
+</div>

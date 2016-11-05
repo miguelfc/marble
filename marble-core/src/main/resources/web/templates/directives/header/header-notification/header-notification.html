@@ -1,0 +1,24 @@
+<ul class="nav navbar-top-links navbar-right" data-ng-controller="LoginCtrl as ctl">
+    
+    <li class="dropdown" uib-dropdown>
+        <a class="dropdown-toggle" uib-dropdown-toggle data-toggle="dropdown">
+            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-user" uib-dropdown-menu  ng-if="ctl.currentUser.name != null">
+            <li><a><i class="fa fa-user fa-fw"></i> Logged as {{ctl.currentUser.name}}</a>
+            </li>
+            <li class="divider"></li>
+            <li><a data-ng-click="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+            </li>
+        </ul>
+        <ul class="dropdown-menu dropdown-user" uib-dropdown-menu  ng-if="ctl.currentUser.name == null">
+            <li><a><i class="fa fa-user fa-fw"></i> You are not logged in.</a>
+            </li>
+            <li class="divider"></li>
+            <li><a ui-sref='dashboard.login'><i class="fa fa-sign-out fa-fw"></i> Login</a>
+            </li>
+        </ul>
+        <!-- /.dropdown-user -->
+    </li>
+    <!-- Single button -->
+</ul>

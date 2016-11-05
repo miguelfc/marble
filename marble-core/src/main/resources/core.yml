@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  session:
+    timeout: 10800
+
+multipart:
+  max-file-size: 50MB
+  max-request-size: 50MB
+
+spring:
+  application:
+    name: core-service
+  data:
+    rest:
+      basePath: /api
+    mongodb:
+      host: localhost
+      port: 27017
+      database: marble
+  thymeleaf:
+    cache: false 
+    
+# Discovery Server Access
+#  1. Define URL of registration server (defaultZone)
+#  2. Reduce lease-renewal time so processes register more quickly
+eureka:
+  instance:
+     leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
+     leaseExpirationDurationInSeconds: 10
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka/
+
+miguel:
+  fernandes: caina

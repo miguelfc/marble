@@ -1,0 +1,64 @@
+{
+  "name": "marble-core",
+  "version": "0.1.0",
+  "description": "Marble Core",
+  "homepage": "https://github.com/miguelfc/marble",
+  "authors": [
+    "Miguel Fernandes <miguelfc@github>"
+  ],
+  "contributors": [
+    "",
+    ""
+  ],
+  "main": "index.html",
+  "license": "All Rights Reserved.",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "rdash-ui": "1.0.*",
+    "font-awesome": "~4.5.0",
+    "bootstrap": "~3.3.5",
+    "angular-bootstrap-datetimepicker": "~0.4",
+	"metisMenu": "1.1.3",
+	"angular-ui-grid": "3.0.7",
+	"open-sans-fontface": "1.4.2",
+	
+	"jquery": "1.11.3",
+	"datatables": "1.10.7",
+	"datatables-plugins": "1.10.7",
+	"angular-datatables": "0.5.0",
+	
+	"angular-loading-bar": "0.8.0",
+	"angular-toggle-switch": "1.3.0",
+	"angularjs": "1.4.7",
+	"angular-ui-router": "0.2.15",
+	"angular-ui-router-title": "0.0.4",
+	"json3": "3.3.2",
+	"oclazyload": "1.0.5",
+	"angular-bootstrap": "0.14.3",
+	"es5-shim": "4.1.13",
+	"angular-resource": "1.4.7",
+	"angular-cookies": "1.4.6",
+	"angular-sanitize": "1.4.7",
+	"angular-animate": "1.4.7",
+	"angular-touch": "1.4.7",
+	"angular-route": "1.4.7",
+	"angular-chart.js": "0.8.5",
+	"ng-file-upload": "9.0.13",
+	"chartist": "0.9.4",
+	"angular-chartist.js": "3.3.9"
+	
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdash/rdash-angular"
+  },
+  "resolutions": {
+    "angular": "~1.4.7"
+  }
+}

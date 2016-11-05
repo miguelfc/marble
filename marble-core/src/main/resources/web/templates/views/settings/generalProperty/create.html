@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <i class="fa fa-list-ul fa-fw"></i> Add a new property
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div>
+    <form id="topic">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset>
+                            <p>Please give your property a name and a value, and click on the Save button.</p>
+                            <div class="form-group">
+                                <div class="right-buttons">
+                                    <a data-ng-click="cancel()" class="btn btn-default"><i
+                                        class="fa fa-times"
+                                    ></i> Cancel</a> <a data-ng-click="create()" class="btn btn-primary"><i class="fa fa-floppy-o"></i>
+                                        Save</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list-ul fa-fw"></i> General Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="name">Name</label> <input data-ng-model="generalProperty.name" id="name" class="form-control"
+                                    type="text"
+                                />
+                                <p class="help-block">Name of the property.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="description">Value</label> <input data-ng-model="generalProperty.value" id="value"
+                                    class="form-control" type="text"
+                                />
+                                <p class="help-block">Value of the property.</p>
+                            </div>
+
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+    </form>
+</div>
