@@ -1,0 +1,182 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            <i class="fa fa-tags fa-fw"></i> Create a new Topic
+        </h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div>
+    <form id="topic">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset>
+                            <p>Fill the properties you would like to set, and click on the Save button.</p>
+                            <div class="form-group">
+                                <div class="right-buttons">
+                                    <a data-ng-click="cancel()" class="btn btn-default"><i class="fa fa-times"></i> Cancel</a> <a
+                                        data-ng-click="create()" class="btn btn-primary"
+                                    ><i class="fa fa-floppy-o"></i> Create</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-list-ul fa-fw"></i> General Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="name">Name</label> <input data-ng-model="topic.name" id="name" class="form-control" type="text" />
+                                <p class="help-block">Short name of the topic.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="description">Description</label> <input data-ng-model="topic.description" id="description"
+                                    class="form-control" type="text"
+                                />
+                                <p class="help-block">Short description of the topic.</p>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-sign-in fa-fw"></i> Extractor Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="keywords">Keywords</label> <input id="keywords" data-ng-model="topic.keywords"
+                                    class="form-control" type="text"
+                                />
+                                <p class="help-block">Keywords to search.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="upperLimit">Upper Limit</label> <input id="upperLimit" data-ng-model="topic.upperLimit"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Id of newest post to extract.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="lowerLimit">Lower Limit</label> <input id="lowerLimit" data-ng-model="topic.lowerLimit"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Id of oldest post to extract.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="language">Language</label> <input id="language" data-ng-model="topic.language"
+                                    class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Two letters language code.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="postsPerCall">Posts Per Call</label> <input id="postsPerCall"
+                                    data-ng-model="topic.postsPerCall" class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Number of posts to extract on each API call.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="postsPerFullExtraction">Posts Per Full Extraction</label> <input
+                                    id="postsPerFullExtraction" data-ng-model="topic.postsPerFullExtraction" class="form-control"
+                                    type="text"
+                                />
+                                <p class="help-block">Total number of posts to extract in a single extraction.</p>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-scissors fa-fw"></i> Processor Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="processorPositiveBoundary">Processor Positive Boundary</label> <input
+                                    id="processorPositiveBoundary" data-ng-model="topic.processorPositiveBoundary" class="form-control"
+                                    type="text"
+                                />
+                                <p class="help-block">Posts above this value will be considered positive.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="processorNegativeBoundary">Processor Negative Boundary</label> <input
+                                    id="processorNegativeBoundary" data-ng-model="topic.processorNegativeBoundary" class="form-control"
+                                    type="text"
+                                />
+                                <p class="help-block">Posts below this value will be considered negative.</p>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+
+            <div class="col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Plotter Properties
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="form-group ">
+                                <label for="plotterLeftDateBoundary">Plotter Left Date Boundary</label> <input id="plotterLeftDateBoundary"
+                                    data-ng-model="topic.plotterLeftDateBoundary" class="form-control" type="text"
+                                />
+
+                                <p class="help-block">Oldest date to include in the plots.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="plotterRightDateBoundary">Plotter Right Date Boundary</label> <input
+                                    id="plotterRightDateBoundary" data-ng-model="topic.plotterRightDateBoundary" class="form-control"
+                                    type="text"
+                                />
+                                <p class="help-block">Newest date to include in the plots.</p>
+                            </div>
+                            <div class="form-group ">
+                                <label for="plotterStepSize">Plotter Step Size</label> <input id="plotterStepSize"
+                                    data-ng-model="topic.plotterStepSize" class="form-control" type="text"
+                                />
+                                <p class="help-block">Width of bars in the plots, in ms.</p>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-3 -->
+        </div>
+
+    </form>
+</div>

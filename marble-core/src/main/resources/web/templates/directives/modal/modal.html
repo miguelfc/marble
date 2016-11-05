@@ -1,0 +1,64 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">{{modalProperties.title}}</h3>
+    </div>
+
+    <div class="modal-body">
+        <div ng-if="!modalProperties.type">
+            <p>{{modalProperties.text}}</p>
+        </div>
+        <div ng-if="modalProperties.type == 'plot'">
+            <p>Please select the module and the type of plot to generate and click {{modalProperties.button}} to
+                continue.</p>
+            <fieldset>
+                <div class="form-group ">
+                    <label>Short Name</label> <input type="text" class="form-control" ng-model="plot.name" />
+                    <p class="help-block">Tip: give it a descriptive name, it would allow you to find it quickly.</p>
+                </div>
+                <div class="form-group ">
+                    <label>Short Description</label>
+                    <textarea class="form-control" ng-model="plot.description"></textarea>
+                    <p class="help-block">If you want, you can explain what this plot represents and any information
+                        you would like to add.</p>
+                </div>
+                <div class="form-group ">
+                    <label>Plot module</label> <select
+                        ng-options="option.label for option in modalProperties.modalOptions" class="form-control"
+                        ng-model="plot.module"></select>
+                    <p class="help-block">Every module has it own data sources along with particular types of plot
+                        to generate.</p>
+                </div>
+                <div class="form-group ">
+                    <label>Type of plot</label> <select ng-options="option.label for option in plot.module.operations"
+                        class="form-control" ng-model="plot.operation"></select>
+                    <p class="help-block">Specifies the type of plot to generate.</p>
+                </div>
+            </fieldset>
+        </div>
+        <div ng-if="modalProperties.type == 'process'">
+            <p>Please enter the processing recipe and click {{modalProperties.button}} to continue.</p>
+            <fieldset>
+                <div class="form-group ">
+                    <textarea rows="6" cols="70" ng-model="$parent.recipe"></textarea>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default" ng-click="cancel()">
+            <i class="fa fa-fw fa-times"></i> Cancel
+        </button>
+        <button class="btn btn-primary" ng-if="!modalProperties.type" ng-click="modalAction(); ok();">
+            <i class="fa fa-fw {{modalProperties.modalIcon}}"></i> {{modalProperties.button}}
+        </button>
+        <button class="btn btn-primary" ng-if="modalProperties.type == 'plot'"
+            ng-disabled="plot.module.id == null || plot.operation.id == null" ng-click="plotAction(); ok();">
+            <i class="fa fa-fw {{modalProperties.modalIcon}}"></i> {{modalProperties.button}}
+        </button>
+        <button class="btn btn-primary" ng-if="modalProperties.type == 'process'" ng-disabled="modalProperties.modalOptions == null"
+            ng-click="processAction(); ok();">
+            <i class="fa fa-fw {{modalProperties.modalIcon}}"></i> {{modalProperties.button}}
+        </button>
+    </div>
+</div>

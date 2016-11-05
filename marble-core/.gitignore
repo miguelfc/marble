@@ -1,0 +1,5 @@
+/target/
+/.settings
+/pom.properties
+/node/
+/node_modules/
