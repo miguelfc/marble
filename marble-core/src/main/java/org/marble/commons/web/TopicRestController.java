@@ -1,6 +1,7 @@
 package org.marble.commons.web;
 
 import java.math.BigInteger;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -77,7 +78,7 @@ public class TopicRestController {
 
     @RequestMapping(value = "/topics/{topicName}/process", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<JobRestResult> process(
-            @PathVariable(value = "topicName") String topicName, @RequestBody(required = true) Set<ProcessParameters> processParameters) throws InvalidModuleException {
+            @PathVariable(value = "topicName") String topicName, @RequestBody(required = true) LinkedHashSet<ProcessParameters> processParameters) throws InvalidModuleException {
         BigInteger executionId = null;
         try {
             
