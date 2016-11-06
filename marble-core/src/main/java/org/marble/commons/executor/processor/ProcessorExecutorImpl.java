@@ -4,7 +4,17 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.Response;
+import org.asynchttpclient.request.body.multipart.Part;
 import org.marble.commons.domain.model.Job;
 import org.marble.commons.domain.model.Post;
 import org.marble.commons.domain.model.ProcessedPost;
@@ -22,10 +32,11 @@ import org.marble.commons.service.JobService;
 import org.marble.commons.service.ProcessedPostService;
 import org.marble.commons.service.SenticNetService;
 import org.marble.commons.service.TopicService;
-import org.marble.commons.service.processor.ProcessorService;
 import org.marble.model.domain.ProcessorInput;
 import org.marble.model.domain.ProcessorOutput;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
@@ -33,9 +44,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 @Scope("prototype")
@@ -46,10 +61,6 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     public static final String id = ProcessorExecutorImpl.class.getSimpleName();
 
     public static final String label = "Executing";
-
-    private enum OperationType {
-        REGULAR
-    }
 
     @Autowired
     JobService executionService;
@@ -64,12 +75,9 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     ProcessedPostService processedPostService;
 
     @Autowired
-    private ApplicationContext context;
+    private DiscoveryClient discoveryClient;
 
     private Job execution;
-
-    // Custom parameters
-    private Boolean ignoreNeutralSentences = Boolean.FALSE;
 
     @Override
     public void setExecution(Job execution) {
@@ -125,6 +133,8 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
         String msg;
 
+        Gson gson = new GsonBuilder().create();
+
         DBCursor processingItemsCursor;
 
         // This is a regular process
@@ -160,20 +170,22 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
             log.info(msg);
             execution.appendLog(msg);
 
-            ProcessorService processorService = null;
-            try {
-                processorService = (ProcessorService) context.getBean(processorName);
-            } catch (NoSuchBeanDefinitionException e) {
-                msg = "Processor <" + processorName + "> doesn't exists. Skipping.";
-                log.error(msg, e);
-                execution.appendLog(msg);
-                continue;
-            } catch (Exception e) {
-                msg = "An error ocurred while using processor <" + processorName + ">. Skipping.";
-                log.error(msg, e);
+            String serviceUrl = "http://" + processorName + "/api/process";
+
+            List<ServiceInstance> serviceInstances = discoveryClient.getInstances(processorName);
+
+            if (serviceInstances.size() <= 0) {
+                msg = "No instances available for processor <" + processorName + ">. Skipping.";
+                log.error(msg);
                 execution.appendLog(msg);
                 continue;
             }
+            Map<String, Integer> serviceInstancesRunning = new HashMap<>();
+
+            for (ServiceInstance serviceInstance : serviceInstances) {
+                serviceInstancesRunning.put(serviceInstance.getUri().toString(), 0);
+            }
+            AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
 
             // Get Processed Statuses
             log.info("Getting processed posts for topic <" + topic.getName() + ">.");
@@ -195,7 +207,42 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                 input.setOptions(parameter.getOptions());
 
                 ProcessorOutput output = null;
-                output = processorService.processMessage(input);
+
+                String serviceInstanceAvailableUrl = null;
+                do {
+                    for (String serviceInstanceUrl : serviceInstancesRunning.keySet()) {
+                        if (serviceInstancesRunning.get(serviceInstanceUrl) < 1) {
+                            serviceInstanceAvailableUrl = serviceInstanceUrl;
+                            serviceInstancesRunning.put(serviceInstanceUrl, serviceInstancesRunning.get(serviceInstanceUrl) + 1);
+                            break;
+                        }
+                    }
+                    if (serviceInstanceAvailableUrl == null) {
+                        log.info("Waiting for an instance for processor <" + processorName + ">.");
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            log.error("Error sleeping...", e);
+                        }
+                    }
+                } while (serviceInstanceAvailableUrl == null);
+                log.info("Instance selected: <" + serviceInstanceAvailableUrl + ">");
+
+                final String url = new String(serviceInstanceAvailableUrl);
+                CompletableFuture<Response> promise = asyncHttpClient
+                        .preparePost(serviceInstanceAvailableUrl + "/api/process")
+                        .setBody(gson.toJson(input))
+                        .setHeader("Content-Type", "application/json")
+                        .execute()
+                        .toCompletableFuture()
+                        .thenApply(resp -> {
+                            serviceInstancesRunning.put(url, serviceInstancesRunning.get(url) - 1);
+                            log.error("response: " + resp.getResponseBody());
+                            return resp;
+                        });
+
+                if (1 == 1)
+                    continue;
 
                 if (output.getMessage() != null) {
                     processedPost.setText(output.getMessage());
