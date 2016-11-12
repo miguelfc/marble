@@ -1,0 +1,4 @@
+registry:
+  image: marble/marble-registry
+  ports:
+   - "1111:1111"
