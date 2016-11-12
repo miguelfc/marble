@@ -3,13 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.marble</groupId>
     <artifactId>marble-model</artifactId>
-    <version>1.0.0.SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
         <version>Brixton.RELEASE</version>
+        <relativePath></relativePath>
     </parent>
 
     <dependencies>
@@ -29,6 +30,7 @@
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                        <configuration><layout>NONE</layout></configuration>
                     </execution>
                 </executions>
             </plugin>
