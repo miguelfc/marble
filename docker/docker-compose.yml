@@ -28,7 +28,7 @@ services:
     links:
      - registry
 
-  pprocessor-simple:
+  processor-simple:
     image: marble/marble-processor-simple
     ports:
      - "8080"
