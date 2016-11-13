@@ -8,6 +8,44 @@ services:
 
   core:
     image: marble/marble-core
-    network_mode: "host"
     ports:
      - "8080:8080"
+    depends_on:
+     - registry
+    extra_hosts:
+     - "mongodb:172.17.0.1"
+    links:
+     - registry
+
+  preprocessor-simple:
+    image: marble/marble-preprocessor-simple
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    extra_hosts:
+     - "mongodb:172.17.0.1"
+    links:
+     - registry
+
+  pprocessor-simple:
+    image: marble/marble-processor-simple
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    extra_hosts:
+     - "mongodb:172.17.0.1"
+    links:
+     - registry
+#  preprocessor-simple:
+#    image: marble/marble-preprocessor-simple
+#    network_mode: "host"
+#    ports:
+#     - "8080:8101"
+
+#  processor-simple:
+#    image: marble/marble-processor-simple
+#    network_mode: "host"
+#    ports:
+#     - "8080:8102"

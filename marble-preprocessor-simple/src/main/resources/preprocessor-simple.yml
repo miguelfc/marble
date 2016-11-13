@@ -1,5 +1,5 @@
 server:
-  port: 8111
+  port: 8080
   session:
     timeout: 10800
 
@@ -26,4 +26,4 @@ eureka:
      leaseExpirationDurationInSeconds: 10
   client:
     serviceUrl:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://registry:1111/eureka/

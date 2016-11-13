@@ -14,7 +14,7 @@ spring:
     rest:
       basePath: /api
     mongodb:
-      host: localhost
+      host: mongodb
       port: 27017
       database: marble
   thymeleaf:
@@ -29,7 +29,7 @@ eureka:
      leaseExpirationDurationInSeconds: 10
   client:
     serviceUrl:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://registry:1111/eureka/
 
 access:
   admin:

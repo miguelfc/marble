@@ -1,5 +1,5 @@
 server:
-  port: 9111
+  port: 8080
   session:
     timeout: 10800
 
@@ -12,7 +12,7 @@ spring:
     name: processor-simple
   data:
     mongodb:
-      host: localhost
+      host: mongodb
       port: 27017
       database: marble-processor-simple
   freemarker:
@@ -31,4 +31,4 @@ eureka:
      leaseExpirationDurationInSeconds: 10
   client:
     serviceUrl:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://registry:1111/eureka/
