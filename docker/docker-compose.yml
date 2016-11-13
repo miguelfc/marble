@@ -1,4 +1,13 @@
-registry:
-  image: marble/marble-registry
-  ports:
-   - "1111:1111"
+version: '2'
+
+services:
+  registry:
+    image: marble/marble-registry
+    ports:
+     - "1111:1111"
+
+  core:
+    image: marble/marble-core
+    network_mode: "host"
+    ports:
+     - "8080:8080"

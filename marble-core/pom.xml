@@ -8,6 +8,8 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
+        <docker.image.prefix>marble</docker.image.prefix>
+        <docker.plugin.version>0.3.258</docker.plugin.version>
         <java.version>1.8</java.version>
         <twitter.version>4.0.4</twitter.version>
         <reflections.version>0.9.9-RC2</reflections.version>
@@ -169,11 +171,15 @@
                 <excludes>
                     <exclude>web/**</exclude>
                     <exclude>assembly/**</exclude>
-                    <!-- MFC Uncomment the following excludes for packet generation
-                    -->
-                    <exclude>application.properties</exclude>
-                    <exclude>custom.properties</exclude>
+                    <exclude>core.yml</exclude>
                 </excludes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>core.yml</include>
+                </includes>
+                <filtering>true</filtering>
             </resource>
         </resources>
 
@@ -224,6 +230,30 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
             <!-- This is used to prevent a big fat jar -->
             <plugin>

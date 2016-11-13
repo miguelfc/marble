@@ -31,5 +31,13 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:1111/eureka/
 
-miguel:
-  fernandes: caina
+access:
+  admin:
+    username: '@access.admin.username@'
+    password: '@access.admin.password@'
+  oper:
+    username: '@access.oper.username@'
+    password: '@access.oper.password@'
+  guest:
+    username: '@access.guest.username@'
+    password: '@access.guest.password@'
