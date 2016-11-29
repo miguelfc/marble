@@ -23,6 +23,7 @@ function ($scope, $state, $stateParams, $timeout,  JobExtendedFactory) {
     	if ($state.includes("dashboard.job.view")) {
     		JobExtendedFactory.show({id: $stateParams.jobId}).$promise.then(function(data) {
     			$scope.job = data;
+    			$scope.job.jobParametersIdented = JSON.stringify($scope.job.jobParameters, undefined, 2);
     			$scope.updateDate = new Date();
     	    	if (!$scope.job.status.match(/Stopped|Aborted/)) {
     	    		setTimeout(refresh, 5000);

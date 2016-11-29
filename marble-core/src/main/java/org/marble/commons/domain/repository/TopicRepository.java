@@ -2,7 +2,7 @@ package org.marble.commons.domain.repository;
 
 import java.util.List;
 
-import org.marble.commons.domain.model.Topic;
+import org.marble.model.domain.model.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;

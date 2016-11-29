@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.marble.model.domain.ProcessorInput;
-import org.marble.model.domain.ProcessorOutput;
+import org.marble.model.model.ProcessorInput;
+import org.marble.model.model.ProcessorOutput;
 import org.marble.processor.simple.service.ProcessorService;
 import org.marble.processor.simple.service.SenticNetService;
 import org.slf4j.Logger;

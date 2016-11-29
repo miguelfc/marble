@@ -1,7 +1,8 @@
 package org.marble.commons.domain.repository;
 
 import java.math.BigInteger;
-import org.marble.commons.domain.model.Job;
+
+import org.marble.model.domain.model.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Query;

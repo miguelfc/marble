@@ -9,12 +9,11 @@ import org.marble.commons.domain.repository.JobRepository;
 import org.marble.commons.domain.repository.TopicRepository;
 import org.marble.commons.domain.repository.TwitterApiKeyRepository;
 import org.marble.commons.domain.model.GeneralProperty;
-import org.marble.commons.domain.model.Post;
-import org.marble.commons.domain.model.Plot;
-import org.marble.commons.domain.model.Topic;
 import org.marble.commons.domain.model.TwitterApiKey;
 import org.marble.commons.exception.InvalidPlotException;
-
+import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Post;
+import org.marble.model.domain.model.Topic;
 import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

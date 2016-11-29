@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 import javax.validation.constraints.NotNull;
 
-import org.marble.commons.util.BigIntegerSerializer;
+import org.marble.util.BigIntegerSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

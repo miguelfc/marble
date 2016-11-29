@@ -16,6 +16,7 @@
         <module>marble-processor-simple</module>
         <!--<module>marble-processor-stanford</module>-->
         <module>marble-preprocessor-simple</module>
+        <module>marble-plotter-simple</module>
     </modules>
 
     <parent>

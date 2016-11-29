@@ -1,10 +1,13 @@
 package org.marble.commons.domain.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.marble.commons.util.LongSerializer;
+import org.marble.model.domain.model.Post;
+import org.marble.util.LongSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -32,8 +35,8 @@ public class ProcessedPost {
     private String screenName;
     private String timeZone;
     private Date originalCreatedAt;
-    
-    private Set<String> processorNotes = new LinkedHashSet<>();
+
+    private List<ProcessedPostStep> steps = new ArrayList<>();
 
     public ProcessedPost() {
 
@@ -81,7 +84,7 @@ public class ProcessedPost {
         return polarity;
     }
 
-    public void setPolarity(Double polarity) {
+    private void setPolarity(Double polarity) {
         this.polarity = polarity;
     }
 
@@ -105,7 +108,7 @@ public class ProcessedPost {
         return text;
     }
 
-    public void setText(String text) {
+    private void setText(String text) {
         this.text = text;
     }
 
@@ -145,16 +148,30 @@ public class ProcessedPost {
         this.originalCreatedAt = originalCreatedAt;
     }
 
-    public Set<String> getProcessorNotes() {
-        return processorNotes;
+    public List<ProcessedPostStep> getSteps() {
+        return steps;
     }
 
-    public void setProcessorNotes(Set<String> processorNotes) {
-        this.processorNotes = processorNotes;
+    public void setSteps(List<ProcessedPostStep> steps) {
+        this.steps = steps;
     }
 
-    public void appendProcessorNotes(String notes) {
-        this.processorNotes.add(notes);
+    public ProcessedPostStep getLatestStep() {
+        if (this.steps.size() > 0) {
+            return this.steps.get(this.steps.size() - 1);
+        } else {
+            return null;
+        }
+    }
+
+    public void addStep(ProcessedPostStep step) {
+        if (step.getPolarity() != null) {
+            this.setPolarity(step.getPolarity());
+        }
+        if (step.getOutputText() != null) {
+            this.setText(step.getOutputText());
+        }
+        this.steps.add(step);
     }
 
 }

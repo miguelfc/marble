@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
 import org.marble.commons.domain.model.SentiWordNetItem;
-import org.marble.commons.util.MarbleUtil;
+import org.marble.util.MarbleUtil;
 
 @Service
 public class SentiWordNetServiceImpl implements SentiWordNetService {

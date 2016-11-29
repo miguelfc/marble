@@ -1,29 +1,14 @@
 package org.marble.commons.web;
 
-import org.marble.commons.model.ExecutorInfo;
 import org.marble.commons.model.HomeInformation;
-import org.marble.commons.model.JobModuleDefinition;
-import org.marble.commons.model.JobModuleParameters;
-import org.marble.commons.model.JobRestRequest;
-import org.marble.commons.model.JobRestResult;
 import org.marble.commons.service.InformationService;
 import org.marble.commons.service.JobService;
-import org.marble.commons.service.ModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigInteger;
-import java.security.Principal;
-import java.util.List;
 
 @RestController
 public class InfoRestController {
@@ -31,9 +16,7 @@ public class InfoRestController {
 
     @Autowired
     InformationService informationService;
-    
-    @Autowired
-    ModuleService moduleService;
+
     
     @Autowired
     JobService jobService;
@@ -42,18 +25,6 @@ public class InfoRestController {
     public HomeInformation getHomeInfo() {
         HomeInformation homeInformation = informationService.getHomeInformation();
         return homeInformation;
-    }
-    
-    @RequestMapping(value = "/api/info/processors", method = RequestMethod.GET)
-    public List<ExecutorInfo> getProcessorsInfo() {
-        List<ExecutorInfo> info = informationService.getProcessorsInfo();
-        return info;
-    }
-    
-    @RequestMapping(value = "/api/info/plotters", method = RequestMethod.GET)
-    public List<ExecutorInfo> getPlottersInfo() {
-        List<ExecutorInfo> info = informationService.getPlottersInfo();
-        return info;
     }
     
     /*

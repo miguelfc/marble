@@ -26,6 +26,13 @@ public class MarbleUtil {
             return arg0.get(0).compareTo(arg1.get(0));
         }
     };
+    
+    public static File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException
+    {   
+        File convFile = File.createTempFile(multipart.getOriginalFilename(), ".tmp");
+        multipart.transferTo(convFile);
+        return convFile;
+    }
 
     public static String getBasePath(HttpServletRequest request) {
         if (request.getContextPath().equals("/")) {

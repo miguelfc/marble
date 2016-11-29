@@ -33,7 +33,7 @@
         <!-- /.row -->
 
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <i class="fa fa-list-ul fa-fw"></i> General Properties
@@ -56,8 +56,8 @@
                 </div>
                 <!-- /.panel -->
             </div>
-            <!-- /.col-lg-3 -->
-            <div class="col-lg-3">
+            <!-- /.col-lg-6 -->
+            <div class="col-lg-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <i class="fa fa-sign-in fa-fw"></i> Extractor Properties
@@ -111,71 +111,7 @@
                 </div>
                 <!-- /.panel -->
             </div>
-            <!-- /.col-lg-3 -->
-
-            <div class="col-lg-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <i class="fa fa-scissors fa-fw"></i> Processor Properties
-                    </div>
-                    <div class="panel-body">
-                        <fieldset>
-                            <div class="form-group ">
-                                <label for="processorPositiveBoundary">Processor Positive Boundary</label> <input
-                                    id="processorPositiveBoundary" data-ng-model="topic.processorPositiveBoundary" class="form-control"
-                                    type="text"
-                                />
-                                <p class="help-block">Posts above this value will be considered positive.</p>
-                            </div>
-                            <div class="form-group">
-                                <label for="processorNegativeBoundary">Processor Negative Boundary</label> <input
-                                    id="processorNegativeBoundary" data-ng-model="topic.processorNegativeBoundary" class="form-control"
-                                    type="text"
-                                />
-                                <p class="help-block">Posts below this value will be considered negative.</p>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <!-- .panel-body -->
-                </div>
-                <!-- /.panel -->
-            </div>
-            <!-- /.col-lg-3 -->
-
-            <div class="col-lg-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Plotter Properties
-                    </div>
-                    <div class="panel-body">
-                        <fieldset>
-                            <div class="form-group ">
-                                <label for="plotterLeftDateBoundary">Plotter Left Date Boundary</label> <input id="plotterLeftDateBoundary"
-                                    data-ng-model="topic.plotterLeftDateBoundary" class="form-control" type="text"
-                                />
-
-                                <p class="help-block">Oldest date to include in the plots.</p>
-                            </div>
-                            <div class="form-group ">
-                                <label for="plotterRightDateBoundary">Plotter Right Date Boundary</label> <input
-                                    id="plotterRightDateBoundary" data-ng-model="topic.plotterRightDateBoundary" class="form-control"
-                                    type="text"
-                                />
-                                <p class="help-block">Newest date to include in the plots.</p>
-                            </div>
-                            <div class="form-group ">
-                                <label for="plotterStepSize">Plotter Step Size</label> <input id="plotterStepSize"
-                                    data-ng-model="topic.plotterStepSize" class="form-control" type="text"
-                                />
-                                <p class="help-block">Width of bars in the plots, in ms.</p>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <!-- .panel-body -->
-                </div>
-                <!-- /.panel -->
-            </div>
-            <!-- /.col-lg-3 -->
+            <!-- /.col-lg-6 -->
         </div>
 
     </form>

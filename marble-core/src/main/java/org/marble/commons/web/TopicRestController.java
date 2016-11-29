@@ -2,22 +2,15 @@ package org.marble.commons.web;
 
 import java.math.BigInteger;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.marble.commons.exception.InvalidExecutionException;
 import org.marble.commons.exception.InvalidModuleException;
 import org.marble.commons.exception.InvalidTopicException;
-import org.marble.commons.model.JobModuleDefinition;
-import org.marble.commons.model.JobModuleParameters;
-import org.marble.commons.model.JobRestRequest;
 import org.marble.commons.model.JobRestResult;
-import org.marble.commons.model.ProcessParameters;
 import org.marble.commons.model.RestResult;
 import org.marble.commons.model.TopicStats;
 import org.marble.commons.service.TopicService;
+import org.marble.model.model.JobParameters;
 import org.marble.commons.service.JobService;
-import org.marble.commons.service.ModuleService;
 import org.marble.commons.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RepositoryRestController
@@ -45,9 +37,6 @@ public class TopicRestController {
 
     @Autowired
     JobService jobService;
-
-    @Autowired
-    ModuleService moduleService;
 
     @RequestMapping(value = "/topics/{topicName}/info", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<TopicStats> info(@PathVariable(value = "topicName") String topicName) {
@@ -78,22 +67,10 @@ public class TopicRestController {
 
     @RequestMapping(value = "/topics/{topicName}/process", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<JobRestResult> process(
-            @PathVariable(value = "topicName") String topicName, @RequestBody(required = true) LinkedHashSet<ProcessParameters> processParameters) throws InvalidModuleException {
+            @PathVariable(value = "topicName") String topicName, @RequestBody(required = true) LinkedHashSet<JobParameters> parameters) throws InvalidModuleException {
         BigInteger executionId = null;
         try {
-            
-            // TODO Check getProcessorModules, it seems broken
-            List<JobModuleDefinition> modules = moduleService.getProcessorModules();
-            for (JobModuleDefinition module : modules) {
-                log.error(module.getName());
-            }
-            
-            // TODO Validate the module name
-            if (processParameters != null && processParameters.size() != 0) {
-                
-            }
-
-            executionId = jobService.executeProcessor(topicName, processParameters);
+            executionId = jobService.executeProcessor(topicName, parameters);
             JobRestResult executionResult = new JobRestResult(executionId);
             executionResult.setMessage("Execution started.");
             return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.OK);
@@ -102,27 +79,13 @@ public class TopicRestController {
             return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
     @RequestMapping(value = "/topics/{topicName}/plot", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<JobRestResult> plot(
-            @PathVariable(value = "topicName") String topicName,
-            @RequestBody(required = true) JobRestRequest jobRestRequest) throws InvalidModuleException {
-
+            @PathVariable(value = "topicName") String topicName, @RequestBody(required = true) LinkedHashSet<JobParameters> parameters) throws InvalidModuleException {
         BigInteger executionId = null;
         try {
-            JobModuleParameters jobModuleParameters = new JobModuleParameters();
-            // TODO Check getPlotterModules, it seems broken
-            List<JobModuleDefinition> modules = moduleService.getPlotterModules();
-            for (JobModuleDefinition module : modules) {
-                log.error(module.getName());
-            }
-            // TODO Validate the module name
-            jobModuleParameters.setModule("org.marble.commons.executor.plotter." + jobRestRequest.getModule());
-            jobModuleParameters.setOperation(jobRestRequest.getOperation());
-            jobModuleParameters.setName(jobRestRequest.getName());
-            jobModuleParameters.setDescription(jobRestRequest.getDescription());
-
-            executionId = jobService.executePlotter(topicName, jobModuleParameters);
+            executionId = jobService.executePlotter(topicName, parameters);
             JobRestResult executionResult = new JobRestResult(executionId);
             executionResult.setMessage("Execution started.");
             return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.OK);

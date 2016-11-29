@@ -18,7 +18,7 @@ import com.opencsv.CSVReader;
 
 import org.marble.commons.domain.model.SenticItem;
 import org.marble.commons.domain.model.ValidationItem;
-import org.marble.commons.util.MarbleUtil;
+import org.marble.util.MarbleUtil;
 
 @Service
 public class ValidationDataServiceImpl implements ValidationDataService {

@@ -75,9 +75,6 @@ angular.module('marbleCoreApp')
 		});
 	};
 
-	$scope.processOptions = ProcessorsInfoFactory.show();
-	$scope.plotOptions = PlottersInfoFactory.show();
-	
 	$scope.process = function (options) {
 		TopicProcessFactory.process({name: $stateParams.topicName}, options).$promise.then(function(data) {
 			// Handle execution error

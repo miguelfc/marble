@@ -3,8 +3,8 @@ package org.marble.commons.domain.repository;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.marble.commons.domain.model.Job;
-import org.marble.commons.domain.model.Plot;
+import org.marble.model.domain.model.Job;
+import org.marble.model.domain.model.Plot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Query;

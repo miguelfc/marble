@@ -1,14 +1,14 @@
 package org.marble.commons.config;
 
 import org.marble.commons.domain.model.GeneralProperty;
-import org.marble.commons.domain.model.Job;
-import org.marble.commons.domain.model.Post;
-import org.marble.commons.domain.model.Plot;
-import org.marble.commons.domain.model.Topic;
 import org.marble.commons.domain.model.TwitterApiKey;
 import org.marble.commons.domain.projections.JobExtendedProjection;
 import org.marble.commons.domain.projections.PlotExtendedProjection;
 import org.marble.commons.domain.projections.PlotListProjection;
+import org.marble.model.domain.model.Job;
+import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Post;
+import org.marble.model.domain.model.Topic;
 import org.marble.commons.domain.projections.FullTopicProjection;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;

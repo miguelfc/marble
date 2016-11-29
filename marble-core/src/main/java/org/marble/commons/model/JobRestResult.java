@@ -2,7 +2,7 @@ package org.marble.commons.model;
 
 import java.math.BigInteger;
 
-import org.marble.commons.util.BigIntegerSerializer;
+import org.marble.util.BigIntegerSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

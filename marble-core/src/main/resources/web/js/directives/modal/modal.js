@@ -41,23 +41,19 @@ angular
 
 										if ($scope.modalProperties.type == 'plot') {
 											$scope.plot = {};
-											$scope.plotAction = function() {
-												var options = {
-													name : $scope.plot.name,
-													description : $scope.plot.description,
-													module : $scope.plot.module.id,
-													operation : $scope.plot.operation.id
-												}
-												$scope.modalAction({
-													options : options
-												});
-											}
+                                            $scope.plotterRecipe = JSON.stringify($scope.modalProperties.modalOptions, undefined, 2);
+                                            $scope.plotAction = function() {
+                                                var options = $scope.plotterRecipe;
+                                                $scope.modalAction({
+                                                    options : options
+                                                });
+                                            }
 										}
 										else if ($scope.modalProperties.type == 'process') {
                                             $scope.process = {};
-                                            $scope.recipe = JSON.stringify($scope.modalProperties.modalOptions, undefined, 4);
+                                            $scope.processRecipe = JSON.stringify($scope.modalProperties.modalOptions, undefined, 2);
                                             $scope.processAction = function() {
-                                                var options = $scope.recipe;
+                                                var options = $scope.processRecipe;
                                                 $scope.modalAction({
                                                     options : options
                                                 });

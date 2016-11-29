@@ -4,9 +4,8 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.marble.commons.domain.repository.PlotRepository;
-import org.marble.commons.domain.model.Plot;
 import org.marble.commons.exception.InvalidPlotException;
-
+import org.marble.model.domain.model.Plot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

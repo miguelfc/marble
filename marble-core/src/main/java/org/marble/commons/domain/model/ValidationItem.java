@@ -2,8 +2,7 @@ package org.marble.commons.domain.model;
 
 import java.util.Date;
 
-
-import org.marble.commons.model.SymplifiedProcessingItem;
+import org.marble.model.model.SymplifiedProcessingItem;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;

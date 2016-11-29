@@ -3,8 +3,8 @@ package org.marble.commons.domain.projections;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.marble.commons.domain.model.Plot;
-import org.marble.commons.util.BigIntegerSerializer;
+import org.marble.model.domain.model.Plot;
+import org.marble.util.BigIntegerSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 

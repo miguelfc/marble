@@ -11,10 +11,11 @@ import com.mongodb.DBCursor;
 import com.mongodb.MongoException;
 
 public interface DatastoreService {
-
-    <T> void save(T object);
-
     <T> void removeCollection(Class<T> entityClass);
+    <T> void save(T object);
+    <T> List<T> findAll(Class<T> entityClass);
+/*
+
     
     <T> void findAllAndRemove(Query query, Class<T> entityClass);
 
@@ -26,7 +27,6 @@ public interface DatastoreService {
 
     <T> T findOneByText(String text, Class<T> entityClass) throws MongoException;
 
-    <T> List<T> findAll(Class<T> entityClass);
 
     
     <T> long countByTopicId(String topicName, Class<T> entityClass);
@@ -40,5 +40,5 @@ public interface DatastoreService {
     <T> DBCursor findCursorByQuery(Map<String, Object> queryParameters, Class<T> entityClass);
 
     <T> DBCursor findCursorForAll(Class<T> entityClass);
-
+*/
 }

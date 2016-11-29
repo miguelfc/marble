@@ -2,8 +2,9 @@ package org.marble.commons.service;
 
 import java.math.BigInteger;
 import java.util.List;
-import org.marble.commons.domain.model.Plot;
+
 import org.marble.commons.exception.InvalidPlotException;
+import org.marble.model.domain.model.Plot;
 
 public interface PlotService {
 

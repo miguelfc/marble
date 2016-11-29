@@ -1,5 +1,5 @@
 package org.marble.commons.executor.processor;
-
+/*
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -186,7 +186,7 @@ public static final String id = BagOfWordsSenticProcessorExecutor.class.getSimpl
             // If this is a regular process, results will be save to the
             // database
             ProcessedPost processedStatus = new ProcessedPost(status);
-            processedStatus.setPolarity(polarity.doubleValue());
+            //TODO processedStatus.setPolarity(polarity.doubleValue());
             datastoreService.save(processedStatus);
 
             count++;
@@ -410,3 +410,4 @@ public static final String id = BagOfWordsSenticProcessorExecutor.class.getSimpl
         }
     }
 }
+*/

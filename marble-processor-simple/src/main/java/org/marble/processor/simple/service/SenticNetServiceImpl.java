@@ -1,6 +1,5 @@
 package org.marble.processor.simple.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,7 +22,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import org.marble.processor.simple.domain.model.SenticItem;
-import org.marble.util.MarbleUtil;
 
 @Service
 public class SenticNetServiceImpl implements SenticNetService {

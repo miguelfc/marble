@@ -18,6 +18,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <!-- Twitter -->
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+            <version>${twitter.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -30,7 +44,9 @@
                         <goals>
                             <goal>repackage</goal>
                         </goals>
-                        <configuration><layout>NONE</layout></configuration>
+                        <configuration>
+                            <layout>NONE</layout>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -38,5 +54,6 @@
     </build>
     <properties>
         <java.version>1.8</java.version>
+        <twitter.version>4.0.4</twitter.version>
     </properties>
 </project>

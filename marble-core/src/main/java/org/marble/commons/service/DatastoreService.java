@@ -3,10 +3,10 @@ package org.marble.commons.service;
 import java.util.List;
 import java.util.Map;
 
+import org.marble.model.domain.model.Post;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.query.Query;
-import org.marble.commons.domain.model.Post;
 
 import com.mongodb.DBCursor;
 import com.mongodb.MongoException;

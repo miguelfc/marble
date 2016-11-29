@@ -2,14 +2,15 @@ package org.marble.commons.domain.projections;
 
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
-import org.marble.commons.domain.model.Job;
-import org.marble.commons.domain.model.Topic;
-import org.marble.commons.model.JobCommand;
-import org.marble.commons.model.JobModuleParameters;
-import org.marble.commons.model.JobStatus;
-import org.marble.commons.model.JobType;
-import org.marble.commons.util.BigIntegerSerializer;
+import org.marble.model.domain.model.Job;
+import org.marble.model.model.JobParameters;
+import org.marble.model.model.JobStatus;
+import org.marble.model.model.JobType;
+import org.marble.util.BigIntegerSerializer;
+import org.marble.util.ChartsIdsSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 
@@ -21,17 +22,18 @@ public interface JobExtendedProjection {
     BigInteger getId();
     JobType getType();
     JobStatus getStatus();
-    JobCommand getCommand();
     String getLog();
     Date getCreatedAt();
     Date getUpdatedAt();
-    JobModuleParameters getModuleParameters();
+    Set<JobParameters> getJobParameters();
     
     @Value("#{target.topic != null? target.topic.name : null}")
     String getTopicName();
     
-    @Value("#{target.plot != null? target.plot.id : null}")
-    @JsonSerialize(using = BigIntegerSerializer.class)
-    BigInteger getPlotId();
+    
+    @Value("#{target.plots != null? target.plots : null}")
+    @JsonSerialize(using = ChartsIdsSerializer.class)
+    List getPlots();
+    
 }
 
