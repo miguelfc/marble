@@ -3,8 +3,8 @@ package org.marble.commons.service;
 import java.util.List;
 
 import org.marble.commons.domain.repository.PostRepository;
-import org.marble.commons.domain.model.Post;
 import org.marble.commons.exception.InvalidPostException;
+import org.marble.model.domain.model.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

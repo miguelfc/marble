@@ -3,11 +3,11 @@ package org.marble.commons.service;
 import java.util.List;
 
 import org.marble.commons.domain.repository.TopicRepository;
-import org.marble.commons.domain.model.Post;
 import org.marble.commons.domain.model.ProcessedPost;
-import org.marble.commons.domain.model.Topic;
 import org.marble.commons.exception.InvalidTopicException;
 import org.marble.commons.model.TopicStats;
+import org.marble.model.domain.model.Post;
+import org.marble.model.domain.model.Topic;
 
 import com.mongodb.MongoException;
 

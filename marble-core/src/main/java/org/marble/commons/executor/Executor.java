@@ -1,6 +1,6 @@
 package org.marble.commons.executor;
 
-import org.marble.commons.domain.model.Job;
+import org.marble.model.domain.model.Job;
 
 public interface Executor extends Runnable {
 

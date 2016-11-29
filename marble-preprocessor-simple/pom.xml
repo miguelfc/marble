@@ -16,7 +16,7 @@
     <properties>
         <docker.image.prefix>marble</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
-        <start-class>org.marble.preprocessor.simple.PreprocessorServer</start-class>
+        <start-class>org.marble.preprocessor.simple.Server</start-class>
         <java.version>1.8</java.version>
     </properties>
 

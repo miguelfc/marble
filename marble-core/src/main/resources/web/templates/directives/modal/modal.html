@@ -10,28 +10,10 @@
         <div ng-if="modalProperties.type == 'plot'">
             <p>Please select the module and the type of plot to generate and click {{modalProperties.button}} to
                 continue.</p>
+            <p>Please enter the processing recipe and click {{modalProperties.button}} to continue.</p>
             <fieldset>
                 <div class="form-group ">
-                    <label>Short Name</label> <input type="text" class="form-control" ng-model="plot.name" />
-                    <p class="help-block">Tip: give it a descriptive name, it would allow you to find it quickly.</p>
-                </div>
-                <div class="form-group ">
-                    <label>Short Description</label>
-                    <textarea class="form-control" ng-model="plot.description"></textarea>
-                    <p class="help-block">If you want, you can explain what this plot represents and any information
-                        you would like to add.</p>
-                </div>
-                <div class="form-group ">
-                    <label>Plot module</label> <select
-                        ng-options="option.label for option in modalProperties.modalOptions" class="form-control"
-                        ng-model="plot.module"></select>
-                    <p class="help-block">Every module has it own data sources along with particular types of plot
-                        to generate.</p>
-                </div>
-                <div class="form-group ">
-                    <label>Type of plot</label> <select ng-options="option.label for option in plot.module.operations"
-                        class="form-control" ng-model="plot.operation"></select>
-                    <p class="help-block">Specifies the type of plot to generate.</p>
+                    <textarea rows="6" cols="70" ng-model="$parent.plotterRecipe"></textarea>
                 </div>
             </fieldset>
         </div>
@@ -39,7 +21,7 @@
             <p>Please enter the processing recipe and click {{modalProperties.button}} to continue.</p>
             <fieldset>
                 <div class="form-group ">
-                    <textarea rows="6" cols="70" ng-model="$parent.recipe"></textarea>
+                    <textarea rows="6" cols="70" ng-model="$parent.processRecipe"></textarea>
                 </div>
             </fieldset>
         </div>
@@ -53,11 +35,11 @@
             <i class="fa fa-fw {{modalProperties.modalIcon}}"></i> {{modalProperties.button}}
         </button>
         <button class="btn btn-primary" ng-if="modalProperties.type == 'plot'"
-            ng-disabled="plot.module.id == null || plot.operation.id == null" ng-click="plotAction(); ok();">
+            ng-disabled="$parent.plotterRecipe == null || $parent.plotterRecipe == ''" ng-click="plotAction(); ok();">
             <i class="fa fa-fw {{modalProperties.modalIcon}}"></i> {{modalProperties.button}}
         </button>
-        <button class="btn btn-primary" ng-if="modalProperties.type == 'process'" ng-disabled="modalProperties.modalOptions == null"
-            ng-click="processAction(); ok();">
+        <button class="btn btn-primary" ng-if="modalProperties.type == 'process'"
+            ng-disabled="$parent.processRecipe == null || $parent.processRecipe == ''" ng-click="processAction(); ok();">
             <i class="fa fa-fw {{modalProperties.modalIcon}}"></i> {{modalProperties.button}}
         </button>
     </div>

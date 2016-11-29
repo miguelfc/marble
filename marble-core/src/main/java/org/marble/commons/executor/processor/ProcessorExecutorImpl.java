@@ -1,56 +1,42 @@
 package org.marble.commons.executor.processor;
 
+import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
 import org.asynchttpclient.Response;
-import org.asynchttpclient.request.body.multipart.Part;
-import org.marble.commons.domain.model.Job;
-import org.marble.commons.domain.model.Post;
 import org.marble.commons.domain.model.ProcessedPost;
-import org.marble.commons.domain.model.Topic;
-import org.marble.commons.domain.model.ValidationItem;
+import org.marble.commons.domain.model.ProcessedPostStep;
 import org.marble.commons.exception.InvalidExecutionException;
-import org.marble.commons.model.Constants;
-import org.marble.commons.model.ExecutorParameter;
-import org.marble.commons.model.JobStatus;
-import org.marble.commons.model.ProcessParameters;
-import org.marble.commons.model.SymplifiedProcessingItem;
-import org.marble.commons.model.ValidationResult;
 import org.marble.commons.service.DatastoreService;
 import org.marble.commons.service.JobService;
 import org.marble.commons.service.ProcessedPostService;
-import org.marble.commons.service.SenticNetService;
 import org.marble.commons.service.TopicService;
-import org.marble.model.domain.ProcessorInput;
-import org.marble.model.domain.ProcessorOutput;
+import org.marble.model.domain.model.Job;
+import org.marble.model.domain.model.Post;
+import org.marble.model.domain.model.Topic;
+import org.marble.model.model.JobParameters;
+import org.marble.model.model.JobStatus;
+import org.marble.model.model.ProcessorInput;
+import org.marble.model.model.ProcessorOutput;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.AsyncRestTemplate;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 @Scope("prototype")
@@ -97,9 +83,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
             BigInteger id = execution.getId();
 
-            msg = "Starting Bag of Words Sentic processor <" + id + ">.";
-            log.info(msg);
-            execution.appendLog(msg);
+            logMsg("Starting processor <" + id + ">.", "info", null);
 
             // Changing execution state
             execution.setStatus(JobStatus.Running);
@@ -112,9 +96,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
             }
 
         } catch (Exception e) {
-            msg = "An error ocurred while processing posts with execution <" + execution.getId() + ">. Execution aborted.";
-            log.error(msg, e);
-            execution.appendLog(msg);
+            logMsg("An error ocurred while processing posts with execution <" + execution.getId() + ">. Execution aborted.", "error", e);
             execution.setStatus(JobStatus.Aborted);
             try {
                 execution = executionService.save(execution);
@@ -142,10 +124,11 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         // Drop current processed posts
         processedPostService.deleteByTopicName(topic.getName());
 
-        log.info("Getting posts for topic <" + topic.getName() + ">.");
+        logMsg("Getting posts for topic <" + topic.getName() + ">.", "info", null);
         processingItemsCursor = datastoreService.findCursorByTopicName(topic.getName(), Post.class);
 
-        log.info("There are <" + processingItemsCursor.count() + "> items to process.");
+        logMsg("There are <" + processingItemsCursor.count() + "> items to process.", "info", null);
+        
         while (processingItemsCursor.hasNext()) {
             DBObject rawStatus = processingItemsCursor.next();
 
@@ -155,7 +138,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
             }
             String text = post.getText();
             if (text == null) {
-                log.debug("Post text for id <" + post.getId() + "> is null. Skipping...");
+                logMsg("Post text for id <" + post.getId() + "> is null. Skipping...", "debug", null);
                 continue;
             }
             ProcessedPost processedPost = new ProcessedPost(post);
@@ -163,21 +146,17 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         }
 
         // Loop for each processing stage
-        for (ProcessParameters parameter : this.execution.getParameters()) {
+        for (JobParameters parameter : this.execution.getParameters()) {
 
             String processorName = parameter.getName();
-            msg = "Starting processor <" + processorName + ">";
-            log.info(msg);
-            execution.appendLog(msg);
+            logMsg("Starting processor <" + processorName + ">", "info", null);
 
-            String serviceUrl = "http://" + processorName + "/api/process";
+            //String serviceUrl = "http://" + processorName + "/api/process";
 
             List<ServiceInstance> serviceInstances = discoveryClient.getInstances(processorName);
 
             if (serviceInstances.size() <= 0) {
-                msg = "No instances available for processor <" + processorName + ">. Skipping.";
-                log.error(msg);
-                execution.appendLog(msg);
+                logMsg("No instances available for processor <" + processorName + ">. Skipping.", "error", null);
                 continue;
             }
             Map<String, Integer> serviceInstancesRunning = new HashMap<>();
@@ -206,7 +185,8 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                 input.setMessage(initialMessage);
                 input.setOptions(parameter.getOptions());
 
-                ProcessorOutput output = null;
+                ProcessedPostStep step = new ProcessedPostStep();
+                step.setInputText(initialMessage);
 
                 String serviceInstanceAvailableUrl = null;
                 do {
@@ -227,7 +207,6 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                     }
                 } while (serviceInstanceAvailableUrl == null);
                 log.info("Instance selected: <" + serviceInstanceAvailableUrl + ">");
-
                 final String url = new String(serviceInstanceAvailableUrl);
                 CompletableFuture<Response> promise = asyncHttpClient
                         .preparePost(serviceInstanceAvailableUrl + "/api/process")
@@ -237,24 +216,30 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                         .toCompletableFuture()
                         .thenApply(resp -> {
                             serviceInstancesRunning.put(url, serviceInstancesRunning.get(url) - 1);
-                            log.error("response: " + resp.getResponseBody());
+                            try {
+
+                                ProcessorOutput output = null;
+                                output = gson.fromJson(resp.getResponseBody(), ProcessorOutput.class);
+                                if (output != null) {
+                                    if (output.getMessage() != null) {
+                                        step.setOutputText(output.getMessage());
+                                        log.debug("Modified message for  for text <" + initialMessage.replaceAll("\n", "") + "> is <" + processedPost.getText().replaceAll("\n", "") + ">");
+                                    }
+                                    if (output.getPolarity() != null) {
+                                        step.setPolarity(output.getPolarity());
+                                        log.debug("Polarity for text <" + initialMessage.replaceAll("\n", "") + "> is <" + processedPost.getPolarity() + ">");
+                                    }
+                                    step.setProcessParameters(parameter);
+                                    step.setNotes(output.getNotes());
+                                }
+                                processedPost.addStep(step);
+                                datastoreService.save(processedPost);
+                            } catch (JsonSyntaxException e) {
+                                // TODO Auto-generated catch block
+                                logMsg("Message <"+input.getMessage()+"> couldn't be processed.", "error", e);
+                            }
                             return resp;
                         });
-
-                if (1 == 1)
-                    continue;
-
-                if (output.getMessage() != null) {
-                    processedPost.setText(output.getMessage());
-                    log.debug("Modified message for  for text <" + initialMessage.replaceAll("\n", "") + "> is <" + processedPost.getText().replaceAll("\n", "") + ">");
-                }
-                if (output.getPolarity() != null) {
-                    processedPost.setPolarity(output.getPolarity());
-                    log.debug("Polarity for text <" + initialMessage.replaceAll("\n", "") + "> is <" + processedPost.getPolarity() + ">");
-                }
-                processedPost.appendProcessorNotes(output.getNotes());
-
-                datastoreService.save(processedPost);
 
                 count++;
 
@@ -264,6 +249,13 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                     execution.appendLog(msg);
                     executionService.save(execution);
                 }
+            }
+            
+            // TODO Verify is this is the right place for the close statement
+            try {
+                asyncHttpClient.close();
+            } catch (IOException e) {
+                logMsg("An error occurred while closing asyncHttpClient.", "error", e);
             }
 
             msg = "Total of items processed: <" + count + ">";
@@ -279,100 +271,47 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         execution = executionService.save(execution);
     }
 
-    /*
-     * public void validate() throws InvalidExecutionException {
-     * // TODO Include ignore neutral sentences from global configuration
-     * this.ignoreNeutralSentences = Boolean.FALSE;
-     * 
-     * String msg = "";
-     * 
-     * ValidationResult validationResult = new ValidationResult();
-     * 
-     * // Define Boundaries
-     * Float positiveBoundary, negativeBoundary;
-     * try {
-     * positiveBoundary = Float.parseFloat(this.execution.getModuleParameters().getParameters().get("positiveBoundary"));
-     * } catch (Exception e) {
-     * positiveBoundary = 0F;
-     * 
-     * this.execution.getModuleParameters().getParameters().put("positiveBoundary", positiveBoundary.toString());
-     * }
-     * try {
-     * negativeBoundary = Float.parseFloat(this.execution.getModuleParameters().getParameters().get("negativeBoundary"));
-     * } catch (Exception e) {
-     * negativeBoundary = 0F;
-     * this.execution.getModuleParameters().getParameters().put("negativeBoundary", negativeBoundary.toString());
-     * }
-     * 
-     * DBCursor processingItemsCursor;
-     * 
-     * // This is a validation
-     * processingItemsCursor = datastoreService.findCursorForAll(ValidationItem.class);
-     * 
-     * log.info("There are <" + processingItemsCursor.count() + "> items to validate.");
-     * 
-     * Integer count = 0;
-     * while (processingItemsCursor.hasNext()) {
-     * 
-     * DBObject rawStatus = processingItemsCursor.next();
-     * 
-     * ValidationItem item = datastoreService.getConverter().read(ValidationItem.class, rawStatus);
-     * SymplifiedProcessingItem symplifiedProcessingItem = item.getSymplifiedProcessingItem();
-     * 
-     * log.debug("Item text is <" + symplifiedProcessingItem.getText() + ">");
-     * if (symplifiedProcessingItem.getCreatedAt() == null) {
-     * continue;
-     * }
-     * String text = symplifiedProcessingItem.getText();
-     * if (text == null) {
-     * log.debug("Post text for id <" + symplifiedProcessingItem.getId() + "> is null. Skipping...");
-     * continue;
-     * }
-     * log.debug("Analysing text: " + text.replaceAll("\n", ""));
-     * 
-     * Float polarity = this.processStatus(text);
-     * 
-     * log.debug("Polarity for text <" + text.replaceAll("\n", "") + "> is <" + polarity + ">");
-     * 
-     * // In case of validation, results will be shown in screen and in
-     * // counters
-     * if (polarity > positiveBoundary) {
-     * validationResult.addPositiveResult(symplifiedProcessingItem.getExpectedPolarity());
-     * } else if (polarity < negativeBoundary) {
-     * validationResult.addNegativeResult(symplifiedProcessingItem.getExpectedPolarity());
-     * } else {
-     * validationResult.addNeutralResult(symplifiedProcessingItem.getExpectedPolarity());
-     * }
-     * msg = "Polarity: " + polarity + ". Expected: " + symplifiedProcessingItem.getExpectedPolarity() + ".";
-     * log.debug(msg);
-     * 
-     * count++;
-     * 
-     * if ((count % 100) == 0) {
-     * msg = "Items processed so far: <" + count + ">";
-     * log.info(msg);
-     * execution.appendLog(msg);
-     * executionService.save(execution);
-     * }
-     * }
-     * 
-     * msg = "Total of items processed: <" + count + ">";
-     * log.info(msg);
-     * execution.appendLog(msg);
-     * 
-     * msg = validationResult.getResults();
-     * log.info(msg);
-     * execution.appendLog(msg);
-     * msg = "The bag of words sentic processor validation has finished.";
-     * 
-     * log.info(msg);
-     * execution.appendLog(msg);
-     * execution.setStatus(JobStatus.Stopped);
-     * 
-     * execution = executionService.save(execution);
-     * 
-     * }
-     * 
-     */
-
+    public void logMsg(String message, String level, Exception exception) {
+        if (level != null) {
+            switch (level) {
+            case "error":
+                if (exception == null)
+                    log.error(message);
+                else
+                    log.error(message, exception);
+                break;
+            case "warn":
+                if (exception == null)
+                    log.warn(message);
+                else
+                    log.warn(message, exception);
+                break;
+            case "debug":
+                if (exception == null)
+                    log.debug(message);
+                else
+                    log.debug(message, exception);
+                break;
+            case "trace":
+                if (exception == null)
+                    log.trace(message);
+                else
+                    log.trace(message, exception);
+                break;
+            case "info":
+            default:
+                if (exception == null)
+                    log.info(message);
+                else
+                    log.info(message, exception);
+                break;
+            }
+        } else {
+            if (exception == null)
+                log.info(message);
+            else
+                log.info(message, exception);
+        }
+        execution.appendLog(message);
+    }
 }

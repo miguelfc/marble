@@ -1,5 +1,5 @@
 package org.marble.commons.executor.processor;
-
+/*
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -231,7 +231,7 @@ public class AnwarEkramProcessorExecutor implements ProcessorExecutor {
             // If this is a regular process, results will be save to the
             // database
             ProcessedPost processedStatus = new ProcessedPost(status);
-            processedStatus.setPolarity(polarity);
+            // TODO processedStatus.setPolarity(polarity);
             datastoreService.save(processedStatus);
 
             count++;
@@ -514,3 +514,4 @@ public class AnwarEkramProcessorExecutor implements ProcessorExecutor {
         }
     }
 }
+*/

@@ -19,8 +19,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class Application {
 
     public static void main(String[] args) {
-        System.setProperty("spring.config.name", "core");
-        
         SpringApplication.run(Application.class, args);
     }
 

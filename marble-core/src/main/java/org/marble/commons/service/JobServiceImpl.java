@@ -1,27 +1,20 @@
 package org.marble.commons.service;
 
-import java.beans.Introspector;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Set;
 
 import org.marble.commons.domain.repository.JobRepository;
-import org.marble.commons.domain.model.Job;
-import org.marble.commons.domain.model.Topic;
 import org.marble.commons.exception.InvalidExecutionException;
 import org.marble.commons.exception.InvalidModuleException;
 import org.marble.commons.exception.InvalidTopicException;
 import org.marble.commons.executor.extractor.ExtractorExecutor;
 import org.marble.commons.executor.plotter.PlotterExecutor;
 import org.marble.commons.executor.processor.ProcessorExecutor;
-import org.marble.commons.executor.processor.ProcessorExecutorImpl;
-import org.marble.commons.model.JobStatus;
-import org.marble.commons.model.JobType;
-import org.marble.commons.model.ProcessParameters;
-import org.marble.commons.model.JobModuleParameters;
-import org.marble.commons.model.ExecutorParameter;
-import org.marble.commons.model.JobModuleDefinition;
-
+import org.marble.model.domain.model.Job;
+import org.marble.model.domain.model.Topic;
+import org.marble.model.model.JobParameters;
+import org.marble.model.model.JobStatus;
+import org.marble.model.model.JobType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +39,11 @@ public class JobServiceImpl implements JobService {
     PlotService plotService;
 
     @Autowired
-    ModuleService moduleService;
-    
-    @Autowired
     ProcessorExecutor processorExecutor;
-    
+
+    @Autowired
+    PlotterExecutor plotterExecutor;
+
     @Autowired
     @Qualifier(value = "taskExecutor")
     private TaskExecutor taskExecutor;
@@ -65,7 +58,7 @@ public class JobServiceImpl implements JobService {
         }
         return execution;
     }
-    
+
     public Long deleteByTopicName(String name) {
         return jobDao.deleteByTopic_name(name);
     }
@@ -102,7 +95,7 @@ public class JobServiceImpl implements JobService {
         execution.setStatus(JobStatus.Initialized);
         execution.setType(JobType.Extractor);
         execution.setTopic(topic);
-        
+
         execution = this.save(execution);
 
         log.info("Starting execution <" + execution.getId() + ">... now!");
@@ -117,30 +110,30 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public BigInteger executeProcessor(String topicName, Set<ProcessParameters> processParameters) throws InvalidTopicException,
+    public BigInteger executeProcessor(String topicName, Set<JobParameters> parameters) throws InvalidTopicException,
             InvalidExecutionException, InvalidModuleException {
-        
+
         if (topicName != null) {
             log.info("Executing the processor for topic <" + topicName + ">.");
         } else {
             log.info("Executing the validation of this processor.");
         }
-        
+
         // prepare the execution
 
         Job execution = new Job();
-        log.error("Parameters: ");
-        for (ProcessParameters parameter: processParameters) {
-            log.error("- " + parameter);
+        log.debug("Execution Parameters: ");
+        for (JobParameters parameter : parameters) {
+            log.debug("- " + parameter);
         }
 
         execution.setStatus(JobStatus.Initialized);
         execution.setType(JobType.Processor);
-        execution.setParameters(processParameters);
+        execution.setParameters(parameters);
 
         if (topicName != null) {
             Topic topic = topicService.findOne(topicName);
-            topic.setLastProcessParameters(processParameters);
+            topic.setLastProcessParameters(parameters);
             topicService.save(topic);
             execution.setTopic(topic);
         }
@@ -148,10 +141,10 @@ public class JobServiceImpl implements JobService {
         execution = this.save(execution);
 
         log.info("Starting execution <" + execution.getId() + ">... now!");
-        //ProcessorExecutor processorExecutor = new ProcessorExecutorImpl();
+        // ProcessorExecutor processorExecutor = new ProcessorExecutorImpl();
         processorExecutor.setExecution(execution);
         taskExecutor.execute(processorExecutor);
-        
+
         log.info("Executor launched.");
 
         return execution.getId();
@@ -159,60 +152,60 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public BigInteger executeProcessor( Set<ProcessParameters> processParameters) throws InvalidTopicException,
+    public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException,
             InvalidExecutionException, InvalidModuleException {
-        return this.executeProcessor(null,   processParameters);
+        return this.executeProcessor(null, processParameters);
     }
 
     @Override
     @Transactional
-    public BigInteger executePlotter(String topicName, JobModuleParameters moduleParameters) throws InvalidTopicException,
-            InvalidExecutionException, InvalidModuleException {
-        log.info("Executing the processor for topic <" + topicName + ">.");
+    public BigInteger executePlotter(String topicName, Set<JobParameters> parameters) throws InvalidTopicException, InvalidExecutionException {
 
-        // First, a check is made in order to prevent Injection Attacks
-        JobModuleDefinition module = moduleService.getPlotterModule(moduleParameters.getModule());
-        if (module == null) {
-            String message = "The module <" + moduleParameters.getModule() + "> is invalid.";
-            log.error(message);
-            throw new InvalidModuleException(message);
+        if (topicName != null) {
+            log.info("Executing the plotter for topic <" + topicName + ">.");
+        }
+        else {
+            log.error("A topic is needed for the plotter to work. Aborting.");
+            return null;
         }
 
-        // Second, check the operation is valid
-        if (moduleParameters.getOperation() == null || !module.getOperations().contains(new ExecutorParameter(moduleParameters.getOperation()))) {
-            String message = "The operation <" + moduleParameters.getOperation() + "> for module <" + moduleParameters.getModule()
-            + "> is invalid.";
-            log.error(message);
-            throw new InvalidModuleException(message);
-        }
+        // prepare the execution
 
-        // Fourth, prepare the execution
         Job execution = new Job();
-
-        Topic topic = topicService.findOne(topicName);
+        log.error("Parameters: ");
+        for (JobParameters parameter : parameters) {
+            log.error("- " + parameter);
+        }
 
         execution.setStatus(JobStatus.Initialized);
         execution.setType(JobType.Plotter);
-        execution.setTopic(topic);
-        execution.setModuleParameters(moduleParameters);
+        execution.setParameters(parameters);
+
+        if (topicName != null) {
+            Topic topic = topicService.findOne(topicName);
+            topic.setLastPlotterParameters(parameters);
+            topicService.save(topic);
+            execution.setTopic(topic);
+        }
 
         execution = this.save(execution);
 
-        log.info("Starting execution <" + Introspector.decapitalize(module.getSimpleName()) + "|" + execution.getId() + ">... now!");
-        PlotterExecutor executor = (PlotterExecutor) context.getBean(Introspector.decapitalize(module.getSimpleName()));
-        executor.setExecution(execution);
-        taskExecutor.execute(executor);
+        log.info("Starting execution <" + execution.getId() + ">... now!");
+        // ProcessorExecutor plotterExecutor = new ProcessorExecutorImpl();
+        plotterExecutor.setExecution(execution);
+        taskExecutor.execute(plotterExecutor);
 
         log.info("Executor launched.");
-        return execution.getId();
 
+        return execution.getId();
     }
+
 
     @Override
     public Long count() {
         return jobDao.count();
     }
-    
+
     @Override
     public Long countByTopicName(String topicName) {
         return jobDao.countByTopic_name(topicName);

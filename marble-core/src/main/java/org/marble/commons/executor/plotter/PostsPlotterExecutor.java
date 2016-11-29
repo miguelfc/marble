@@ -18,21 +18,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import org.marble.commons.domain.model.Job;
-import org.marble.commons.domain.model.Post;
-import org.marble.commons.domain.model.Plot;
-import org.marble.commons.domain.model.Topic;
 import org.marble.commons.exception.InvalidExecutionException;
 import org.marble.commons.model.ExecutorParameter;
-import org.marble.commons.model.JobStatus;
 import org.marble.commons.service.DatastoreService;
 import org.marble.commons.service.JobService;
 import org.marble.commons.service.PlotService;
+import org.marble.model.domain.model.Job;
+import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Post;
+import org.marble.model.domain.model.Topic;
+import org.marble.model.model.JobStatus;
+
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
-@Component
 @Scope("prototype")
 public class PostsPlotterExecutor implements PlotterExecutor {
 

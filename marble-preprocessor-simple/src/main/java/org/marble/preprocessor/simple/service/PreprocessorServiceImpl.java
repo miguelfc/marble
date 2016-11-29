@@ -1,8 +1,8 @@
 package org.marble.preprocessor.simple.service;
 
 import java.util.Arrays;
-import org.marble.model.domain.Constants;
 
+import org.marble.model.model.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

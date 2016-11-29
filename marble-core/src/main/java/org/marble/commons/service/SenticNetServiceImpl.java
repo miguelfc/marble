@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import org.marble.commons.domain.model.SenticItem;
-import org.marble.commons.util.MarbleUtil;
+import org.marble.util.MarbleUtil;
 
 @Service
 public class SenticNetServiceImpl implements SenticNetService {

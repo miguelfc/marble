@@ -1,5 +1,5 @@
 package org.marble.commons.model;
-
+/*
 import java.util.List;
 
 public class ExecutorInfo {
@@ -51,3 +51,4 @@ public class ExecutorInfo {
     }
 
 }
+*/

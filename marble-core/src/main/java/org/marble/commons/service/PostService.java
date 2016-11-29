@@ -2,8 +2,8 @@ package org.marble.commons.service;
 
 import java.util.List;
 
-import org.marble.commons.domain.model.Post;
 import org.marble.commons.exception.InvalidPostException;
+import org.marble.model.domain.model.Post;
 
 public interface PostService {
 

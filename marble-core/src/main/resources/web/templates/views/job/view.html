@@ -34,7 +34,7 @@
                     <div class="panel-body">
 
                         <div class="form-group">
-                            <textarea data-ng-model="job.log" id="log" class="form-control resize-vertical" rows="20" disabled="disabled"></textarea>
+                            <textarea data-ng-model="job.log" id="log" class="form-control resize-vertical" rows="30" disabled="disabled"></textarea>
                             <p class="help-block">The log is displayed backwards, and only the recent entries are shown. Also, the log
                                 is refreshed periodically while the job is running, so you don't have to refresh the whole page.</p>
                         </div>
@@ -74,6 +74,11 @@
                                         <th>Last Updated At</th>
                                         <td id="updatedAt" data-ng-bind="job.updatedAt | date:'yyyy-MM-dd HH:mm:ss (Z)'"></td>
                                     </tr>
+                                    <tr>
+                                        <th>Job Parameters</th>
+                                        <td id="jobParameters"><pre>{{job.jobParametersIdented}}</pre></td>
+                                    </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>
