@@ -17,6 +17,12 @@ function ($scope, $state, $stateParams, $timeout,  JobExtendedFactory) {
 			'plotId' : $scope.job.plotId
 		});
 	};
+	
+	$scope.viewPlot = function(plotId) {
+	    $state.go('dashboard.plot.view', {
+	        'plotId' : plotId
+	    });
+	};
     
     // TODO: Handle 404
     var refresh = function() {

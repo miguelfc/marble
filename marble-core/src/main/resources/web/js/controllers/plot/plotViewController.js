@@ -11,6 +11,12 @@ angular.module('marbleCoreApp').controller(
 			$scope.viewTopic = function() {
 				goBack();
 			};
+			
+			$scope.viewJob = function() {
+			    $state.go('dashboard.job.view', {
+                    'jobId' : $scope.plot.jobId
+                });
+            };
 
 			// TODO: Handle 404
 			var refresh = function() {
