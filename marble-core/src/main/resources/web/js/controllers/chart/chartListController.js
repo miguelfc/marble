@@ -2,8 +2,8 @@
 angular
 		.module('marbleCoreApp')
 		.controller(
-				'PlotListCtrl',
-				function($scope, $compile, $state, PlotListSearchByTopicNameFactory) {
+				'ChartListCtrl',
+				function($scope, $compile, $state, ChartListSearchByTopicNameFactory) {
 
 					$scope.tableState = {};
 					$scope.tableState.name = ".*";
@@ -11,9 +11,9 @@ angular
 					$scope.tableState.page = "0";
 					$scope.tableState.sort = "";
 
-					$scope.view = function(plotId) {
-						$state.go('dashboard.plot.view', {
-							'plotId' : plotId
+					$scope.view = function(chartId) {
+						$state.go('dashboard.chart.view', {
+							'chartId' : chartId
 						});
 					};
 
@@ -96,14 +96,14 @@ angular
 					};
 
 					var updateTable = function($scope) {
-						var plotsList = PlotListSearchByTopicNameFactory.searchByName({
+						var chartsList = ChartListSearchByTopicNameFactory.searchByName({
 							name : $scope.tableState.name,
 							size : $scope.tableState.size,
 							page : $scope.tableState.page,
 							sort : $scope.tableState.sort,
 						});
-						plotsList.$promise.then(function(data) {
-							$scope.gridData = data._embedded.plots;
+						chartsList.$promise.then(function(data) {
+							$scope.gridData = data._embedded.charts;
 							$scope.gridOptions.totalItems = data.page.totalElements;
 						});
 					};

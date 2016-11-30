@@ -1,10 +1,10 @@
 'use strict';
 angular.module('marbleCoreApp').controller(
-		'PlotViewCtrl',
-		function($scope, $state, $stateParams, $timeout, PlotFactory) {
+		'ChartViewCtrl',
+		function($scope, $state, $stateParams, $timeout, ChartFactory) {
 			var goBack = function() {
 				$state.go('dashboard.topic.view', {
-					'topicName' : $scope.plot.topicName
+					'topicName' : $scope.chart.topicName
 				});
 			};
 
@@ -14,32 +14,32 @@ angular.module('marbleCoreApp').controller(
 			
 			$scope.viewJob = function() {
 			    $state.go('dashboard.job.view', {
-                    'jobId' : $scope.plot.jobId
+                    'jobId' : $scope.chart.jobId
                 });
             };
 
 			// TODO: Handle 404
 			var refresh = function() {
 			    console.log($stateParams);
-				PlotFactory.show({
-					id : $stateParams.plotId
+				ChartFactory.show({
+					id : $stateParams.chartId
 				}).$promise.then(function(data) {
-					$scope.plot = data;
-					console.log($scope.plot.data.rows);
-					 for (var i in $scope.plot.data.rows) {
-						 //console.log($scope.plot.data.rows[i].c[0].v);
-						 $scope.plot.data.rows[i].c[0].v = new Date($scope.plot.data.rows[i].c[0].v);
+					$scope.chart = data;
+					console.log($scope.chart.data.rows);
+					 for (var i in $scope.chart.data.rows) {
+						 //console.log($scope.chart.data.rows[i].c[0].v);
+						 $scope.chart.data.rows[i].c[0].v = new Date($scope.chart.data.rows[i].c[0].v);
 						  }
 					$scope.updateDate = new Date();
 					
 					// Google Chart
 					$scope.chartObject = {};
 				    
-				    $scope.chartObject.type = $scope.plot.type;
+				    $scope.chartObject.type = $scope.chart.type;
 				    
-				    $scope.chartObject.data = $scope.plot.data;
+				    $scope.chartObject.data = $scope.chart.data;
 				    
-				    $scope.chartObject.options = $scope.plot.options;
+				    $scope.chartObject.options = $scope.chart.options;
 				    
 				}, function(error) {
 					// TODO Handle Error 404

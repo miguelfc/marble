@@ -1,9 +1,7 @@
-package org.marble.commons.domain.model;
+package org.marble.model.model;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.marble.model.model.JobParameters;
 
 public class ProcessedPostStep {
     private String inputText;

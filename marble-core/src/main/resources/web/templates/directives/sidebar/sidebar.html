@@ -6,18 +6,16 @@
                 <a ui-sref="dashboard.home"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
             </li>
             <li ui-sref-active="active">
-
                 <a ui-sref="dashboard.topic.list"><i class="fa fa-tags fa-fw"></i> Topics</a>
-
+            </li>
+            <li ui-sref-active="active">
+                <a ui-sref="dashboard.chart.list"><i class="fa fa-bar-chart-o fa-fw"></i> Charts</a>
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.post.list"><i class="fa fa-twitter fa-fw"></i> Posts</a>
             </li>
             <li ui-sref-active="active">
                 <a ui-sref="dashboard.job.list"><i class="fa fa-briefcase fa-fw"></i> Jobs</a>
-            </li>
-            <li ui-sref-active="active">
-                <a ui-sref="dashboard.plot.list"><i class="fa fa-bar-chart-o fa-fw"></i> Plots</a>
             </li>
             <li ng-class="{active: collapseVar==1}">{{dropDown}}
                 <a href="" ng-click="check(1)"><i class="fa fa-cogs fa-fw"></i> Settings<span

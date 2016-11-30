@@ -3,17 +3,17 @@ package org.marble.model.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Chart;
 
 public class PlotterOutput {
-    private List<Plot> charts = new ArrayList<>();
+    private List<Chart> charts = new ArrayList<>();
     private String notes;
 
-    public List<Plot> getCharts() {
+    public List<Chart> getCharts() {
         return charts;
     }
 
-    public void setCharts(List<Plot> charts) {
+    public void setCharts(List<Chart> charts) {
         this.charts = charts;
     }
 

@@ -69,9 +69,6 @@ public class DatastoreServiceImpl implements DatastoreService {
         Document document = entityClass.getAnnotation(Document.class);
         DBCollection collection = mongoOperations.getCollection(document.collection());
         BasicDBObject searchQuery = new BasicDBObject();
-        for (java.util.Map.Entry<String, Object> entry : queryParameters.entrySet()) {
-            log.debug("MFC query: " + entry.getKey() + ":"+ entry.getValue());
-        }
         searchQuery.putAll(queryParameters);
         DBCursor cursor = collection.find(searchQuery);
         return cursor;

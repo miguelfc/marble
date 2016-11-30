@@ -12,15 +12,15 @@ function ($scope, $state, $stateParams, $timeout,  JobExtendedFactory) {
     	goBack();
     };
     
-    $scope.viewPlot = function() {
-		$state.go('dashboard.plot.view', {
-			'plotId' : $scope.job.plotId
+    $scope.viewChart = function() {
+		$state.go('dashboard.chart.view', {
+			'chartId' : $scope.job.chartId
 		});
 	};
 	
-	$scope.viewPlot = function(plotId) {
-	    $state.go('dashboard.plot.view', {
-	        'plotId' : plotId
+	$scope.viewChart = function(chartId) {
+	    $state.go('dashboard.chart.view', {
+	        'chartId' : chartId
 	    });
 	};
     

@@ -11,7 +11,7 @@ import org.marble.commons.domain.repository.TwitterApiKeyRepository;
 import org.marble.commons.domain.model.GeneralProperty;
 import org.marble.commons.domain.model.TwitterApiKey;
 import org.marble.commons.exception.InvalidPlotException;
-import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Chart;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
 import org.apache.commons.lang.math.RandomUtils;
@@ -124,7 +124,7 @@ public class ResetServiceImpl implements ResetService {
         log.info("Running \"The Special\"...");
 
         log.info("Creating plot...");
-        Plot plot = new Plot();
+        Chart plot = new Chart();
         plot.setName("My_Plot_" + RandomUtils.nextInt());
         Map<String, Object> map = new HashMap<>();
         map.put("key1", "value1");
