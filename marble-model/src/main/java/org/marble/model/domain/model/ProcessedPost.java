@@ -1,4 +1,4 @@
-package org.marble.commons.domain.model;
+package org.marble.model.domain.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.marble.model.domain.model.Post;
+import org.marble.model.model.ProcessedPostStep;
 import org.marble.util.LongSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

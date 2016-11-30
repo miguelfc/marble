@@ -3,9 +3,9 @@ package org.marble.commons.service;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.marble.commons.domain.repository.PlotRepository;
+import org.marble.commons.domain.repository.ChartRepository;
 import org.marble.commons.exception.InvalidPlotException;
-import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +16,11 @@ public class PlotServiceImpl implements PlotService {
     // LoggerFactory.getLogger(PlotServiceImpl.class);
 
     @Autowired
-    PlotRepository plotRepository;
+    ChartRepository plotRepository;
 
     @Override
-    public Plot findOne(BigInteger id) throws InvalidPlotException {
-        Plot plot = plotRepository.findOne(id);
+    public Chart findOne(BigInteger id) throws InvalidPlotException {
+        Chart plot = plotRepository.findOne(id);
         if (plot == null) {
             throw new InvalidPlotException();
         }
@@ -28,7 +28,7 @@ public class PlotServiceImpl implements PlotService {
     }
 
     @Override
-    public Plot save(Plot plot) throws InvalidPlotException {
+    public Chart save(Chart plot) throws InvalidPlotException {
         plot = plotRepository.save(plot);
         if (plot == null) {
             throw new InvalidPlotException();

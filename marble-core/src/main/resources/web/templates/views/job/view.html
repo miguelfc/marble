@@ -95,13 +95,13 @@
                         <div class="table-responsive">
                             <table class="table" id="actions-table">
                                 <tbody>
-                                    <tr data-ng-if="job.plots" data-ng-repeat="plot in job.plots">
-                                        <td><a data-ng-click="viewPlot(plot.id)" class="btn btn-default btn-block">
-                                                <i class="fa fa-bar-chart-o"></i> View {{plot.name}}
+                                    <tr data-ng-if="job.charts" data-ng-repeat="chart in job.charts">
+                                        <td><a data-ng-click="viewChart(chart.id)" class="btn btn-default btn-block">
+                                                <i class="fa fa-bar-chart-o"></i> View {{chart.name}}
                                         </a></td>
                                     </tr>
                                     <tr>
-                                        <td data-ng-if="job.plotId" ><a data-ng-click="viewPlot()" class="btn btn-default btn-block">
+                                        <td data-ng-if="job.chartId" ><a data-ng-click="viewPlot()" class="btn btn-default btn-block">
                                                 <i class="fa fa-bar-chart-o"></i> View Plot
                                         </a></td>
                                     </tr>

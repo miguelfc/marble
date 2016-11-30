@@ -49,7 +49,7 @@ public class Job implements Serializable {
 
     @DBRef
     @JsonIgnore
-    private List<Plot> plots;
+    private List<Chart> charts;
 
     public BigInteger getId() {
         return id;
@@ -124,18 +124,18 @@ public class Job implements Serializable {
         this.jobParameters = jobParameters;
     }
 
-    public List<Plot> getPlots() {
-        return plots;
+    public List<Chart> getCharts() {
+        return charts;
     }
 
-    public void setPlots(List<Plot> plots) {
-        this.plots = plots;
+    public void setCharts(List<Chart> charts) {
+        this.charts = charts;
     }
 
     @Override
     public String toString() {
         return "Job [id=" + id + ", type=" + type + ", status=" + status + ", log=" + log
                 + ", topic=" + topic + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", jobParameters="
-                + jobParameters + ", plot=" + plots + "]";
+                + jobParameters + ", chart=" + charts + "]";
     }
 }

@@ -11,11 +11,10 @@ angular.module('marbleCoreApp')
 				TopicExtractFactory, 
 				PostFactory, 
 				JobFactory,
-				PlotFactory,
+				ChartFactory,
 				TopicProcessFactory, 
-				TopicPlotFactory,
-				ProcessorsInfoFactory,
-				PlottersInfoFactory) {
+				TopicPlotFactory
+				) {
 	var goBack = function() {$state.go('dashboard.topic.list', {}, {reload: true})}; 
 
 	$scope.update = function () {
@@ -57,8 +56,8 @@ angular.module('marbleCoreApp')
 		$state.go('dashboard.job.listByTopic', {'topicName': $stateParams.topicName})
 	};
 	
-	$scope.plots = function () {
-		$state.go('dashboard.plot.listByTopic', {'topicName': $stateParams.topicName})
+	$scope.charts = function () {
+		$state.go('dashboard.chart.listByTopic', {'topicName': $stateParams.topicName})
 	};
 
 	$scope.posts = function () {
@@ -142,13 +141,13 @@ angular.module('marbleCoreApp')
 		});
 	};
 
-	$scope.deletePlotsByTopic = function () {	
-		var deleteResult = PlotFactory.delete({
+	$scope.deleteChartsByTopic = function () {	
+		var deleteResult = ChartFactory.delete({
 			topicName : $scope.topic.name
 		});
 		deleteResult.$promise.then(function(data) {
 			if (typeof data.message === 'undefined' || data.message == null) {
-				$scope.error = "An error ocurred while deleting the plots of this topic.";
+				$scope.error = "An error ocurred while deleting the charts of this topic.";
 				$scope.success = "";
 			}
 			else {
@@ -156,7 +155,7 @@ angular.module('marbleCoreApp')
 				$scope.success = data.message;
 			}
 		}, function(e) {
-			$scope.error = "An error ocurred while deleting the plots of this topic.";
+			$scope.error = "An error ocurred while deleting the charts of this topic.";
 			$scope.success = "";
 		});
 	};

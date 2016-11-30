@@ -68,13 +68,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasRole(ROLE_ADMIN)
                 .antMatchers(HttpMethod.GET, "/api/topics/**",
                         "/api/jobs/**",
-                        "/api/plots/**",
+                        "/api/charts/**",
                         "/api/posts/**",
                         "/api/processedPosts/**")
                 .hasRole(ROLE_GUEST)
                 .antMatchers("/api/topics/**",
                         "/api/jobs/**",
-                        "/api/plots/**",
+                        "/api/charts/**",
                         "/api/posts/**",
                         "/api/processedPosts/**")
                 .hasRole(ROLE_OPER)

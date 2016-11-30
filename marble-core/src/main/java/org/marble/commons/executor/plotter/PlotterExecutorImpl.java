@@ -16,7 +16,7 @@ import org.marble.commons.service.ProcessedPostService;
 import org.marble.commons.service.TopicService;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Topic;
-import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Chart;
 import org.marble.model.model.JobParameters;
 import org.marble.model.model.JobStatus;
 import org.marble.model.model.PlotterInput;
@@ -111,7 +111,7 @@ public class PlotterExecutorImpl implements PlotterExecutor {
 
         Gson gson = new GsonBuilder().create();
 
-        List<Plot> chartsList = new ArrayList<>();
+        List<Chart> chartsList = new ArrayList<>();
         
         // Loop for each processing stage
         for (JobParameters parameter : this.execution.getParameters()) {
@@ -151,8 +151,8 @@ public class PlotterExecutorImpl implements PlotterExecutor {
                             PlotterOutput output = null;
                             output = gson.fromJson(resp.getResponseBody(), PlotterOutput.class);
                             if (output != null) {
-                                List<Plot> temporaryChartsList = output.getCharts();
-                                for (Plot chart : temporaryChartsList) {
+                                List<Chart> temporaryChartsList = output.getCharts();
+                                for (Chart chart : temporaryChartsList) {
                                     chart.setJobId(execution.getId());
                                     chart.setTopic(topic);
                                     try {
@@ -193,7 +193,7 @@ public class PlotterExecutorImpl implements PlotterExecutor {
         log.info(msg);
         execution.appendLog(msg);
         // TODO
-        execution.setPlots(chartsList);
+        execution.setCharts(chartsList);
         execution.setStatus(JobStatus.Stopped);
 
         execution = executionService.save(execution);

@@ -18,12 +18,6 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
           $title: function() { return 'Home'; }
         }
       })
-      .state('dashboard.chart',{
-        templateUrl:'templates/views/chart.html',
-        url:'/chart',
-        data : {requireAdmin : true },
-        controller:'ChartCtrl'
-    })
       .state('dashboard.login',{
     	controller: 'LoginCtrl',
         templateUrl:'templates/views/pages/login.html',
@@ -176,36 +170,36 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Details for Job ' + $stateParams.jobId; }
         }
     })
-      .state('dashboard.plot',{
-    	url:'/plots',
+      .state('dashboard.chart',{
+    	url:'/charts',
     	data : {requireGuest : true },
-        templateUrl:'templates/views/plot/main.html'
+        templateUrl:'templates/views/chart/main.html'
     })
-      .state('dashboard.plot.list',{
-        templateUrl:'templates/views/plot/list.html',
+      .state('dashboard.chart.list',{
+        templateUrl:'templates/views/chart/list.html',
         url:'/list',
         data : {requireGuest : true },
-        controller:'PlotListCtrl',
+        controller:'ChartListCtrl',
         resolve: {
-            $title: function($stateParams) { return 'List of Plots'; }
+            $title: function($stateParams) { return 'List of Charts'; }
         }
     })
-      .state('dashboard.plot.listByTopic',{
-        templateUrl:'templates/views/plot/listByTopic.html',
+      .state('dashboard.chart.listByTopic',{
+        templateUrl:'templates/views/chart/listByTopic.html',
         url:'/list/{topicName}',
         data : {requireGuest : true },
-        controller:'PlotListByTopicCtrl',
+        controller:'ChartListByTopicCtrl',
         resolve: {
-            $title: function($stateParams) { return 'Plots for Topic ' + $stateParams.topicName; }
+            $title: function($stateParams) { return 'Charts for Topic ' + $stateParams.topicName; }
         }
     })
-      .state('dashboard.plot.view',{
-        templateUrl:'templates/views/plot/view.html',
-        url:'/view/{plotId}',
+      .state('dashboard.chart.view',{
+        templateUrl:'templates/views/chart/view.html',
+        url:'/view/{chartId}',
         data : {requireGuest : true },
-        controller:'PlotViewCtrl',
+        controller:'ChartViewCtrl',
         resolve: {
-            $title: function($stateParams) { return 'Details for Plot ' + $stateParams.plotId; }
+            $title: function($stateParams) { return 'Details for Chart ' + $stateParams.chartId; }
         }
     })
       .state('dashboard.post',{

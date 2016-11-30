@@ -31,9 +31,9 @@ public interface JobExtendedProjection {
     String getTopicName();
     
     
-    @Value("#{target.plots != null? target.plots : null}")
+    @Value("#{target.charts != null? target.charts : null}")
     @JsonSerialize(using = ChartsIdsSerializer.class)
-    List getPlots();
+    List getCharts();
     
 }
 

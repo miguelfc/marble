@@ -1,7 +1,6 @@
 package org.marble.plotter.simple.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,16 +11,14 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.ProcessedPost;
+import org.marble.model.domain.model.Chart;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
-import org.marble.model.model.Constants;
 import org.marble.model.model.PlotterInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.mongodb.DBCursor;
@@ -33,19 +30,38 @@ public class PlotterServiceImpl implements PlotterService {
     private static final Logger log = LoggerFactory.getLogger(PlotterServiceImpl.class);
 
     private static final String COLUMN_CHART = "ColumnChart";
+
+    // Unprocessed Types
     private static final String PLOT_ALL = "PlotAll";
     private static final String PLOT_CREATED = "PlotCreated";
     private static final String PLOT_RETWEETED = "PlotRetweeted";
     private static final String PLOT_CREATED_RETWEETED = "PlotCreatedRetweeted";
     private static final String PLOT_UNIQUE_USERS = "PlotUniqueUsers";
 
+    // Processed Types
+    private static final String PLOT_ALL_PROCESSED = "PlotAllProcessed";
+    private static final String PLOT_ORIGINALS_PROCESSED = "PlotOriginalsProcessed";
+    private static final String PLOT_RETWEETED_PROCESSED = "PlotRetweetedProcessed";
+    private static final String PLOT_AVERAGE_POLARITY = "PlotAveragePolarity";
+    private static final String PLOT_TOTAL_RATIO_POLARITY = "PlotTotalRatioPolarity";
+
+    private static final String ALL_POSITIVE = "AllPositive";
+    private static final String ALL_NEGATIVE = "AllNegative";
+    private static final String ORIGINALS_POSITIVE = "OriginalsPositive";
+    private static final String ORIGINALS_NEGATIVE = "OriginalsNegative";
+    private static final String RETWEETED_POSITIVE = "RetweetedPositive";
+    private static final String RETWEETED_NEGATIVE = "RetweetedNegative";
+    private static final String AVERAGE_POLARITY = "AveragePolarity";
+    private static final String RATIO = "Ratio";
+
+
     @Autowired
     DatastoreService datastoreService;
 
     @Override
-    public List<Plot> plot(PlotterInput input) {
+    public List<Chart> plot(PlotterInput input) {
 
-        List<Plot> plotList = new ArrayList<>();
+        List<Chart> plotList = new ArrayList<>();
         // Get parameters
         String topicName = input.getTopicName();
         String plotTitle = "My Plot";
@@ -96,7 +112,7 @@ public class PlotterServiceImpl implements PlotterService {
         log.info("Creating plot for topic <" + topicName + ">...");
 
         // Here starts the execution
-        Plot plot = new Plot();
+        Chart plot = new Chart();
         plot.setTopic(topic);
         plot.setName(plotTitle);
         plot.setDescription(plotDescription);
@@ -120,8 +136,38 @@ public class PlotterServiceImpl implements PlotterService {
             singleData.put("rows", mixAndMatch(originals, retweets));
         }
             break;
-        case PLOT_UNIQUE_USERS:
+        case PLOT_UNIQUE_USERS: {
             singleData.put("rows", getUsersRows(topic, plotType, stepSize, leftBoundary, rightBoundary));
+        }
+            break;
+        case PLOT_ALL_PROCESSED: {
+            List<Map<String, List<Map<String, Double>>>> positive = getPostsRows(topic, ALL_POSITIVE, stepSize, leftBoundary, rightBoundary);
+            List<Map<String, List<Map<String, Double>>>> negative = getPostsRows(topic, ALL_NEGATIVE, stepSize, leftBoundary, rightBoundary);
+
+            singleData.put("rows", mixAndMatch(positive, negative));
+        }
+            break;
+        case PLOT_ORIGINALS_PROCESSED: {
+            List<Map<String, List<Map<String, Double>>>> positive = getPostsRows(topic, ORIGINALS_POSITIVE, stepSize, leftBoundary, rightBoundary);
+            List<Map<String, List<Map<String, Double>>>> negative = getPostsRows(topic, ORIGINALS_NEGATIVE, stepSize, leftBoundary, rightBoundary);
+
+            singleData.put("rows", mixAndMatch(positive, negative));
+        }
+            break;
+        case PLOT_RETWEETED_PROCESSED: {
+            List<Map<String, List<Map<String, Double>>>> positive = getPostsRows(topic, RETWEETED_POSITIVE, stepSize, leftBoundary, rightBoundary);
+            List<Map<String, List<Map<String, Double>>>> negative = getPostsRows(topic, RETWEETED_NEGATIVE, stepSize, leftBoundary, rightBoundary);
+
+            singleData.put("rows", mixAndMatch(positive, negative));
+        }
+            break;
+        case PLOT_AVERAGE_POLARITY: {
+            singleData.put("rows", getCalculatedDataRows(topic, AVERAGE_POLARITY, stepSize, leftBoundary, rightBoundary));
+        }
+            break;
+        case PLOT_TOTAL_RATIO_POLARITY: {
+            singleData.put("rows", getCalculatedDataRows(topic, RATIO, stepSize, leftBoundary, rightBoundary));
+        }
             break;
         }
 
@@ -182,17 +228,79 @@ public class PlotterServiceImpl implements PlotterService {
             cols.add(col);
         }
             break;
-        case PLOT_UNIQUE_USERS:
+        case PLOT_UNIQUE_USERS: {
             col = new HashMap<>();
             col.put("id", "users");
             col.put("label", "Unique Users");
             col.put("type", "number");
             cols.add(col);
         }
+        case PLOT_ALL_PROCESSED: {
+            col = new HashMap<>();
+            col.put("id", "positive");
+            col.put("label", "Positive Posts");
+            col.put("type", "number");
+            cols.add(col);
+
+            col = new HashMap<>();
+            col.put("id", "negative");
+            col.put("label", "Negative Posts");
+            col.put("type", "number");
+            cols.add(col);
+        }
+            break;
+        case PLOT_ORIGINALS_PROCESSED: {
+            col = new HashMap<>();
+            col.put("id", "positive");
+            col.put("label", "Positive Original Posts");
+            col.put("type", "number");
+            cols.add(col);
+
+            col = new HashMap<>();
+            col.put("id", "negative");
+            col.put("label", "Negative Original Posts");
+            col.put("type", "number");
+            cols.add(col);
+        }
+            break;
+        case PLOT_RETWEETED_PROCESSED: {
+            col = new HashMap<>();
+            col.put("id", "positive");
+            col.put("label", "Positive Retweets");
+            col.put("type", "number");
+            cols.add(col);
+
+            col = new HashMap<>();
+            col.put("id", "negative");
+            col.put("label", "Negative Retweets");
+            col.put("type", "number");
+            cols.add(col);
+        }
+            break;
+        case PLOT_AVERAGE_POLARITY: {
+            col = new HashMap<>();
+            col.put("id", "originals");
+            col.put("label", "Average Polarity");
+            col.put("type", "number");
+            cols.add(col);
+        }
+            break;
+        case PLOT_TOTAL_RATIO_POLARITY: {
+            col = new HashMap<>();
+            col.put("id", "users");
+            col.put("label", "Positive Negative Ratio");
+            col.put("type", "number");
+            cols.add(col);
+        }
+        }
         return cols;
     }
 
     private List<Map<String, List<Map<String, Double>>>> getPostsRows(Topic topic, String plotType, Long stepSize, Long leftBoundary, Long rightBoundary) {
+        return this.getPostsRows(topic, plotType, stepSize, leftBoundary, rightBoundary, 0L, 0L);
+    }
+    
+    private List<Map<String, List<Map<String, Double>>>> getPostsRows(Topic topic, String plotType, Long stepSize, Long leftBoundary, Long rightBoundary, Long positiveBoundary, Long negativeBoundary) {
         // Get horizontal boundaries
         long leftDateBoundary = 0;
         long rightDateBoundary = 0;
@@ -207,22 +315,74 @@ public class PlotterServiceImpl implements PlotterService {
 
         Map<Long, Double> dataMap = new TreeMap<>();
 
+        @SuppressWarnings("rawtypes")
+        Class classToSearch = Post.class;
+        
         // Building the query according to the data type
         Map<String, Object> query = new HashMap<>();
         query.put("topicName", topic.getName());
         switch (plotType) {
         case PLOT_ALL:
+            classToSearch = Post.class;
             break;
         case PLOT_CREATED: {
             Map<String, Object> attribute = new HashMap<>();
             attribute.put("$exists", false);
             query.put("retweetedPost", attribute);
+            classToSearch = Post.class;
         }
             break;
         case PLOT_RETWEETED: {
             Map<String, Object> attribute = new HashMap<>();
             attribute.put("$exists", true);
             query.put("retweetedPost", attribute);
+            classToSearch = Post.class;
+        }
+            break;
+        case ALL_POSITIVE: {
+            Map<String, Object> attribute = new HashMap<>();
+            attribute.put("$gt", positiveBoundary);
+            query.put("polarity", attribute);
+            classToSearch = ProcessedPost.class;
+        }
+            break;
+        case ALL_NEGATIVE: {
+            Map<String, Object> attribute = new HashMap<>();
+            attribute.put("$lt", negativeBoundary);
+            query.put("polarity", attribute);
+            classToSearch = ProcessedPost.class;
+        }
+            break;
+        case ORIGINALS_POSITIVE: {
+            Map<String, Object> attribute = new HashMap<>();
+            attribute.put("$gt", positiveBoundary);
+            query.put("polarity", attribute);
+            query.put("isRetweeted", false);
+            classToSearch = ProcessedPost.class;
+        }
+            break;
+        case ORIGINALS_NEGATIVE: {
+            Map<String, Object> attribute = new HashMap<>();
+            attribute.put("$lt", negativeBoundary);
+            query.put("polarity", attribute);
+            query.put("isRetweeted", false);
+            classToSearch = ProcessedPost.class;
+        }
+            break;
+        case RETWEETED_POSITIVE: {
+            Map<String, Object> attribute = new HashMap<>();
+            attribute.put("$gt", positiveBoundary);
+            query.put("polarity", attribute);
+            query.put("isRetweeted", true);
+            classToSearch = ProcessedPost.class;
+        }
+            break;
+        case RETWEETED_NEGATIVE: {
+            Map<String, Object> attribute = new HashMap<>();
+            attribute.put("$lt", negativeBoundary);
+            query.put("polarity", attribute);
+            query.put("isRetweeted", true);
+            classToSearch = ProcessedPost.class;
         }
             break;
         default:
@@ -230,7 +390,8 @@ public class PlotterServiceImpl implements PlotterService {
             return null;
         }
 
-        DBCursor postsCursor = datastoreService.findCursorByQuery(query, Post.class);
+        @SuppressWarnings("unchecked")
+        DBCursor postsCursor = datastoreService.findCursorByQuery(query, classToSearch);
 
         while (postsCursor.hasNext()) {
             // Loop Variables
@@ -318,6 +479,95 @@ public class PlotterServiceImpl implements PlotterService {
         return finalData;
     }
 
+    private List<Map<String, List<Map<String, Double>>>> getCalculatedDataRows(Topic topic, String dataType, Long stepSize, Long leftBoundary, Long rightBoundary) {
+        return this.getCalculatedDataRows(topic, dataType, stepSize, leftBoundary, rightBoundary, 0L, 0L);
+    }
+    
+    private List<Map<String, List<Map<String, Double>>>> getCalculatedDataRows(Topic topic, String dataType, Long stepSize, Long leftBoundary, Long rightBoundary, Long positiveBoundary, Long negativeBoundary) {
+     // Get horizontal boundaries
+        long leftDateBoundary = 0;
+        long rightDateBoundary = 0;
+
+        try {
+            leftDateBoundary = getBoundary(leftBoundary, stepSize);
+            rightDateBoundary = getBoundary(rightBoundary, stepSize);
+        } catch (Exception e) {
+            // Ignoring
+            log.debug("No valid date boundaries were found for this topic.", e);
+        }
+        Map<Long, List<Double>> auxiliarDataMap = new HashMap<>();
+
+        // Building the query according to the data type
+        Map<String, Object> query = new HashMap<>();
+        query.put("topicName", topic.getName());
+        switch (dataType) {
+        case AVERAGE_POLARITY:
+        case RATIO:
+            break;
+        default:
+            // Should never occur
+            return null;
+        }
+
+        DBCursor postsCursor = datastoreService.findCursorByQuery(query, ProcessedPost.class);
+
+        while (postsCursor.hasNext()) {
+            // Loop Variables
+            Long timeStampSlot;
+
+            DBObject rawPost = postsCursor.next();
+            ProcessedPost post = datastoreService.getConverter().read(ProcessedPost.class, rawPost);
+
+            Date createdAt = post.getCreatedAt();
+            timeStampSlot = (long) Math.floor(createdAt.getTime() / stepSize);
+
+            // Check if date is within boundaries
+            if ((leftDateBoundary == 0 || timeStampSlot > leftDateBoundary)
+                    && (rightDateBoundary == 0 || timeStampSlot < rightDateBoundary)) {
+                // Check date slot and creating it if needed for the first map
+                if (!auxiliarDataMap.containsKey(timeStampSlot)) {
+                    auxiliarDataMap.put(timeStampSlot, new ArrayList<Double>());
+                }
+                auxiliarDataMap.get(timeStampSlot).add(post.getPolarity());
+            }
+        }
+
+        Map<Long, Double> dataMap = new HashMap<>();
+        for (Entry<Long, List<Double>> entry : auxiliarDataMap.entrySet()) {
+            switch (dataType) {
+            case AVERAGE_POLARITY: {
+                double average = 0D;
+                for (double item : entry.getValue()) {
+                    average += item;
+                }
+                average = average / entry.getValue().size();
+                dataMap.put(entry.getKey(), average);
+            }
+                break;
+            case RATIO: {
+                double ratio = 0D;
+                for (double item : entry.getValue()) {
+                    if (item > positiveBoundary) {
+                        ratio++;
+                    } else if (item < negativeBoundary) {
+                        ratio--;
+                    }
+                }
+                ratio = ratio / entry.getValue().size();
+                dataMap.put(entry.getKey(), ratio);
+            }
+                break;
+            default:
+                return null;
+            }
+
+        }
+
+        // Ready to ship...
+        List<Map<String, List<Map<String, Double>>>> finalData = convertAndSortDataMap(dataMap, stepSize);
+        return finalData;
+    }
+    
     private static List<Map<String, List<Map<String, Double>>>> mixAndMatch(
             List<Map<String, List<Map<String, Double>>>> firstSet,
             List<Map<String, List<Map<String, Double>>>> secondSet) {

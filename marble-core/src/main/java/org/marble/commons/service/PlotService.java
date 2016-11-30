@@ -4,13 +4,13 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.marble.commons.exception.InvalidPlotException;
-import org.marble.model.domain.model.Plot;
+import org.marble.model.domain.model.Chart;
 
 public interface PlotService {
 
-    public Plot save(Plot plot) throws InvalidPlotException;
+    public Chart save(Chart plot) throws InvalidPlotException;
 
-    public Plot findOne(BigInteger id) throws InvalidPlotException;
+    public Chart findOne(BigInteger id) throws InvalidPlotException;
     
     public Long deleteByTopicName(String topicName);
 

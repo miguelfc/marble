@@ -20,9 +20,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mongodb.BasicDBObject;
 
-@Document(collection = "plots")
+@Document(collection = "charts")
 @JsonIgnoreProperties({ "topic" })
-public class Plot implements Serializable {
+public class Chart implements Serializable {
 
     private static final long serialVersionUID = 6936532299491147949L;
 
