@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.marble.commons.domain.repository.PostRepository;
 import org.marble.commons.exception.InvalidPostException;
+import org.marble.commons.model.RestResult;
 import org.marble.model.domain.model.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,7 +53,7 @@ public class PostServiceImpl implements PostService {
         postDao.delete(id);
         return;
     }
-    
+
     @Override
     public Long deleteByTopicName(String topicName) {
         return postDao.deleteByTopicName(topicName);
@@ -59,6 +62,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public Long count() {
         return postDao.count();
+    }
+
+    @Override
+    public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException {
+        Post post = this.findOne(postId);
+        post.addPolarityTag(user, polarity);
+        this.save(post);
     }
 
 }

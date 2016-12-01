@@ -1,8 +1,6 @@
 package org.marble.processor.stanford.config;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.annotation.MultipartConfig;
-
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.wadl.internal.WadlResource;
@@ -45,13 +43,13 @@ public class JerseyConfig extends ResourceConfig {
         this.register(SwaggerSerializers.class);
 
         BeanConfig config = new BeanConfig();
-        config.setConfigId("marble-processor-stanford");
-        config.setTitle("Marble Stanford Processor");
+        config.setConfigId("marble-processor-simple");
+        config.setTitle("Marble Simple Processor");
         config.setVersion("v1");
         config.setContact("Miguel Fernandes");
         config.setSchemes(new String[] { "http", "https" });
         config.setBasePath(this.apiPath);
-        config.setResourcePackage("org.marble.processor.stanford.controller");
+        config.setResourcePackage("org.marble.processor.simple.controller");
         config.setPrettyPrint(true);
         config.setScan(true);
     }

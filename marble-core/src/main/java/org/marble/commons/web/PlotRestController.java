@@ -1,7 +1,7 @@
 package org.marble.commons.web;
 
 import org.marble.commons.model.RestResult;
-import org.marble.commons.service.PlotService;
+import org.marble.commons.service.ChartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class PlotRestController {
     private static final Logger log = LoggerFactory.getLogger(PlotRestController.class);
 
     @Autowired
-    PlotService plotService;
+    ChartService plotService;
 
     @RequestMapping(value = "/plots", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<RestResult> deleteByTopicName(@RequestParam(value = "topicName") String topicName) {

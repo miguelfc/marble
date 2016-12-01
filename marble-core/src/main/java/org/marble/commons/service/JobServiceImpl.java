@@ -36,7 +36,7 @@ public class JobServiceImpl implements JobService {
     TopicService topicService;
 
     @Autowired
-    PlotService plotService;
+    ChartService plotService;
 
     @Autowired
     ProcessorExecutor processorExecutor;

@@ -11,7 +11,7 @@ import org.asynchttpclient.Response;
 import org.marble.commons.exception.InvalidExecutionException;
 import org.marble.commons.service.DatastoreService;
 import org.marble.commons.service.JobService;
-import org.marble.commons.service.PlotService;
+import org.marble.commons.service.ChartService;
 import org.marble.commons.service.ProcessedPostService;
 import org.marble.commons.service.TopicService;
 import org.marble.model.domain.model.Job;
@@ -51,7 +51,7 @@ public class PlotterExecutorImpl implements PlotterExecutor {
     TopicService topicService;
 
     @Autowired
-    PlotService plotService;
+    ChartService plotService;
     
     @Autowired
     DatastoreService datastoreService;

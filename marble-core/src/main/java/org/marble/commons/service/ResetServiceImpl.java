@@ -10,7 +10,7 @@ import org.marble.commons.domain.repository.TopicRepository;
 import org.marble.commons.domain.repository.TwitterApiKeyRepository;
 import org.marble.commons.domain.model.GeneralProperty;
 import org.marble.commons.domain.model.TwitterApiKey;
-import org.marble.commons.exception.InvalidPlotException;
+import org.marble.commons.exception.InvalidChartException;
 import org.marble.model.domain.model.Chart;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
@@ -36,13 +36,10 @@ public class ResetServiceImpl implements ResetService {
     TopicRepository topicDao;
     @Autowired
     JobRepository executionDao;
-
-    @Autowired
-    SenticNetService senticNetService;
     @Autowired
     DatastoreService datastoreService;
     @Autowired
-    PlotService plotService;
+    ChartService plotService;
 
     @Autowired
     private TaskExecutor taskExecutor;
@@ -216,14 +213,9 @@ public class ResetServiceImpl implements ResetService {
 
         try {
             plotService.save(plot);
-        } catch (InvalidPlotException e) {
+        } catch (InvalidChartException e) {
             log.error("Couldn't create the plot.");
         }
-
-        Float pol = senticNetService.getPolarity("wonderment");
-        log.info("Wonderment: <" + pol + ">");
-        pol = senticNetService.getPolarity("asdasdsa");
-        log.info("Wonderment: <" + pol + ">");
 
         List<Post> posts = datastoreService.findByTopicId("test", Post.class);
         log.info("Posts count is <" + posts.size() + ">");

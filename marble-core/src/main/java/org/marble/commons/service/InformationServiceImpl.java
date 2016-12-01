@@ -16,7 +16,7 @@ public class InformationServiceImpl implements InformationService {
     @Autowired
     JobService executionService;
     @Autowired
-    PlotService plotService;
+    ChartService chartService;
     @Autowired
     PostService postService;
 
@@ -25,7 +25,7 @@ public class InformationServiceImpl implements InformationService {
         HomeInformation homeInformation = new HomeInformation();
         homeInformation.setTopics(topicService.count());
         homeInformation.setExecutions(executionService.count());
-        homeInformation.setPlots(plotService.count());
+        homeInformation.setCharts(chartService.count());
         homeInformation.setPosts(postService.count());
         return homeInformation;
     }
