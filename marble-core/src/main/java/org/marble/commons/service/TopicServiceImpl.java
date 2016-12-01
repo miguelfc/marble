@@ -31,7 +31,7 @@ public class TopicServiceImpl implements TopicService {
     JobService jobService;
 
     @Autowired
-    PlotService plotService;
+    ChartService plotService;
 
     @Autowired
     PostService postService;

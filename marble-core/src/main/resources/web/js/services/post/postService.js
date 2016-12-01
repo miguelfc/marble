@@ -3,7 +3,8 @@ angular.module('marbleCoreApp')
 .factory('PostFactory', ['$resource', 'getInterceptor', PostFactory])
 .factory('PostWithTopicFactory', ['$resource', 'getInterceptor',PostWithTopicFactory])
 .factory('PostsSearchByTopicNameFactory', ['$resource', 'getInterceptor', PostsSearchByTopicNameFactory])
-.factory('PostsByTopicNameFactory', ['$resource', 'getInterceptor', PostsByTopicNameFactory]);
+.factory('PostsByTopicNameFactory', ['$resource', 'getInterceptor', PostsByTopicNameFactory])
+.factory('PostTagFactory', ['$resource', 'getInterceptor', PostTagFactory]);
 
 function PostsFactory($resource, getInterceptor) {
     return $resource('/api/posts', {}, {
@@ -36,5 +37,11 @@ function PostsByTopicNameFactory($resource, getInterceptor) {
 function PostsSearchByTopicNameFactory($resource, getInterceptor) {
     return $resource('/api/posts/search/findByTopicNameMatches', {}, {
     	searchByName: { method: 'GET', params: {name: '@name', projection: 'postWithTopic'}, isArray: false, interceptor: getInterceptor}
+    })
+};
+
+function PostTagFactory($resource, getInterceptor) {
+    return $resource('/api/posts/tag/:id', {id: '@id'}, {
+        tag: { method: 'PATCH' , params: {user: '@user', polarity: '@polarity'}, interceptor: getInterceptor}
     })
 };

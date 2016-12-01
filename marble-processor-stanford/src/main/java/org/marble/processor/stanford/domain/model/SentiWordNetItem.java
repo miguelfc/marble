@@ -1,4 +1,4 @@
-package org.marble.commons.domain.model;
+package org.marble.processor.stanford.domain.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

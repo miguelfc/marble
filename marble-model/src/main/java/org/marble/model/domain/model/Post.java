@@ -1,6 +1,8 @@
 package org.marble.model.domain.model;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.marble.model.model.SymplifiedProcessingItem;
 import org.marble.util.LongSerializer;
@@ -8,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import twitter4j.GeoLocation;
@@ -58,6 +61,9 @@ public class Post {
     private Scopes scopes;
     private User user = null;
     private String[] withheldInCountries = null;
+    
+    @JsonIgnoreProperties(allowGetters = true)
+    private Map<String, Integer> polarityTags = new LinkedHashMap<>();
 
     public Post() {
 
@@ -373,4 +379,16 @@ public class Post {
         return symplifiedProcessingItem;
     }
 
+    public Map<String, Integer> getPolarityTags() {
+        return polarityTags;
+    }
+
+    
+    public void setPolarityTags(Map<String, Integer> polarityTags) {
+        this.polarityTags = polarityTags;
+    }
+
+    public void addPolarityTag(String user, Integer polarity) {
+        this.polarityTags.put(user, polarity);
+    }
 }

@@ -3,8 +3,6 @@ package org.marble.commons.service;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
@@ -16,7 +14,6 @@ import org.xml.sax.SAXException;
 
 import com.opencsv.CSVReader;
 
-import org.marble.commons.domain.model.SenticItem;
 import org.marble.commons.domain.model.ValidationItem;
 import org.marble.util.MarbleUtil;
 

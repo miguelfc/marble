@@ -10,14 +10,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableDiscoveryClient
-public class ProcessorServer {
+public class Server {
 
-    protected Logger logger = Logger.getLogger(ProcessorServer.class.getName());
+    protected Logger logger = Logger.getLogger(Server.class.getName());
     
 	public static void main(String[] args) {
-		// Tell server to look for registration.properties or registration.yml
-		System.setProperty("spring.config.name", "processor-stanford");
-
-		SpringApplication.run(ProcessorServer.class, args);
+		SpringApplication.run(Server.class, args);
 	}
 }

@@ -1,9 +1,9 @@
-package org.marble.commons.service;
+package org.marble.processor.stanford.service;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
-import org.marble.commons.domain.model.SentiWordNetItem;
-import org.marble.util.MarbleUtil;
+import org.marble.processor.stanford.domain.model.SentiWordNetItem;
 
 @Service
 public class SentiWordNetServiceImpl implements SentiWordNetService {
@@ -30,16 +28,8 @@ public class SentiWordNetServiceImpl implements SentiWordNetService {
 
     Map<String, Double> data = new HashMap<>();
 
-    @Override
-    public void insertDataFromFile(MultipartFile file) throws IllegalStateException, IOException, SAXException,
-            ParserConfigurationException {
-        log.info("Processing uploaded sentiWordNet information from file <" + file.getOriginalFilename() + ">");
-        insertDataFromFile(MarbleUtil.multipartToFile(file));
-    }
-
-    public void insertDataFromFile(File file) throws SAXException, IOException, ParserConfigurationException {
-
-        File csvFile = file;
+    public void insertDataFromFile(InputStream inputStream) throws SAXException, IOException, ParserConfigurationException {
+        log.info("Processing uploaded SentiWordNet information from file...");
 
         datastoreService.removeCollection(SentiWordNetItem.class);
 
@@ -50,7 +40,7 @@ public class SentiWordNetServiceImpl implements SentiWordNetService {
         BufferedReader csv = null;
         Integer counter = 0;
         try {
-            csv = new BufferedReader(new FileReader(csvFile));
+            csv = new BufferedReader(new InputStreamReader(inputStream));
             int lineNumber = 0;
 
             String line;

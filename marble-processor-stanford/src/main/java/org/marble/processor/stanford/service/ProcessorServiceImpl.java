@@ -1,14 +1,33 @@
 package org.marble.processor.stanford.service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import org.marble.processor.stanford.exception.InvalidMessageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.trees.GrammaticalStructure;
+import edu.stanford.nlp.trees.GrammaticalStructureFactory;
+import edu.stanford.nlp.trees.PennTreebankLanguagePack;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
+import edu.stanford.nlp.trees.TreebankLanguagePack;
+import edu.stanford.nlp.trees.TypedDependency;
+import edu.stanford.nlp.util.CoreMap;
 
 @Service
 public class ProcessorServiceImpl implements ProcessorService {
@@ -16,107 +35,152 @@ public class ProcessorServiceImpl implements ProcessorService {
     private static final Logger log = LoggerFactory.getLogger(ProcessorServiceImpl.class);
 
     public static final String IGNORE_NEUTRAL_SENTENCES = "ignoreNeutralSentences";
+    public static final String RELATED_WORDS = "relatedWords";
 
     @Autowired
-    SenticNetService senticNetService;
+    SentiWordNetService sentiWordNetService;
 
+    @SuppressWarnings("unchecked")
     @Override
-    public double processMessage(String message, Map<String, Object> options) {
+    public double processMessage(String message, Map<String, Object> options) throws InvalidMessageException {
 
-        Boolean ignoreNeutralSentences = Boolean.FALSE;
+        Properties props = new Properties();
+
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+        List<String> relatedWords = new ArrayList<>();
         // Extract options
         if (options != null) {
-            if (options.containsKey(IGNORE_NEUTRAL_SENTENCES)) {
+            if (options.containsKey(RELATED_WORDS)) {
                 try {
-                    ignoreNeutralSentences = Boolean.parseBoolean((String) options.get(IGNORE_NEUTRAL_SENTENCES));
+                    relatedWords = ((List<String>) options.get(RELATED_WORDS));
                 } catch (Exception e) {
-                    log.warn("Invalid value for " + IGNORE_NEUTRAL_SENTENCES + " property.", e);
+                    log.warn("Invalid value for " + RELATED_WORDS + " property.", e);
                 }
             }
         }
 
         String processedText = message;
 
-        String[] sentences = processedText.split("[\\.,;!?]");
+        // create an empty Annotation just with the given text
+        Annotation document = new Annotation(processedText);
 
-        log.trace("Splitted text: " + Arrays.toString(sentences));
+        // run all Annotators on this text
+        pipeline.annotate(document);
 
-        double polarity = 0D;
-        Integer count = 0;
-        for (String sentence : sentences) {
-            // Split sentences into words
-            // TODO Do this using ntlk alternative (PoS tool)
-            String words[] = sentence.trim().split(" ");
-            Float subpolarity = this.calculateSentencePolarity(words);
-            if (subpolarity != 0) {
-                count++;
-            }
-            polarity += subpolarity;
-            log.debug("Result for sentence <" + sentence + "> :" + subpolarity + ";");
-        }
-        if (ignoreNeutralSentences) {
-            if (count == 0) {
-                return 0;
+        // these are all the sentences in this document
+        // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
+        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+
+        TreebankLanguagePack tlp = new PennTreebankLanguagePack();
+        GrammaticalStructureFactory grammaticalStructureFactory = tlp.grammaticalStructureFactory();
+
+        // Flag to check if post is allowed
+        Boolean isAllowed = Boolean.FALSE;
+        Double polarity = 0D;
+
+        for (CoreMap sentence : sentences) {
+            log.trace("Sentence:   " + sentence);
+
+            if (relatedWords.size() == 0) {
+                isAllowed = Boolean.TRUE;
+                break;
             } else {
-                return polarity / count;
+                // this is the parse tree of the current sentence
+                Tree tree = sentence.get(TreeAnnotation.class);
+                GrammaticalStructure structure = grammaticalStructureFactory.newGrammaticalStructure(tree);
+                Iterator<TypedDependency> iter = structure.typedDependenciesCollapsedTree().iterator();
+                while (iter.hasNext()) {
+                    TypedDependency typedDependency = iter.next();
+                    String dependency = typedDependency.reln().toString();
+                    if (dependency.matches("nsubj|amod|dobj")) {
+                        // log.error("<" + typedDependency.gov().originalText() + ">:<" + typedDependency.dep().originalText() + ">");
+                        if (relatedWords.size() == 0) {
+                            isAllowed = Boolean.TRUE;
+                            break;
+                        } else if (relatedWords.contains(typedDependency.gov().originalText()) || relatedWords.contains(typedDependency.dep().originalText())) {
+                            // log.error("Sentence Allowed: ");
+                            // log.error(typedDependency.gov().toString() + "\t->\t" + typedDependency.dep().toString() + "\t->\t" +
+                            // dependency);
+                            isAllowed = Boolean.TRUE;
+                            break;
+                        }
+                    }
+                }
             }
-        } else {
-            return polarity / sentences.length;
+
+            // In their paper, they make no distinction between sentences inside the tweet.
+            if (isAllowed) {
+                // We don't need to check anymore
+                break;
+            }
         }
+
+        if (isAllowed) {
+            List<ComplexWords> words = new LinkedList<>();
+            for (CoreMap sentence : sentences) {
+                log.trace("Allowed Sentence:   " + sentence);
+                // Get the associated POS tags
+                for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+                    // this is the text of the token
+                    String word = token.get(TextAnnotation.class);
+                    // this is the POS tag of the token
+                    String pos = token.get(PartOfSpeechAnnotation.class);
+                    String tag = this.mapPennTreebankTagToSentiWordNet(pos);
+                    if (tag != null) {
+                        words.add(new ComplexWords(word, tag));
+                    }
+                }
+            }
+            polarity = calculateSentencePolarity(words);
+
+        } else {
+            throw new InvalidMessageException("Message not allowed.");
+        }
+
+        return polarity;
     }
 
-    private Float calculateSentencePolarity(String words[]) {
+    public Double calculateSentencePolarity(List<ComplexWords> words) {
 
-        Float polarity = 0f;
+        Double polarity = 0D;
 
-        Integer j = -1;
-        for (Integer i = 0; i < words.length; i++) {
-            if (i <= j) {
-                continue;
-            }
-            j = Math.min(i + 3, words.length);
-            Float results = null;
-            String phrase = "";
-
-            if (i + 3 < words.length) {
-                phrase = words[i] + " " + words[i + 1] + " " + words[i + 2] + " " + words[i + 3];
-                results = senticNetService.getPolarity(phrase);
-                log.trace("Trying with four words: " + phrase);
-            }
-            if (results == null && (i + 2 < words.length)) {
-                j--;
-                phrase = words[i] + " " + words[i + 1] + " " + words[i + 2];
-                results = senticNetService.getPolarity(phrase);
-                log.trace("Trying with three words: " + phrase);
-            }
-            if (results == null && (i + 1 < words.length)) {
-                j--;
-                phrase = words[i] + " " + words[i + 1];
-                results = senticNetService.getPolarity(phrase);
-                log.trace("Trying with two words: " + phrase);
-            }
-            if (results == null) {
-                j--;
-                phrase = words[i];
-                results = senticNetService.getPolarity(phrase);
-                log.trace("Trying with one word: " + phrase);
-            }
-
-            if (results != null) {
-                // Added no/not modifier (TODO Expand lists of modifiers)
-                if (i > 0 && words[i - 1] != null && words[i - 1].matches("no[t]?")) {
-                    results = (-1) * results;
-                }
-
-                polarity += results;
-                log.trace("Result for this group: " + results);
-            } else {
-                log.trace("No results found for this group.");
+        for (ComplexWords word : words) {
+            Double wordPolarity = sentiWordNetService.getPolarity(word.word, word.pos);
+            if (wordPolarity != null) {
+                polarity += wordPolarity;
+                log.debug("Pol: <" + word.word + ">:<" + word.pos + "> --> " + wordPolarity);
             }
         }
 
         return polarity;
 
+    }
+
+    private String mapPennTreebankTagToSentiWordNet(String tag) {
+        String sentiWordNetTag = null;
+        if (tag.matches("VB|VBD|VBG|VBN|VBP|VBZ")) {
+            sentiWordNetTag = "v";
+        } else if (tag.matches("JJ|JJR|JJS")) {
+            sentiWordNetTag = "a";
+        } else if (tag.matches("NN|NNS|NNP|NNPS|PRP|PRP$|WP|WP$")) {
+            sentiWordNetTag = "n";
+        } else if (tag.matches("RB|RBR|RBS|WRB")) {
+            sentiWordNetTag = "r";
+        }
+        return sentiWordNetTag;
+    }
+
+    private class ComplexWords {
+        String word;
+        String pos;
+
+        public ComplexWords(String word, String pos) {
+            this.word = word;
+            this.pos = pos;
+        }
     }
 
 }

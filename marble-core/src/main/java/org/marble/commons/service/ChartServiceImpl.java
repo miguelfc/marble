@@ -4,51 +4,51 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.marble.commons.domain.repository.ChartRepository;
-import org.marble.commons.exception.InvalidPlotException;
+import org.marble.commons.exception.InvalidChartException;
 import org.marble.model.domain.model.Chart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlotServiceImpl implements PlotService {
+public class ChartServiceImpl implements ChartService {
 
     // private static final Logger log =
     // LoggerFactory.getLogger(PlotServiceImpl.class);
 
     @Autowired
-    ChartRepository plotRepository;
+    ChartRepository chartRepository;
 
     @Override
-    public Chart findOne(BigInteger id) throws InvalidPlotException {
-        Chart plot = plotRepository.findOne(id);
+    public Chart findOne(BigInteger id) throws InvalidChartException {
+        Chart plot = chartRepository.findOne(id);
         if (plot == null) {
-            throw new InvalidPlotException();
+            throw new InvalidChartException();
         }
         return plot;
     }
 
     @Override
-    public Chart save(Chart plot) throws InvalidPlotException {
-        plot = plotRepository.save(plot);
+    public Chart save(Chart plot) throws InvalidChartException {
+        plot = chartRepository.save(plot);
         if (plot == null) {
-            throw new InvalidPlotException();
+            throw new InvalidChartException();
         }
         return plot;
     }
 
     @Override
     public Long count() {
-        return plotRepository.count();
+        return chartRepository.count();
     }
 
     @Override
     public Long deleteByTopicName(String name) {
-        return plotRepository.deleteByTopic_name(name);
+        return chartRepository.deleteByTopic_name(name);
     }
 
     @Override
     public void delete(BigInteger id) {
-        plotRepository.delete(id);
+        chartRepository.delete(id);
         return;
     }
 

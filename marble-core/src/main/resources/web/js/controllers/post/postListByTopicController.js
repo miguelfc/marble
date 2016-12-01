@@ -1,7 +1,7 @@
 'use strict';
 angular.module('marbleCoreApp')
-.controller('PostListByTopicCtrl', ['$scope', '$compile', '$state', '$stateParams', 'PostsByTopicNameFactory',
-function ($scope, $compile, $state, $stateParams, PostsByTopicNameFactory) {
+.controller('PostListByTopicCtrl', ['$scope', '$compile', '$state', '$stateParams', 'PostsByTopicNameFactory', 'PostTagFactory', 'Auth',
+function ($scope, $compile, $state, $stateParams, PostsByTopicNameFactory, PostTagFactory, Auth) {
 	
 	$scope.tableState = {};
 	$scope.topicName = $stateParams.topicName;
@@ -21,6 +21,22 @@ function ($scope, $compile, $state, $stateParams, PostsByTopicNameFactory) {
 			'topicName' : $stateParams.topicName
 		});
 	};
+	
+	$scope.currentUser = "nobody";
+	if (Auth.user != null) {
+	    $scope.currentUser = Auth.user.name;
+	}
+	
+	$scope.tag = function(id, polarity) {
+	    var tagOperation = PostTagFactory.tag({id: id}, {
+	        user:  $scope.currentUser,
+	        polarity: polarity
+	    });
+	    
+	    tagOperation.$promise.then(function(data) {
+	        updateTable($scope);
+	    });
+	}
 
 	$scope.gridOptions = {
 		data : 'gridData',
@@ -48,7 +64,13 @@ function ($scope, $compile, $state, $stateParams, PostsByTopicNameFactory) {
 					name : 'actions',
 					displayName : 'Actions',
 					enableFiltering : false,
-					cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.view(row.entity.id)" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
+					cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.view(row.entity.id)" class="btn btn-default">'+
+					'<i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a> '+
+					
+					'<a data-ng-click="grid.appScope.tag(row.entity.id, 1)" class="btn btn-default" ng-class="{\'btn-success\': row.entity.polarityTags[grid.appScope.currentUser] === 1}" ng-disabled="row.entity.polarityTags[grid.appScope.currentUser] === 1"><i class="fa fa-smile-o"></i></a>'+
+					'<a data-ng-click="grid.appScope.tag(row.entity.id, 0)" class="btn btn-default" ng-class="{\'btn-warning\': row.entity.polarityTags[grid.appScope.currentUser] === 0}" ng-disabled="row.entity.polarityTags[grid.appScope.currentUser] === 0"><i class="fa fa-meh-o"></i></a>'+
+					'<a data-ng-click="grid.appScope.tag(row.entity.id, -1)" class="btn btn-default" ng-class="{\'btn-danger\': row.entity.polarityTags[grid.appScope.currentUser] === -1}" ng-disabled="row.entity.polarityTags[grid.appScope.currentUser] === -1"><i class="fa fa-frown-o"></i></a>'+
+					'</div>'
 				} ],
 		onRegisterApi : function(gridApi) {
 			$scope.gridApi = gridApi;

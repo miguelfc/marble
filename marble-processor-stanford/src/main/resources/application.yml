@@ -1,5 +1,5 @@
 server:
-  port: 9112
+  port: 8083
   session:
     timeout: 10800
 
@@ -12,7 +12,7 @@ spring:
     name: processor-stanford
   data:
     mongodb:
-      host: localhost
+      host: mongodb
       port: 27017
       database: marble-processor-stanford
   freemarker:
@@ -31,4 +31,4 @@ eureka:
      leaseExpirationDurationInSeconds: 10
   client:
     serviceUrl:
-      defaultZone: http://localhost:1111/eureka/
+      defaultZone: http://registry:1111/eureka/

@@ -19,4 +19,6 @@ public interface PostService {
 
     Long count();
 
+    public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException;
+
 }
