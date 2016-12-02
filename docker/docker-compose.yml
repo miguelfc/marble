@@ -38,14 +38,15 @@ services:
      - "mongodb:172.17.0.1"
     links:
      - registry
-#  preprocessor-simple:
-#    image: marble/marble-preprocessor-simple
-#    network_mode: "host"
-#    ports:
-#     - "8080:8101"
+     
+  processor-stanford:
+    image: marble/marble-processor-stanford
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    extra_hosts:
+     - "mongodb:172.17.0.1"
+    links:
+     - registry
 
-#  processor-simple:
-#    image: marble/marble-processor-simple
-#    network_mode: "host"
-#    ports:
-#     - "8080:8102"
