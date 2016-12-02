@@ -132,12 +132,6 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'Add a new Twitter API key' }
         }
     })
-      .state('dashboard.settings.corpus',{
-    	url:'/corpus',
-    	data : {requireAdmin : true },
-        templateUrl:'templates/views/settings/corpus/main.html',
-        controller:'CorpusCtrl'
-    })
       .state('dashboard.job',{
     	url:'/jobs',
     	data : {requireGuest : true },
