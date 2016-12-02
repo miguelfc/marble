@@ -14,7 +14,7 @@
         <module>marble-core</module>
         <module>marble-registry</module>
         <module>marble-processor-simple</module>
-        <!--<module>marble-processor-stanford</module>-->
+        <module>marble-processor-stanford</module>
         <module>marble-preprocessor-simple</module>
         <module>marble-plotter-simple</module>
     </modules>
