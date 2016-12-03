@@ -49,4 +49,15 @@ services:
      - "mongodb:172.17.0.1"
     links:
      - registry
+     
+  processor-simple:
+    image: marble/marble-plotter-simple
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    extra_hosts:
+     - "mongodb:172.17.0.1"
+    links:
+     - registry
 
