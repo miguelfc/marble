@@ -10,10 +10,13 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     htmlmin = require('gulp-htmlmin');
 
+var sass = require('gulp-sass');
+
 // TODO: Move the components folder to a temporary one
 var paths = {
     scripts: 'src/main/resources/web/js/**/*.*',
     styles: 'src/main/resources/web/less/**/*.*',
+    styles_sass: 'src/main/resources/web/sass/*.sass',
     images: 'src/main/resources/web/img/*.*',
     templates: 'src/main/resources/web/templates/**/*.html',
     index: 'src/main/resources/web/index.html',
@@ -76,7 +79,7 @@ gulp.task('copy-opensans_fonts', function() {
 /**
  * Handle custom files
  */
-gulp.task('build-custom', ['custom-images', 'custom-js', 'custom-less', 'custom-templates']);
+gulp.task('build-custom', ['custom-images', 'custom-js', 'custom-less', 'custom-sass', 'custom-templates']);
 
 gulp.task('custom-images', function() {
     return gulp.src(paths.images)
@@ -94,6 +97,12 @@ gulp.task('custom-less', function() {
     return gulp.src(paths.styles)
         .pipe(less())
         .pipe(gulp.dest('src/main/resources/static/css'));
+});
+
+gulp.task('custom-sass', function() {
+	return gulp.src(paths.styles_sass)
+	.pipe(sass().on('error', sass.logError))
+	.pipe(gulp.dest('src/main/resources/static/css'));
 });
 
 gulp.task('custom-templates', function() {
@@ -114,6 +123,7 @@ gulp.task('custom-bootstrap', function() {
 gulp.task('watch', function() {
     gulp.watch([paths.images], ['custom-images']);
     gulp.watch([paths.styles], ['custom-less']);
+    gulp.watch([paths.styles_sass], ['custom-sass']);
     gulp.watch([paths.scripts], ['custom-js']);
     gulp.watch([paths.templates], ['custom-templates']);
     gulp.watch([paths.index], ['usemin']);
