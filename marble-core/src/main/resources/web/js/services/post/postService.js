@@ -42,6 +42,7 @@ function PostsSearchByTopicNameFactory($resource, getInterceptor) {
 
 function PostTagFactory($resource, getInterceptor) {
     return $resource('/api/posts/tag/:id', {id: '@id'}, {
-        tag: { method: 'PATCH' , params: {user: '@user', polarity: '@polarity'}, interceptor: getInterceptor}
+        tag: { method: 'PATCH' , params: {user: '@user', polarity: '@polarity'}, interceptor: getInterceptor},
+        untag: { method: 'PATCH' , params: {user: '@user'}, interceptor: getInterceptor}
     })
 };

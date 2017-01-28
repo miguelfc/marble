@@ -391,4 +391,8 @@ public class Post {
     public void addPolarityTag(String user, Integer polarity) {
         this.polarityTags.put(user, polarity);
     }
+    
+    public void removePolarityTag(String user) {
+        this.polarityTags.remove(user);
+    }
 }
