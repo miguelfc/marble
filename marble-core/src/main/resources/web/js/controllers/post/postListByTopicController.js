@@ -37,6 +37,16 @@ function ($scope, $compile, $state, $stateParams, PostsByTopicNameFactory, PostT
 	        updateTable($scope);
 	    });
 	}
+	
+	$scope.untag = function(id) {
+	    var untagOperation = PostTagFactory.untag({id: id}, {
+	        user:  $scope.currentUser
+	    });
+	    
+	    untagOperation.$promise.then(function(data) {
+	        updateTable($scope);
+	    });
+	}
 
 	$scope.gridOptions = {
 		data : 'gridData',
@@ -70,6 +80,7 @@ function ($scope, $compile, $state, $stateParams, PostsByTopicNameFactory, PostT
 					'<a data-ng-click="grid.appScope.tag(row.entity.id, 1)" class="btn btn-default" ng-class="{\'btn-success\': row.entity.polarityTags[grid.appScope.currentUser] === 1}" ng-disabled="row.entity.polarityTags[grid.appScope.currentUser] === 1"><i class="fa fa-smile-o"></i></a>'+
 					'<a data-ng-click="grid.appScope.tag(row.entity.id, 0)" class="btn btn-default" ng-class="{\'btn-warning\': row.entity.polarityTags[grid.appScope.currentUser] === 0}" ng-disabled="row.entity.polarityTags[grid.appScope.currentUser] === 0"><i class="fa fa-meh-o"></i></a>'+
 					'<a data-ng-click="grid.appScope.tag(row.entity.id, -1)" class="btn btn-default" ng-class="{\'btn-danger\': row.entity.polarityTags[grid.appScope.currentUser] === -1}" ng-disabled="row.entity.polarityTags[grid.appScope.currentUser] === -1"><i class="fa fa-frown-o"></i></a>'+
+					'<a data-ng-click="grid.appScope.untag(row.entity.id)" class="btn btn-default"><i class="fa fa-eraser"></i></a>'+
 					'</div>'
 				} ],
 		onRegisterApi : function(gridApi) {

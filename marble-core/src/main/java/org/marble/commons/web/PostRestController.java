@@ -48,7 +48,7 @@ public class PostRestController {
         log.debug("Tagging post <" + id + "> by user <" + tagRequest.getUser() + ">.");
         RestResult restResult = new RestResult();
 
-        if (tagRequest.getUser() == null || tagRequest.getPolarity() == null) {
+        if (tagRequest.getUser() == null) {
             restResult.setMessage("Invalid request.");
             return new ResponseEntity<RestResult>(restResult, HttpStatus.INTERNAL_SERVER_ERROR);
         }

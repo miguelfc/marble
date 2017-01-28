@@ -67,7 +67,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException {
         Post post = this.findOne(postId);
-        post.addPolarityTag(user, polarity);
+        if (polarity != null) {
+            post.addPolarityTag(user, polarity);
+        }
+        else {
+            post.removePolarityTag(user);
+        }
         this.save(post);
     }
 
