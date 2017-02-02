@@ -18,6 +18,8 @@ public interface TopicService {
 
     Long count();
 
-	TopicStats getStats(String name) throws InvalidTopicException;	
+	TopicStats getStats(String name) throws InvalidTopicException;
+
+    void cleanOldStreamingTopics();	
 
 }

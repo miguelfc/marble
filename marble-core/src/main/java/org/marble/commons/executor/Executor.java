@@ -7,5 +7,5 @@ public interface Executor extends Runnable {
     @Override
     public void run();
 
-    void setExecution(Job execution);
+    void setJob(Job execution);
 }

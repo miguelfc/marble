@@ -4,6 +4,7 @@ angular.module('marbleCoreApp')
 .factory('TopicFactory', ['$resource', 'getInterceptor', TopicFactory])
 .factory('TopicInfoFactory', ['$resource', 'getInterceptor', TopicInfoFactory])
 .factory('TopicExtractFactory', ['$resource', 'getInterceptor', TopicExtractFactory])
+.factory('TopicStreamFactory', ['$resource', 'getInterceptor', TopicStreamFactory])
 .factory('TopicProcessFactory', ['$resource', 'getInterceptor', TopicProcessFactory])
 .factory('TopicPlotFactory', ['$resource', 'getInterceptor', TopicPlotFactory]);
 
@@ -38,6 +39,13 @@ function TopicExtractFactory($resource, getInterceptor) {
     return $resource('/api/topics/:name/extract', {}, {
         extract: { method: 'POST', params: {name: '@name'}, interceptor: getInterceptor}
     })
+};
+
+function TopicStreamFactory($resource, getInterceptor) {
+	return $resource('/api/topics/:name/stream', {}, {
+		stream: { method: 'POST', params: {name: '@name'}, interceptor: getInterceptor},
+		stopStream: { method: 'DELETE', params: {name: '@name'}, interceptor: getInterceptor}
+	})
 };
 
 function TopicProcessFactory($resource, getInterceptor) {

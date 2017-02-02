@@ -50,6 +50,8 @@ public class Topic implements Serializable {
 
     private Set<JobParameters> lastProcessParameters;
     private Set<JobParameters> lastPlotterParameters;
+    
+    private Boolean streaming;
 
     public String getName() {
         return name;
@@ -129,5 +131,13 @@ public class Topic implements Serializable {
 
     public void setLastPlotterParameters(Set<JobParameters> lastPlotterParameters) {
         this.lastPlotterParameters = lastPlotterParameters;
+    }
+
+    public Boolean isStreaming() {
+        return streaming;
+    }
+
+    public void setStreaming(Boolean streaming) {
+        this.streaming = streaming;
     }
 }

@@ -62,7 +62,7 @@ public class PlotterExecutorImpl implements PlotterExecutor {
     private Job execution;
 
     @Override
-    public void setExecution(Job execution) {
+    public void setJob(Job execution) {
         this.execution = execution;
     }
 

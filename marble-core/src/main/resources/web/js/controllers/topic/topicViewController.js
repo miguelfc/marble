@@ -8,7 +8,8 @@ angular.module('marbleCoreApp')
 				$uibModal,  
 				TopicFactory, 
 				TopicInfoFactory, 
-				TopicExtractFactory, 
+				TopicExtractFactory,
+				TopicStreamFactory,
 				PostFactory, 
 				JobFactory,
 				ChartFactory,
@@ -74,6 +75,26 @@ angular.module('marbleCoreApp')
 		});
 	};
 
+	$scope.stream = function () {
+		TopicStreamFactory.stream({name: $stateParams.topicName}).$promise.then(function(data) {
+			// Handle execution error
+			var jobId = data.id;
+			$state.go('dashboard.job.view', {
+				'jobId' : jobId
+			});
+		});
+	};
+	
+	$scope.stopStream = function () {
+		TopicStreamFactory.stopStream({name: $stateParams.topicName}).$promise.then(function(data) {
+			// Handle execution error
+			var jobId = data.id;
+			$state.go('dashboard.job.view', {
+				'jobId' : jobId
+			});
+		});
+	};
+	
 	$scope.process = function (options) {
 		TopicProcessFactory.process({name: $stateParams.topicName}, options).$promise.then(function(data) {
 			// Handle execution error

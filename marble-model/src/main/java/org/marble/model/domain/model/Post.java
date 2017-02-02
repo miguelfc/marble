@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import twitter4j.ExtendedMediaEntity;
 import twitter4j.GeoLocation;
 import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
@@ -55,7 +56,6 @@ public class Post {
     private URLEntity[] urlEntities;
     private HashtagEntity[] hashtagEntities;
     private MediaEntity[] mediaEntities;
-    private MediaEntity[] extendedMediaEntities;
     private SymbolEntity[] symbolEntities;
     private long currentUserRetweetId = -1L;
     private Scopes scopes;
@@ -93,7 +93,6 @@ public class Post {
         this.urlEntities = status.getUrlEntities();
         this.hashtagEntities = status.getHashtagEntities();
         this.mediaEntities = status.getMediaEntities();
-        this.extendedMediaEntities = status.getExtendedMediaEntities();
         this.symbolEntities = status.getSymbolEntities();
         this.currentUserRetweetId = status.getCurrentUserRetweetId();
         this.scopes = status.getScopes();
@@ -122,11 +121,11 @@ public class Post {
         if (status.getRetweetedStatus() != null) {
             this.retweetedStatus = new Post(status.getRetweetedStatus(), null);
         }
+        
         this.userMentionEntities = status.getUserMentionEntities();
         this.urlEntities = status.getURLEntities();
         this.hashtagEntities = status.getHashtagEntities();
         this.mediaEntities = status.getMediaEntities();
-        this.extendedMediaEntities = status.getExtendedMediaEntities();
         this.symbolEntities = status.getSymbolEntities();
         this.currentUserRetweetId = status.getCurrentUserRetweetId();
         this.scopes = status.getScopes();
@@ -322,15 +321,7 @@ public class Post {
     public void setMediaEntities(MediaEntity[] mediaEntities) {
         this.mediaEntities = mediaEntities;
     }
-
-    public MediaEntity[] getExtendedMediaEntities() {
-        return extendedMediaEntities;
-    }
-
-    public void setExtendedMediaEntities(MediaEntity[] extendedMediaEntities) {
-        this.extendedMediaEntities = extendedMediaEntities;
-    }
-
+    
     public SymbolEntity[] getSymbolEntities() {
         return symbolEntities;
     }
