@@ -66,7 +66,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     private Job execution;
 
     @Override
-    public void setExecution(Job execution) {
+    public void setJob(Job execution) {
         this.execution = execution;
     }
 

@@ -54,7 +54,7 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
     TwitterSearchService twitterSearchService;
 
     @Override
-    public void setExecution(Job execution) {
+    public void setJob(Job execution) {
         this.execution = execution;
     }
 
@@ -175,7 +175,6 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
                             break;
                         }
 
-                        //datastoreService.insertOriginalStatus(originalStatus);
                         postService.save(originalPost);
                         
                         count++;

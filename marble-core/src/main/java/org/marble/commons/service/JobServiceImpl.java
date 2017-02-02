@@ -10,6 +10,8 @@ import org.marble.commons.exception.InvalidTopicException;
 import org.marble.commons.executor.extractor.ExtractorExecutor;
 import org.marble.commons.executor.plotter.PlotterExecutor;
 import org.marble.commons.executor.processor.ProcessorExecutor;
+import org.marble.commons.executor.streamer.StreamerExecutor;
+import org.marble.commons.executor.streamer.TwitterStreamerExecutor;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Topic;
 import org.marble.model.model.JobParameters;
@@ -21,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,7 +105,7 @@ public class JobServiceImpl implements JobService {
 
         log.info("Starting execution <" + execution.getId() + ">... now!");
         ExtractorExecutor executor = (ExtractorExecutor) context.getBean("twitterExtractionExecutor");
-        executor.setExecution(execution);
+        executor.setJob(execution);
         taskExecutor.execute(executor);
 
         log.info("Executor launched.");
@@ -110,8 +115,62 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public BigInteger executeProcessor(String topicName, Set<JobParameters> parameters) throws InvalidTopicException,
-            InvalidExecutionException, InvalidModuleException {
+    public BigInteger executeStreamer(String topicName) throws InvalidTopicException, InvalidExecutionException {
+        log.info("Executing the streamer for topic <" + topicName + ">.");
+
+        Job execution = new Job();
+
+        Topic topic = topicService.findOne(topicName);
+
+        execution.setStatus(JobStatus.Initialized);
+        execution.setType(JobType.Streamer);
+        execution.setTopic(topic);
+
+        execution = this.save(execution);
+
+        log.info("Starting execution <" + execution.getId() + ">... now!");
+        StreamerExecutor executor = (StreamerExecutor) context.getBean("twitterStreamerExecutor");
+        executor.setJob(execution);
+        taskExecutor.execute(executor);
+
+        log.info("Executor launched.");
+
+        return execution.getId();
+    }
+
+    @Override
+    @Transactional
+    public BigInteger stopStreamer(String topicName) throws InvalidTopicException, InvalidExecutionException {
+        log.info("Stopping the streamer for topic <" + topicName + ">.");
+
+        Pageable page = new PageRequest(0, 100);
+        Page<Job> results;
+        Boolean atLeastOne = false;
+        do {
+            results = jobDao.findByTopic_nameAndTypeAndStatus(topicName, JobType.Streamer, JobStatus.Running, page);
+            for (Job job : results.getContent()) {
+                atLeastOne = true;
+                job.setStatus(JobStatus.Stopped);
+                job = this.save(job);
+
+                log.info("Stoping execution <" + job.getId() + ">... now!");
+                TwitterStreamerExecutor executor = (TwitterStreamerExecutor) context.getBean("twitterStreamerExecutor");
+                executor.stopStreaming(job);
+
+                log.info("Executor launched.");
+                return job.getId();
+            }
+            page = page.next();
+        } while (results.hasNext());
+        if (atLeastOne) {
+            return BigInteger.ZERO;
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public BigInteger executeProcessor(String topicName, Set<JobParameters> parameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
 
         if (topicName != null) {
             log.info("Executing the processor for topic <" + topicName + ">.");
@@ -142,7 +201,7 @@ public class JobServiceImpl implements JobService {
 
         log.info("Starting execution <" + execution.getId() + ">... now!");
         // ProcessorExecutor processorExecutor = new ProcessorExecutorImpl();
-        processorExecutor.setExecution(execution);
+        processorExecutor.setJob(execution);
         taskExecutor.execute(processorExecutor);
 
         log.info("Executor launched.");
@@ -152,8 +211,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException,
-            InvalidExecutionException, InvalidModuleException {
+    public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
         return this.executeProcessor(null, processParameters);
     }
 
@@ -163,8 +221,7 @@ public class JobServiceImpl implements JobService {
 
         if (topicName != null) {
             log.info("Executing the plotter for topic <" + topicName + ">.");
-        }
-        else {
+        } else {
             log.error("A topic is needed for the plotter to work. Aborting.");
             return null;
         }
@@ -192,14 +249,13 @@ public class JobServiceImpl implements JobService {
 
         log.info("Starting execution <" + execution.getId() + ">... now!");
         // ProcessorExecutor plotterExecutor = new ProcessorExecutorImpl();
-        plotterExecutor.setExecution(execution);
+        plotterExecutor.setJob(execution);
         taskExecutor.execute(plotterExecutor);
 
         log.info("Executor launched.");
 
         return execution.getId();
     }
-
 
     @Override
     public Long count() {
@@ -209,5 +265,29 @@ public class JobServiceImpl implements JobService {
     @Override
     public Long countByTopicName(String topicName) {
         return jobDao.countByTopic_name(topicName);
+    }
+
+    @Override
+    public void cleanOldJobs() {
+        Pageable page = new PageRequest(0, 100);
+        Page<Job> results;
+        do {
+            results = jobDao.findByStatus(JobStatus.Running, page);
+            for (Job job : results.getContent()) {
+                String msg = "Marking job <" + job.getId() + "> as aborted, as application was rebooted.";
+                log.info(msg);
+                job.appendLog(msg);
+                job.setStatus(JobStatus.Aborted);
+                try {
+                    job = this.save(job);
+                } catch (InvalidExecutionException e) {
+                    log.error("An error occurred while persisting the job.");
+                }
+
+            }
+            page = page.next();
+        } while (results.hasNext());
+
+        return;
     }
 }

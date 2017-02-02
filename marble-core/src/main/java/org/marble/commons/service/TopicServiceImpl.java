@@ -3,17 +3,23 @@ package org.marble.commons.service;
 import java.util.List;
 
 import org.marble.commons.domain.repository.TopicRepository;
+import org.marble.commons.exception.InvalidExecutionException;
 import org.marble.commons.exception.InvalidTopicException;
 import org.marble.commons.model.TopicStats;
+import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.ProcessedPost;
 import org.marble.model.domain.model.Topic;
+import org.marble.model.model.JobStatus;
 
 import com.mongodb.MongoException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -88,22 +94,18 @@ public class TopicServiceImpl implements TopicService {
             topicStats.setTotalPostsProcessed(datastoreService.countByTopicId(name, ProcessedPost.class));
 
             if (topicStats.getTotalPostsExtracted() > 0) {
-                Post post = datastoreService.findOneByTopicIdSortBy(name, "createdAt", Sort.Direction.ASC,
-                        Post.class);
+                Post post = datastoreService.findOneByTopicIdSortBy(name, "createdAt", Sort.Direction.ASC, Post.class);
                 topicStats.setOldestPostDate(post.getCreatedAt());
                 topicStats.setOldestPostId(post.getId());
 
-                post = datastoreService
-                        .findOneByTopicIdSortBy(name, "createdAt", Sort.Direction.DESC, Post.class);
+                post = datastoreService.findOneByTopicIdSortBy(name, "createdAt", Sort.Direction.DESC, Post.class);
                 topicStats.setNewestPostDate(post.getCreatedAt());
                 topicStats.setNewestPostId(post.getId());
 
                 topicStats.setTotalJobs(jobService.countByTopicName(name));
             }
         } catch (MongoException e) {
-            log.warn(
-                    "Exception caught while extracting the topic info.",
-                    e);
+            log.warn("Exception caught while extracting the topic info.", e);
         }
         return topicStats;
     }
@@ -111,6 +113,29 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Long count() {
         return topicRepository.count();
+    }
+
+    @Override
+    public void cleanOldStreamingTopics() {
+        Pageable page = new PageRequest(0, 100);
+        Page<Topic> results;
+        do {
+            results = topicRepository.findByStreaming(true, page);
+            for (Topic topic : results.getContent()) {
+                String msg = "Marking topic <" + topic.getName() + "> as not streaming.";
+                log.info(msg);
+                topic.setStreaming(false);
+                try {
+                    topic = this.save(topic);
+                } catch (InvalidTopicException e) {
+                    log.error("An error occurred while persisting the topic.");
+                }
+
+            }
+            page = page.next();
+        } while (results.hasNext());
+
+        return;
     }
 
 }

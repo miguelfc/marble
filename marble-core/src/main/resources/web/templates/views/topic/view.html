@@ -225,10 +225,23 @@
                             <table class="table">
                                 <tbody>
                                     <tr>
-                                        <td><a data-ng-click="extract()" class="btn btn-default btn-block"
+                                        <td ng-if="!topic.streaming"><a data-ng-click="extract()" class="btn btn-default btn-block"
                                             uib-tooltip="Remember to save your changes, if any, before executing the extraction."
                                             tooltip-placement="left"
                                         ><i class="fa fa-fw fa-sign-in"></i> Extract</a></td>
+                                        <td ng-if="topic.streaming">
+                                        <a data-ng-click="goToStreammingJob()" class="btn btn-default btn-block"
+                                        ><i class="fa fa-fw fa-info-circle"></i> Streaming in progress...</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td ng-if="!topic.streaming"><a data-ng-click="stream()" class="btn btn-default btn-block"
+                                            uib-tooltip="Remember to save your changes, if any, before starting the streaming operation."
+                                            tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-play-circle"></i> Stream</a></td>
+                                        <td ng-if="topic.streaming">
+                                        <a data-ng-click="stopStream()" class="btn btn-default btn-block"
+                                        ><i class="fa fa-fw fa-stop-circle"></i> Stop Streaming</a></td>
                                     </tr>
                                     <tr>
                                         <td> <app-modal modal-button="Process" modal-title="Process Topic" modal-action="process(options)"

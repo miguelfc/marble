@@ -65,6 +65,36 @@ public class TopicRestController {
         }
     }
 
+    @RequestMapping(value = "/topics/{topicName}/stream", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<JobRestResult> stream(
+            @PathVariable(value = "topicName") String topicName) {
+        BigInteger executionId;
+        try {
+            executionId = jobService.executeStreamer(topicName);
+            JobRestResult executionResult = new JobRestResult(executionId);
+            executionResult.setMessage("Execution started.");
+            return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.OK);
+        } catch (InvalidTopicException | InvalidExecutionException e) {
+            JobRestResult executionResult = new JobRestResult(e.getMessage());
+            return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @RequestMapping(value = "/topics/{topicName}/stream", method = RequestMethod.DELETE)
+    public @ResponseBody ResponseEntity<JobRestResult> stopStream(
+            @PathVariable(value = "topicName") String topicName) {
+        BigInteger executionId;
+        try {
+            executionId = jobService.stopStreamer(topicName);
+            JobRestResult executionResult = new JobRestResult(executionId);
+            executionResult.setMessage("Execution started.");
+            return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.OK);
+        } catch (InvalidTopicException | InvalidExecutionException e) {
+            JobRestResult executionResult = new JobRestResult(e.getMessage());
+            return new ResponseEntity<JobRestResult>(executionResult, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @RequestMapping(value = "/topics/{topicName}/process", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<JobRestResult> process(
             @PathVariable(value = "topicName") String topicName, @RequestBody(required = true) LinkedHashSet<JobParameters> parameters) throws InvalidModuleException {
