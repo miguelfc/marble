@@ -1,10 +1,14 @@
 /* Space out content a bit
 
-$ice-color: #99d3df;
-$freshwater-color: #88bbd6;
-$plaster-color: #cdcdcd;
-$linen-color: #e9e9e9;
-$cotton-color: #f9f9f9;
+$accent-color: #17AB5A;
+$linen-color: #f5f5f5;
+
+$dark-background-color: #f5f5f5;
+$medium-background-color: #fafafa;
+$no-background-color: #ffffff;
+
+$dark-text-color: #000000;
+$regular-text-color: #333333;
 
 /* Special colors
 $danger-color: #FF3B3F;
@@ -86,7 +90,7 @@ body
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
 
 body
-  background-color: $cotton-color
+  background-color: $no-background-color
 
 #wrapper
   width: 100%
@@ -94,7 +98,7 @@ body
 #page-wrapper
   padding: 0 15px
   min-height: 568px
-  background-color: $cotton-color
+  background-color: $no-background-color
 
 @media (min-width: 768px)
   #page-wrapper
@@ -103,6 +107,9 @@ body
     padding: 0 30px
     border-left: 1px solid #e7e7e7
 
+.navbar-brand
+  padding: 12px
+  
 .navbar-top-links
   margin-right: 0
   li
@@ -318,7 +325,7 @@ table.dataTable thead
 
 body
   font-family: "Open Sans"
-  background-color: $freshwater-color
+  background-color: $no-background-color
   padding-bottom: 0px
 
 .ui-grid-cell
@@ -345,33 +352,31 @@ body
 /* Custom Navbar
 
 .navbar-default
-  background-color: $freshwater-color
-  border-color: $freshwater-color
+  background-color: $dark-background-color
+  border-color: darken($dark-background-color, 10%)
   &.sidebar
-    background-color: $freshwater-color
+    background-color: $no-background-color
+    border-color: $medium-background-color
 
 .nav > li
   > a
-    color: #fff
+    color: $regular-text-color
   &.active > a
-    background-color: darken($freshwater-color, 10%) !important
+    background-color: $medium-background-color !important
   > a
     &:focus
-      background-color: $freshwater-color
+      background-color: lighten($medium-background-color, 1%)
     &:hover
-      background-color: darken($freshwater-color, 20%)
-
-.sidebar ul li
-  border: none
+      background-color: lighten($medium-background-color, 1%)
 
 /* Custom Header
 
 .main-logo
   font-size: 24px
-  color: #fff ! important
+  color: $dark-text-color ! important
   .logo
-    background: #fff
-    color: $freshwater-color
+    background: $dark-text-color
+    color: $dark-background-color
     display: inline-block
     font-weight: bold
     line-height: 1.2em
@@ -390,74 +395,53 @@ a
     color: #05332e
 
 .btn-primary
-  border-color: darken($ice-color, 5%)
-  background-color: $ice-color
+  border-color: darken($accent-color, 5%)
+  background-color: $accent-color
   &:hover
-    border-color: darken($ice-color, 15%)
-    background-color: darken($ice-color, 10%)
+    border-color: darken($accent-color, 15%)
+    background-color: darken($accent-color, 10%)
   &:focus
     color: #fff
-    background-color: darken($ice-color, 20%)
-    border-color: darken($ice-color, 15%)
+    background-color: darken($accent-color, 20%)
+    border-color: darken($accent-color, 15%)
   &:active
     color: #fff
-    background-color: darken($ice-color, 20%)
-    border-color: darken($ice-color, 15%)
+    background-color: darken($accent-color, 20%)
+    border-color: darken($accent-color, 15%)
     &:hover
       color: #fff
-      background-color: darken($ice-color, 20%)
-      border-color: darken($ice-color, 15%)
+      background-color: darken($accent-color, 20%)
+      border-color: darken($accent-color, 15%)
   &.active
     color: #fff
-    background-color: darken($ice-color, 20%)
-    border-color: darken($ice-color, 15%)
+    background-color: darken($accent-color, 20%)
+    border-color: darken($accent-color, 15%)
 
 .open > .dropdown-toggle.btn-primary
   color: #fff
-  background-color: darken($ice-color, 20%)
-  border-color: darken($ice-color, 15%)
+  background-color: darken($accent-color, 20%)
+  border-color: darken($accent-color, 15%)
 
 .nav .open > a.dropdown-toggle
-  background-color: darken($freshwater-color, 20%)
+  background-color: darken($medium-background-color, 20%)
   &:focus, &:hover
-    background-color: darken($freshwater-color, 20%)
+    background-color: darken($medium-background-color, 20%)
 
 .btn-primary
   &:disabled
-    border-color: lighten($ice-color, 5%)
-    background-color: lighten($ice-color, 10%)
+    border-color: lighten($accent-color, 5%)
+    background-color: lighten($accent-color, 10%)
   &[disabled]
-    border-color: lighten($ice-color, 5%)
-    background-color: lighten($ice-color, 10%)
+    border-color: lighten($accent-color, 5%)
+    background-color: lighten($accent-color, 10%)
     &:hover
-      border-color: lighten($ice-color, 5%)
-      background-color: lighten($ice-color, 10%)
+      border-color: lighten($accent-color, 5%)
+      background-color: lighten($accent-color, 10%)
 
 /* Material Design
 
 .btn
   border-radius: 2px
-
-.shadow-z-1
-  box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12)
-
-.shadow-z-1-hover
-  box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15)
-
-.shadow-z-inset
-  box-shadow: inset 5px -5px 9px -4px rgba(0, 0, 0, 0.18)
-
-.shadow-z-2
-  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
-
-.shadow-z-3
-  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19)
-
-.shadow-z-4
-  box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21)
-
-.shadow-z-5
-  box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2), 0 40px 77px 0 rgba(0, 0, 0, 0.22)
 
 /* Top right buttons
 
@@ -533,35 +517,35 @@ a
       color: #1B5E20
 
 .panel-primary
-  background-color: $ice-color
-  border-color: $ice-color
+  background-color: $accent-color
+  border-color: $accent-color
   color: #FFFFFF
   .panel-heading
-    background-color: $ice-color
-    border-color: $ice-color
+    background-color: $accent-color
+    border-color: $accent-color
     color: #FFFFFF
   a
-    color: $ice-color
+    color: $accent-color
     &:hover
-      color: darken($ice-color, 20%)
+      color: darken($accent-color, 20%)
 
 .panel-primary-outline
   background-color: #FFFFFF
-  border-color: $ice-color
-  color: $ice-color
+  border-color: $accent-color
+  color: $accent-color
   .panel-heading
     background-color: #FFFFFF
-    border-color: $ice-color
-    color: $ice-color
+    border-color: $accent-color
+    color: $accent-color
   a
     color: #FFFFFF
     &:hover
       color: #FFFFFF
     .panel-footer
-      background-color: $ice-color
-      border-top: 0px solid $ice-color
+      background-color: $accent-color
+      border-top: 0px solid $accent-color
       &:hover
-        background-color: darken($ice-color, 20%)
+        background-color: darken($accent-color, 20%)
 
 .panel-default > .panel-heading
   background-color: $linen-color
