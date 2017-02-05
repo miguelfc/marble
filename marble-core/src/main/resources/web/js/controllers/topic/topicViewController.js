@@ -19,6 +19,9 @@ angular.module('marbleCoreApp')
 	var goBack = function() {$state.go('dashboard.topic.list', {}, {reload: true})}; 
 
 	$scope.update = function () {
+		if ($scope.topic.streamerProcessParametersString) {			
+			$scope.topic.streamerProcessParameters = JSON.parse($scope.topic.streamerProcessParametersString);
+		}
 		TopicFactory.update($scope.topic).$promise.then(function(data) {
 			$scope.error = '';
 			$scope.success = "The topic was updated successfully."
@@ -187,5 +190,12 @@ angular.module('marbleCoreApp')
 	}
 
 	// TODO: Handle 404
-	$scope.topic = TopicFactory.show({name: $stateParams.topicName});
+	$scope.topic = TopicFactory.show({name: $stateParams.topicName}).$promise.then(function(data) {
+		$scope.topic = data;
+		if ($scope.topic.streamerProcessParameters) {			
+			$scope.topic.streamerProcessParametersString = JSON.stringify($scope.topic.streamerProcessParameters, undefined, 2);
+		}
+	}, function(error) {
+	});
+
 });

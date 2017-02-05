@@ -3,9 +3,21 @@ package org.marble.commons.executor.streamer;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
+import org.marble.model.model.JobParameters;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.marble.commons.exception.InvalidExecutionException;
+import org.marble.commons.exception.InvalidModuleException;
 import org.marble.commons.exception.InvalidTopicException;
 import org.marble.commons.executor.extractor.TwitterExtractionExecutor;
+import org.marble.commons.executor.processor.ProcessorExecutor;
+import org.marble.commons.model.JobRestResult;
+import org.marble.commons.model.RestResult;
 import org.marble.commons.service.JobService;
 import org.marble.commons.service.PostService;
 import org.slf4j.Logger;
@@ -118,7 +130,7 @@ public class TwitterStreamingListener implements StatusListener {
     public void onStatus(Status status) {
 
         String msg = "Received new post <" + status.getId() + ">. Matching for topic <" + topic.getName() + ">.";
-        log.debug(msg);
+        log.info(msg);
         job.appendLog(msg);
 
         try {
@@ -167,6 +179,26 @@ public class TwitterStreamingListener implements StatusListener {
             }
 
             count++;
+
+            // Calling processor if applicable
+            if (topic.getStreamerProcessParameters() != null && topic.getStreamerProcessParameters().size() > 0) {
+                try {
+                    Set<JobParameters> extraParameters = new HashSet<>();
+                    JobParameters filterParameters = new JobParameters();
+                    filterParameters.setName(ProcessorExecutor.MARBLE_FILTER);
+                    Map<String, Object>filterOptions = new HashMap<>();
+                    filterOptions.put(ProcessorExecutor.MARBLE_FILTER_FROM_ID, Long.toString(streamingStatus.getId()));
+                    filterOptions.put(ProcessorExecutor.MARBLE_FILTER_TO_ID, Long.toString(streamingStatus.getId()));
+                    filterParameters.setOptions(filterOptions);
+                    extraParameters.add(filterParameters);
+                    jobService.executeProcessor(topicName, job, extraParameters);
+                } catch (InvalidTopicException | InvalidExecutionException | InvalidModuleException e) {
+                    msg = "An error occurred while starting the processor for post <" + streamingStatus.getId() + ">.";
+                    log.error(msg);
+                    job.appendLog(msg);
+                }
+            }
+
         }
 
         long maxStatuses = 200;
