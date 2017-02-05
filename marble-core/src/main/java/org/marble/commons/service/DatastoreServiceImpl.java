@@ -1,5 +1,6 @@
 package org.marble.commons.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoException;
@@ -86,6 +88,46 @@ public class DatastoreServiceImpl implements DatastoreService {
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("topicName", topicName);
 
+        DBCursor cursor = collection.find(searchQuery);
+        return cursor;
+    }
+    
+    @Override
+    public <T> DBCursor findCursorByTopicNameAndBetweenDates(String topicName, Date fromDate, Date toDate, Class<T> entityClass) {
+        Document document = entityClass.getAnnotation(Document.class);
+        DBCollection collection = mongoOperations.getCollection(document.collection());
+
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("topicName", topicName);
+        if (fromDate !=  null && toDate != null) {
+            searchQuery.put("createdAt", BasicDBObjectBuilder.start("$gte", fromDate).add("$lte", toDate).get());
+        }
+        else if (fromDate !=  null) {
+            searchQuery.put("createdAt", BasicDBObjectBuilder.start("$gte", fromDate).get());            
+        }
+        else if (toDate !=  null) {
+            searchQuery.put("createdAt", BasicDBObjectBuilder.start("$lte", toDate).get());            
+        }
+        DBCursor cursor = collection.find(searchQuery);
+        return cursor;
+    }
+    
+    @Override
+    public <T> DBCursor findCursorByTopicNameAndBetweenIds(String topicName,  Long fromId, Long toId, Class<T> entityClass) {
+        Document document = entityClass.getAnnotation(Document.class);
+        DBCollection collection = mongoOperations.getCollection(document.collection());
+
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("topicName", topicName);
+        if (fromId !=  null && toId != null) {
+            searchQuery.put("_id", BasicDBObjectBuilder.start("$gte", fromId).add("$lte", toId).get());
+        }
+        else if (fromId !=  null) {
+            searchQuery.put("_id", BasicDBObjectBuilder.start("$gte", fromId).get());            
+        }
+        else if (toId !=  null) {
+            searchQuery.put("_id", BasicDBObjectBuilder.start("$lte", toId).get());            
+        }
         DBCursor cursor = collection.find(searchQuery);
         return cursor;
     }

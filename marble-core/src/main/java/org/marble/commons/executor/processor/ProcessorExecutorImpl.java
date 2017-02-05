@@ -2,6 +2,7 @@ package org.marble.commons.executor.processor;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.marble.model.model.JobStatus;
 import org.marble.model.model.ProcessedPostStep;
 import org.marble.model.model.ProcessorInput;
 import org.marble.model.model.ProcessorOutput;
+import org.marble.util.MarbleUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,6 +50,13 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
     public static final String label = "Executing";
 
+    private static final String MARBLE_FILTER = "filter";
+
+    private static final Object MARBLE_FILTER_FROM_DATE = "fromDate";
+    private static final Object MARBLE_FILTER_TO_DATE = "toDate";
+    private static final Object MARBLE_FILTER_FROM_ID = "fromId";
+    private static final Object MARBLE_FILTER_TO_ID = "toId";
+
     @Autowired
     JobService executionService;
 
@@ -72,7 +81,6 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
     @Override
     public void run() {
-        String msg = "";
         try {
             log.info("Initializing execution...");
             Thread.sleep(1000);
@@ -125,10 +133,20 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         processedPostService.deleteByTopicName(topic.getName());
 
         logMsg("Getting posts for topic <" + topic.getName() + ">.", "info", null);
-        processingItemsCursor = datastoreService.findCursorByTopicName(topic.getName(), Post.class);
+
+        // Check for any filters in the job parameters
+        Map<String, Object> filterOptions = new HashMap<>();
+
+        for (JobParameters parameter : this.execution.getParameters()) {
+            if (parameter.getName().equals(MARBLE_FILTER)) {
+                filterOptions = parameter.getOptions();
+                break;
+            }
+        }
+        processingItemsCursor = this.getCursorUsingFilters(topic.getName(), Post.class, filterOptions);
 
         logMsg("There are <" + processingItemsCursor.count() + "> items to process.", "info", null);
-        
+
         while (processingItemsCursor.hasNext()) {
             DBObject rawStatus = processingItemsCursor.next();
 
@@ -148,10 +166,14 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         // Loop for each processing stage
         for (JobParameters parameter : this.execution.getParameters()) {
 
+            if (parameter.getName().equals(MARBLE_FILTER)) {
+                continue;
+            }
+
             String processorName = parameter.getName();
             logMsg("Starting processor <" + processorName + ">", "info", null);
 
-            //String serviceUrl = "http://" + processorName + "/api/process";
+            // String serviceUrl = "http://" + processorName + "/api/process";
 
             List<ServiceInstance> serviceInstances = discoveryClient.getInstances(processorName);
 
@@ -168,7 +190,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
             // Get Processed Statuses
             log.info("Getting processed posts for topic <" + topic.getName() + ">.");
-            processingItemsCursor = datastoreService.findCursorByTopicName(topic.getName(), ProcessedPost.class);
+            processingItemsCursor = this.getCursorUsingFilters(topic.getName(), ProcessedPost.class, filterOptions);
 
             log.info("There are <" + processingItemsCursor.count() + "> items to process.");
             Integer count = 0;
@@ -206,15 +228,10 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                         }
                     }
                 } while (serviceInstanceAvailableUrl == null);
-                log.info("Instance selected: <" + serviceInstanceAvailableUrl + ">");
+                log.debug("Instance selected: <" + serviceInstanceAvailableUrl + ">");
                 final String url = new String(serviceInstanceAvailableUrl);
-                CompletableFuture<Response> promise = asyncHttpClient
-                        .preparePost(serviceInstanceAvailableUrl + "/api/process")
-                        .setBody(gson.toJson(input))
-                        .setHeader("Content-Type", "application/json")
-                        .execute()
-                        .toCompletableFuture()
-                        .thenApply(resp -> {
+                CompletableFuture<Response> promise = asyncHttpClient.preparePost(serviceInstanceAvailableUrl + "/api/process").setBody(gson.toJson(input))
+                        .setHeader("Content-Type", "application/json").execute().toCompletableFuture().thenApply(resp -> {
                             serviceInstancesRunning.put(url, serviceInstancesRunning.get(url) - 1);
                             try {
 
@@ -223,7 +240,8 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                                 if (output != null) {
                                     if (output.getMessage() != null) {
                                         step.setOutputText(output.getMessage());
-                                        log.debug("Modified message for  for text <" + initialMessage.replaceAll("\n", "") + "> is <" + processedPost.getText().replaceAll("\n", "") + ">");
+                                        log.debug("Modified message for  for text <" + initialMessage.replaceAll("\n", "") + "> is <" + processedPost.getText().replaceAll("\n", "")
+                                                + ">");
                                     }
                                     if (output.getPolarity() != null) {
                                         step.setPolarity(output.getPolarity());
@@ -236,7 +254,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                                 datastoreService.save(processedPost);
                             } catch (JsonSyntaxException e) {
                                 // TODO Auto-generated catch block
-                                logMsg("Message <"+input.getMessage()+"> couldn't be processed.", "error", e);
+                                logMsg("Message <" + input.getMessage() + "> couldn't be processed.", "error", e);
                             }
                             return resp;
                         });
@@ -250,7 +268,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                     executionService.save(execution);
                 }
             }
-            
+
             // TODO Verify is this is the right place for the close statement
             try {
                 asyncHttpClient.close();
@@ -269,6 +287,35 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         execution.setStatus(JobStatus.Stopped);
 
         execution = executionService.save(execution);
+    }
+
+    private <T> DBCursor getCursorUsingFilters(String topicName, Class<T> classToSearch, Map<String, Object> filterOptions) {
+        DBCursor cursor;
+        if (filterOptions.containsKey(MARBLE_FILTER_FROM_DATE) || filterOptions.containsKey(MARBLE_FILTER_TO_DATE)) {
+            Date fromDate = null;
+            Date toDate = null;
+            if (filterOptions.get(MARBLE_FILTER_FROM_DATE) != null) {
+                fromDate = MarbleUtil.convertStringToDate((String) filterOptions.get(MARBLE_FILTER_FROM_DATE));
+            }
+            if (filterOptions.get(MARBLE_FILTER_TO_DATE) != null) {
+                toDate = MarbleUtil.convertStringToDate((String) filterOptions.get(MARBLE_FILTER_TO_DATE));
+            }
+            cursor = datastoreService.findCursorByTopicNameAndBetweenDates(topicName, fromDate, toDate, classToSearch);
+
+        } else if (filterOptions.containsKey(MARBLE_FILTER_FROM_ID) || filterOptions.containsKey(MARBLE_FILTER_TO_ID)) {
+            Long fromId = null;
+            Long toId = null;
+            if (filterOptions.get(MARBLE_FILTER_FROM_ID) != null) {
+                fromId = Long.parseLong((String) filterOptions.get(MARBLE_FILTER_FROM_ID));
+            }
+            if (filterOptions.get(MARBLE_FILTER_TO_ID) != null) {
+                toId = Long.parseLong((String) filterOptions.get(MARBLE_FILTER_TO_ID));
+            }
+            cursor = datastoreService.findCursorByTopicNameAndBetweenIds(topicName, fromId, toId, classToSearch);
+        } else {
+            cursor = datastoreService.findCursorByTopicName(topicName, classToSearch);
+        }
+        return cursor;
     }
 
     public void logMsg(String message, String level, Exception exception) {
