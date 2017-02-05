@@ -28,9 +28,13 @@ public class ProcessorServiceImpl implements ProcessorService {
         if (options != null) {
             if (options.containsKey(IGNORE_NEUTRAL_SENTENCES)) {
                 try {
-                    ignoreNeutralSentences = Boolean.parseBoolean((String) options.get(IGNORE_NEUTRAL_SENTENCES));
+                    ignoreNeutralSentences = (Boolean) options.get(IGNORE_NEUTRAL_SENTENCES);
                 } catch (Exception e) {
-                    log.warn("Invalid value for " + IGNORE_NEUTRAL_SENTENCES + " property.", e);
+                    try {
+                    ignoreNeutralSentences = Boolean.parseBoolean((String) options.get(IGNORE_NEUTRAL_SENTENCES));
+                    } catch (Exception e2) {
+                        log.warn("Invalid value for " + IGNORE_NEUTRAL_SENTENCES + " property.", e);
+                    }
                 }
             }
         }

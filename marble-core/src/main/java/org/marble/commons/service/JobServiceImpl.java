@@ -168,9 +168,8 @@ public class JobServiceImpl implements JobService {
         return null;
     }
 
-    @Override
     @Transactional
-    public BigInteger executeProcessor(String topicName, Set<JobParameters> parameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+    private BigInteger executeProcessor(String topicName, Set<JobParameters> parameters, Job job, Set<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
 
         if (topicName != null) {
             log.info("Executing the processor for topic <" + topicName + ">.");
@@ -180,39 +179,58 @@ public class JobServiceImpl implements JobService {
 
         // prepare the execution
 
-        Job execution = new Job();
-        log.debug("Execution Parameters: ");
-        for (JobParameters parameter : parameters) {
-            log.debug("- " + parameter);
+        if (job == null) {
+            job = new Job();
+            job.setStatus(JobStatus.Initialized);
+            job.setType(JobType.Processor);
+
+            log.debug("Execution Parameters: ");
+            for (JobParameters parameter : parameters) {
+                log.debug("- " + parameter);
+            }
+
+            job.setParameters(parameters);
+
+            if (topicName != null) {
+                Topic topic = topicService.findOne(topicName);
+                topic.setLastProcessParameters(job.getParameters());
+                topicService.save(topic);
+                job.setTopic(topic);
+            }
+            
+            
+            job = this.save(job);
         }
 
-        execution.setStatus(JobStatus.Initialized);
-        execution.setType(JobType.Processor);
-        execution.setParameters(parameters);
-
-        if (topicName != null) {
-            Topic topic = topicService.findOne(topicName);
-            topic.setLastProcessParameters(parameters);
-            topicService.save(topic);
-            execution.setTopic(topic);
+        if (extraParameters != null) {
+            processorExecutor.setExtraParameters(extraParameters);
         }
 
-        execution = this.save(execution);
-
-        log.info("Starting execution <" + execution.getId() + ">... now!");
-        // ProcessorExecutor processorExecutor = new ProcessorExecutorImpl();
-        processorExecutor.setJob(execution);
+        log.info("Starting execution <" + job.getId() + ">... now!");
+        processorExecutor.setJob(job);
         taskExecutor.execute(processorExecutor);
 
         log.info("Executor launched.");
 
-        return execution.getId();
+        return job.getId();
     }
 
     @Override
     @Transactional
     public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
-        return this.executeProcessor(null, processParameters);
+        return this.executeProcessor(null, processParameters, null, null);
+    }
+
+    @Override
+    @Transactional
+    public BigInteger executeProcessor(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+        return this.executeProcessor(topicName, processParameters, null, null);
+    }
+
+    @Override
+    @Transactional
+    public BigInteger executeProcessor(String topicName, Job job, Set<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+        return this.executeProcessor(topicName, null, job, extraParameters);
     }
 
     @Override

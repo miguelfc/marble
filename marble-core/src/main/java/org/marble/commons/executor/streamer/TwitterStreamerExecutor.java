@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org.marble.commons.domain.model.TwitterApiKey;
 import org.marble.commons.exception.InvalidExecutionException;
+import org.marble.commons.executor.processor.ProcessorExecutor;
+import org.marble.commons.executor.processor.ProcessorExecutorImpl;
 import org.marble.commons.service.DatastoreService;
 import org.marble.commons.service.JobService;
 import org.marble.commons.service.PostService;
@@ -23,6 +25,7 @@ import org.marble.commons.service.TwitterStreamService;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
+import org.marble.model.model.JobParameters;
 import org.marble.model.model.JobStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,10 +92,23 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
 
             // Changing execution state
             job.setStatus(JobStatus.Running);
-            jobService.save(job);
 
             // Get the associated topic
             Topic topic = topicService.findOne(job.getTopic().getName());
+
+            // Adding streamer processing parameters from topic
+            if (topic.getStreamerProcessParameters() != null) {
+                Set<JobParameters> parameters = topic.getStreamerProcessParameters();
+                // Remove filter, if any
+                for (JobParameters parameter : parameters) {
+                    if (parameter.getName().equals(ProcessorExecutor.MARBLE_FILTER)) {
+                        parameters.remove(parameter);
+                    }
+                }
+                job.setParameters(parameters);
+            }
+
+            jobService.save(job);
 
             // Get twitter keys
             List<TwitterApiKey> apiKeys = twitterApiKeyService.getEnabledTwitterApiKeys();
@@ -190,10 +206,20 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             jobService.save(job);
 
             Topic topic = topicService.findOne(job.getTopic().getName());
+            
+            topic.setStreaming(Boolean.FALSE);
+            topicService.save(topic);
+            
+            // Changing execution state
+            msg = "Stop operation finished.";
+            log.info(msg);
+            job.appendLog(msg);
+            job.setStatus(JobStatus.Stopped);
+            job = jobService.save(job);
+            
             FilterQuery query = new FilterQuery();
 
             TwitterStreamingListener listener = twitterStreamingListeners.get(topic.getName());
-            Job listenerJob = listener.getJob();
 
             // Removing the listener from the stream (we need to stop the stream
             // and then start it if needed)
@@ -201,16 +227,6 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             twitterStream.removeListener(listener);
             twitterStreamingListeners.remove(topic.getName());
             
-            topic.setStreaming(Boolean.FALSE);
-            topicService.save(topic);
-
-            // Signaling the stopped listener job.
-            msg = "Stopping the listener from job <" + job.getId() + ">.";
-            log.info(msg);
-            listenerJob.appendLog(msg);
-            listenerJob.setStatus(JobStatus.Stopped);
-            listenerJob = jobService.save(listenerJob);
-
             if (!twitterStreamingListeners.isEmpty()) {
                 String[] languages = getListenersLanguages();
                 String[] keywords = getListenersKeywords();
@@ -240,17 +256,11 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
                     job.appendLog(msg);
                     job = jobService.save(job);
                 }
-            }
-            else {
+            } else {
                 twitterStream.cleanUp();
             }
 
-            // Changing execution state
-            msg = "Stop operation finished.";
-            log.info(msg);
-            job.appendLog(msg);
-            job.setStatus(JobStatus.Stopped);
-            job = jobService.save(job);
+
         } catch (Exception e) {
             msg = "An error ocurred while manipulating jobs <" + job.getId() + ">. Execution aborted.";
             log.error(msg, e);

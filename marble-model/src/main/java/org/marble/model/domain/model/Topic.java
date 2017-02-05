@@ -48,6 +48,8 @@ public class Topic implements Serializable {
     @Digits(fraction = 0, integer = 5)
     private Integer postsPerFullExtraction = 1000;
 
+    private Set<JobParameters> streamerProcessParameters;
+    
     private Set<JobParameters> lastProcessParameters;
     private Set<JobParameters> lastPlotterParameters;
     
@@ -115,6 +117,14 @@ public class Topic implements Serializable {
 
     public void setPostsPerFullExtraction(Integer postsPerFullExtraction) {
         this.postsPerFullExtraction = postsPerFullExtraction;
+    }
+
+    public Set<JobParameters> getStreamerProcessParameters() {
+        return streamerProcessParameters;
+    }
+
+    public void setStreamerProcessParameters(Set<JobParameters> streamerProcessParameters) {
+        this.streamerProcessParameters = streamerProcessParameters;
     }
 
     public Set<JobParameters> getLastProcessParameters() {

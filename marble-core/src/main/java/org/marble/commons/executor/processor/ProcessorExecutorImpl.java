@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
@@ -21,6 +23,7 @@ import org.marble.model.domain.model.ProcessedPost;
 import org.marble.model.domain.model.Topic;
 import org.marble.model.model.JobParameters;
 import org.marble.model.model.JobStatus;
+import org.marble.model.model.JobType;
 import org.marble.model.model.ProcessedPostStep;
 import org.marble.model.model.ProcessorInput;
 import org.marble.model.model.ProcessorOutput;
@@ -50,15 +53,8 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
     public static final String label = "Executing";
 
-    private static final String MARBLE_FILTER = "filter";
-
-    private static final Object MARBLE_FILTER_FROM_DATE = "fromDate";
-    private static final Object MARBLE_FILTER_TO_DATE = "toDate";
-    private static final Object MARBLE_FILTER_FROM_ID = "fromId";
-    private static final Object MARBLE_FILTER_TO_ID = "toId";
-
     @Autowired
-    JobService executionService;
+    JobService jobService;
 
     @Autowired
     TopicService topicService;
@@ -72,11 +68,18 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     @Autowired
     private DiscoveryClient discoveryClient;
 
-    private Job execution;
+    private Job job;
+
+    private Set<JobParameters> extraParameters;
 
     @Override
-    public void setJob(Job execution) {
-        this.execution = execution;
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    @Override
+    public void setExtraParameters(Set<JobParameters> extraParameters) {
+        this.extraParameters = extraParameters;
     }
 
     @Override
@@ -89,25 +92,25 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
         try {
 
-            BigInteger id = execution.getId();
+            BigInteger id = job.getId();
 
             logMsg("Starting processor <" + id + ">.", "info", null);
 
             // Changing execution state
-            execution.setStatus(JobStatus.Running);
-            execution = executionService.save(execution);
+            job.setStatus(JobStatus.Running);
+            job = jobService.save(job);
 
-            if (execution.getTopic() != null) {
+            if (job.getTopic() != null) {
                 process();
             } else {
                 // validate();
             }
 
         } catch (Exception e) {
-            logMsg("An error ocurred while processing posts with execution <" + execution.getId() + ">. Execution aborted.", "error", e);
-            execution.setStatus(JobStatus.Aborted);
+            logMsg("An error ocurred while processing posts with execution <" + job.getId() + ">. Execution aborted.", "error", e);
+            job.setStatus(JobStatus.Aborted);
             try {
-                execution = executionService.save(execution);
+                job = jobService.save(job);
             } catch (InvalidExecutionException e1) {
                 log.error("Post couldn't be refreshed on the execution object.");
             }
@@ -119,7 +122,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     private void process() throws InvalidExecutionException {
 
         // Get the associated topic
-        Topic topic = execution.getTopic();
+        Topic topic = job.getTopic();
 
         String msg;
 
@@ -130,14 +133,21 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         // This is a regular process
 
         // Drop current processed posts
-        processedPostService.deleteByTopicName(topic.getName());
+        // processedPostService.deleteByTopicName(topic.getName());
 
         logMsg("Getting posts for topic <" + topic.getName() + ">.", "info", null);
+
+        // Add extraparameters, if any
+        Set<JobParameters> parameters = new HashSet<>();
+        if (extraParameters != null) {
+            parameters.addAll(extraParameters);
+        }
+        parameters.addAll(this.job.getParameters());
 
         // Check for any filters in the job parameters
         Map<String, Object> filterOptions = new HashMap<>();
 
-        for (JobParameters parameter : this.execution.getParameters()) {
+        for (JobParameters parameter : parameters) {
             if (parameter.getName().equals(MARBLE_FILTER)) {
                 filterOptions = parameter.getOptions();
                 break;
@@ -164,7 +174,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         }
 
         // Loop for each processing stage
-        for (JobParameters parameter : this.execution.getParameters()) {
+        for (JobParameters parameter : parameters) {
 
             if (parameter.getName().equals(MARBLE_FILTER)) {
                 continue;
@@ -186,7 +196,6 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
             for (ServiceInstance serviceInstance : serviceInstances) {
                 serviceInstancesRunning.put(serviceInstance.getUri().toString(), 0);
             }
-            AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
 
             // Get Processed Statuses
             log.info("Getting processed posts for topic <" + topic.getName() + ">.");
@@ -228,8 +237,11 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                         }
                     }
                 } while (serviceInstanceAvailableUrl == null);
-                log.debug("Instance selected: <" + serviceInstanceAvailableUrl + ">");
+                log.info("Instance selected: <" + serviceInstanceAvailableUrl + ">");
                 final String url = new String(serviceInstanceAvailableUrl);
+                AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
+                
+                @SuppressWarnings("unused")
                 CompletableFuture<Response> promise = asyncHttpClient.preparePost(serviceInstanceAvailableUrl + "/api/process").setBody(gson.toJson(input))
                         .setHeader("Content-Type", "application/json").execute().toCompletableFuture().thenApply(resp -> {
                             serviceInstancesRunning.put(url, serviceInstancesRunning.get(url) - 1);
@@ -252,7 +264,8 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                                 }
                                 processedPost.addStep(step);
                                 datastoreService.save(processedPost);
-                            } catch (JsonSyntaxException e) {
+                                asyncHttpClient.close();
+                            } catch (JsonSyntaxException | IOException e) {
                                 // TODO Auto-generated catch block
                                 logMsg("Message <" + input.getMessage() + "> couldn't be processed.", "error", e);
                             }
@@ -264,29 +277,24 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                 if ((count % 100) == 0) {
                     msg = "Items processed so far: <" + count + ">";
                     log.info(msg);
-                    execution.appendLog(msg);
-                    executionService.save(execution);
+                    job.appendLog(msg);
+                    jobService.save(job);
                 }
-            }
-
-            // TODO Verify is this is the right place for the close statement
-            try {
-                asyncHttpClient.close();
-            } catch (IOException e) {
-                logMsg("An error occurred while closing asyncHttpClient.", "error", e);
             }
 
             msg = "Total of items processed: <" + count + ">";
             log.info(msg);
-            execution.appendLog(msg);
+            job.appendLog(msg);
 
         }
         msg = "The processor operation for topic <" + topic.getName() + "> has finished.";
         log.info(msg);
-        execution.appendLog(msg);
-        execution.setStatus(JobStatus.Stopped);
+        job.appendLog(msg);
+        if (job.getType().equals(JobType.Processor)) {
+            job.setStatus(JobStatus.Stopped);
+        }
 
-        execution = executionService.save(execution);
+        job = jobService.save(job);
     }
 
     private <T> DBCursor getCursorUsingFilters(String topicName, Class<T> classToSearch, Map<String, Object> filterOptions) {
@@ -359,6 +367,6 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
             else
                 log.info(message, exception);
         }
-        execution.appendLog(message);
+        job.appendLog(message);
     }
 }

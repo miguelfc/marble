@@ -12,9 +12,9 @@ import org.marble.model.model.JobParameters;
 
 public interface JobService {
 
-    Long count();
+    public Long count();
 
-    Long countByTopicName(String topicName);
+    public Long countByTopicName(String topicName);
 
     public Job save(Job job) throws InvalidExecutionException;
 
@@ -32,9 +32,12 @@ public interface JobService {
 
     public BigInteger executeProcessor(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
-    BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+    public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
-    BigInteger executePlotter(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+    public BigInteger executeProcessor(String topicName, Job job, Set<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
-    void cleanOldJobs();
+    public BigInteger executePlotter(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+
+    public void cleanOldJobs();
+
 }
