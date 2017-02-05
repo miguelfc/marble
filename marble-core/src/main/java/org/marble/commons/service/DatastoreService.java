@@ -1,5 +1,6 @@
 package org.marble.commons.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,10 @@ public interface DatastoreService {
 
     <T> DBCursor findCursorByTopicName(String topicName, Class<T> entityClass);
 
+    <T> DBCursor findCursorByTopicNameAndBetweenDates(String topicName, Date fromDate, Date toDate, Class<T> entityClass);
+
+    <T> DBCursor findCursorByTopicNameAndBetweenIds(String topicName, Long fromId, Long toId, Class<T> entityClass);
+
     MongoConverter getConverter();
 
     <T> T findOneByTopicIdSortBy(String topicName, String field, Direction direction, Class<T> entityClass);
@@ -41,5 +46,6 @@ public interface DatastoreService {
     <T> DBCursor findCursorByQuery(Map<String, Object> queryParameters, Class<T> entityClass);
 
     <T> DBCursor findCursorForAll(Class<T> entityClass);
+
 
 }
