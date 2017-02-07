@@ -9,6 +9,9 @@ import org.marble.model.domain.model.Post;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,11 @@ public class PostServiceImpl implements PostService {
             throw new InvalidPostException();
         }
         return post;
+    }
+    
+    @Override
+    public Page<Post> findByTopicName(@Param("name") String name, Pageable pageable) {
+        return postDao.findByTopicName(name, pageable);
     }
 
     @Override
