@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.marble.commons.exception.InvalidPostException;
 import org.marble.model.domain.model.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface PostService {
 
@@ -20,5 +22,7 @@ public interface PostService {
     Long count();
 
     public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException;
+
+    Page<Post> findByTopicName(String name, Pageable pageable);
 
 }

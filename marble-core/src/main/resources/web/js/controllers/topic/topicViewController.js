@@ -3,6 +3,7 @@ angular.module('marbleCoreApp')
 .controller('TopicViewCtrl', 
 		function ($scope, 
 				$state, 
+				$window,
 				$stateParams, 
 				$timeout, 
 				$uibModal,  
@@ -146,6 +147,10 @@ angular.module('marbleCoreApp')
 		});
 	};
 
+	$scope.downloadPosts = function () {
+		$window.open("/api/posts/download/topic/" + $scope.topic.name);
+	};
+	
 	$scope.deleteJobsByTopic = function () {	
 		var deleteResult = JobFactory.delete({
 			topicName : $scope.topic.name
