@@ -9,7 +9,6 @@ angular.module('marbleCoreApp')
 function PostsFactory($resource, getInterceptor) {
     return $resource('/api/posts', {}, {
         query: {method: 'GET', isArray: false, interceptor: getInterceptor},
-        create: { method: 'POST', interceptor: getInterceptor },
         deleteByTopic: {method: 'DELETE', params: {topicName: '@topicName'}, isArray: false, interceptor: getInterceptor}
     })
 };

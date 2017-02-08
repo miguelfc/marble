@@ -11,7 +11,8 @@ angular.module('marbleCoreApp')
 				TopicInfoFactory, 
 				TopicExtractFactory,
 				TopicStreamFactory,
-				PostFactory, 
+				PostsFactory, 
+				ProcessedPostsFactory,
 				JobFactory,
 				ChartFactory,
 				TopicProcessFactory, 
@@ -129,7 +130,26 @@ angular.module('marbleCoreApp')
 	};
 
 	$scope.deletePostsByTopic = function () {	
-		var deleteResult = PostFactory.delete({
+		var deleteResult = PostsFactory.deleteByTopic({
+			topicName : $scope.topic.name
+		});
+		deleteResult.$promise.then(function(data) {
+			if (typeof data.message === 'undefined' || data.message == null) {
+				$scope.error = "An error ocurred while deleting the posts of this topic.";
+				$scope.success = "";
+			}
+			else {
+				$scope.error = "";
+				$scope.success = data.message;
+			}
+		}, function(e) {
+			$scope.error = "An error ocurred while deleting the posts of this topic.";
+			$scope.success = "";
+		});
+	};
+	
+	$scope.deleteProcessedPostsByTopic = function () {	
+		var deleteResult = ProcessedPostsFactory.deleteByTopic({
 			topicName : $scope.topic.name
 		});
 		deleteResult.$promise.then(function(data) {
