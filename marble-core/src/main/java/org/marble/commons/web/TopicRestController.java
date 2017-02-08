@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RepositoryRestController
 public class TopicRestController {
 
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(TopicRestController.class);
 
     @Autowired

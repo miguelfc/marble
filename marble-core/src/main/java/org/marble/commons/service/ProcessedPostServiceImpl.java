@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.marble.commons.domain.repository.ProcessedPostRepository;
 import org.marble.commons.exception.InvalidPostException;
+import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.ProcessedPost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +44,11 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
         return processedPost;
     }
 
+    @Override
+    public Page<ProcessedPost> findByTopicName(@Param("name") String name, Pageable pageable) {
+        return processedPostRepository.findByTopicName(name, pageable);
+    }
+    
     @Override
     public List<ProcessedPost> findAll() {
         return processedPostRepository.findAll();

@@ -2,15 +2,11 @@ package org.marble.commons.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.marble.commons.exception.InvalidPostException;
-import org.marble.commons.exception.InvalidTopicException;
 import org.marble.commons.model.RestResult;
 import org.marble.commons.model.TagPostRestRequest;
-import org.marble.commons.model.TopicStats;
 import org.marble.commons.service.JobService;
 import org.marble.commons.service.PostService;
 import org.marble.model.domain.model.Post;
@@ -55,7 +51,7 @@ public class PostRestController {
     @RequestMapping(value = "/posts/download/topic/{topicName}", method = RequestMethod.GET)
     public void downloadByTopicId(@PathVariable(value = "topicName") String topicName, HttpServletResponse response) throws IOException {
         log.debug("Downloading all the posts of topic <" + topicName + ">.");
-        response.setHeader("Content-Disposition", "attachment;filename=" + topicName + ".json");
+        response.setHeader("Content-Disposition", "attachment;filename=" + topicName + "posts.json");
 
         PrintWriter out = response.getWriter();
         Pageable page = new PageRequest(0, 100);
