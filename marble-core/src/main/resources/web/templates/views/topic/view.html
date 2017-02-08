@@ -292,6 +292,11 @@
                                         ><i class="fa fa-fw fa-twitter"></i> Cleanup Posts</a></td>
                                     </tr>
                                     <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deleteProcessedPostsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-twitter"></i> Cleanup Processed Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
                                         <td><a data-ng-click="deleteJobsByTopic()" class="btn btn-danger btn-block"
                                             uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
                                         ><i class="fa fa-fw fa-briefcase"></i> Cleanup Jobs</a></td>
