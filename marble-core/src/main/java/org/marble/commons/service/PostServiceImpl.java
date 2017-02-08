@@ -21,7 +21,7 @@ public class PostServiceImpl implements PostService {
 
     private static final Logger log = LoggerFactory.getLogger(PostServiceImpl.class);
     @Autowired
-    PostRepository postDao;
+    PostRepository postRepository;
 
     @Autowired
     DatastoreService datastoreService;
@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
     public Post save(Post post) throws InvalidPostException {
         // TODO Modify this in order to update only certain fields (and do not
         // overwrite the post)
-        post = postDao.save(post);
+        post = postRepository.save(post);
         if (post == null) {
             throw new InvalidPostException();
         }
@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findOne(Long id) throws InvalidPostException {
-        Post post = postDao.findOne(id);
+        Post post = postRepository.findOne(id);
         if (post == null) {
             throw new InvalidPostException();
         }
@@ -48,28 +48,28 @@ public class PostServiceImpl implements PostService {
     
     @Override
     public Page<Post> findByTopicName(@Param("name") String name, Pageable pageable) {
-        return postDao.findByTopicName(name, pageable);
+        return postRepository.findByTopicName(name, pageable);
     }
 
     @Override
     public List<Post> findAll() {
-        return postDao.findAll();
+        return postRepository.findAll();
     }
 
     @Override
     public void delete(Long id) {
-        postDao.delete(id);
+        postRepository.delete(id);
         return;
     }
 
     @Override
     public Long deleteByTopicName(String topicName) {
-        return postDao.deleteByTopicName(topicName);
+        return postRepository.deleteByTopicName(topicName);
     }
 
     @Override
     public Long count() {
-        return postDao.count();
+        return postRepository.count();
     }
 
     @Override

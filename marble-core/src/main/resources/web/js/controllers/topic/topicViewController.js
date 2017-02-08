@@ -151,6 +151,10 @@ angular.module('marbleCoreApp')
 		$window.open("/api/posts/download/topic/" + $scope.topic.name);
 	};
 	
+	$scope.downloadProcessedPosts = function () {
+		$window.open("/api/processedPosts/download/topic/" + $scope.topic.name);
+	};
+	
 	$scope.deleteJobsByTopic = function () {	
 		var deleteResult = JobFactory.delete({
 			topicName : $scope.topic.name

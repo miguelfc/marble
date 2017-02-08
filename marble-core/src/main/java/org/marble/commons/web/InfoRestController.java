@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class InfoRestController {
+    @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(InfoRestController.class);
 
     @Autowired
