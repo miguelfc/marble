@@ -28,7 +28,7 @@
 	"angular-ui-grid": "3.0.7",
 	"open-sans-fontface": "1.4.2",
 	
-	"jquery": "1.11.3",
+	"jquery": "3.1.0",
 	"datatables": "1.10.7",
 	"datatables-plugins": "1.10.7",
 	"angular-datatables": "0.5.0",
