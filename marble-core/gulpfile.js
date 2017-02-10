@@ -20,6 +20,7 @@ var paths = {
     images: 'src/main/resources/web/img/*.*',
     templates: 'src/main/resources/web/templates/**/*.html',
     index: 'src/main/resources/web/index.html',
+    error_pages: 'src/main/resources/web/error/404.html',
     fontawesome_fonts: 'src/main/resources/web/components/font-awesome/**/*.{ttf,woff,woff2,eof}',
     bootstrap_fonts: 'src/main/resources/web/components/bootstrap/**/*.{ttf,woff,woff2,eof}',
     ui_grid_fonts: 'src/main/resources/web/components/angular-ui-grid/**/*.{ttf,woff,woff2,eof,svg}',
@@ -43,14 +44,19 @@ gulp.task('usemin', ['build-custom'], function() {
 /**
  * Copy assets
  */
-gulp.task('build-assets', ['copy-fontawesome_fonts', 'copy-bootstrap_fonts', 'copy-ui_grid_fonts', 'copy-material_design_fonts', 'copy-opensans_fonts']);
+gulp.task('build-assets', ['copy-error_pages', 'copy-fontawesome_fonts', 'copy-bootstrap_fonts', 'copy-ui_grid_fonts', 'copy-material_design_fonts', 'copy-opensans_fonts']);
+
+gulp.task('copy-error_pages', function() {
+    return gulp.src(paths.error_pages)
+        .pipe(gulp.dest('src/main/resources/static/error'));
+});
 
 gulp.task('copy-fontawesome_fonts', function() {
-    return gulp.src(paths.fontawesome_fonts)
-        .pipe(rename({
-            dirname: '/fonts'
-        }))
-        .pipe(gulp.dest('src/main/resources/static/lib'));
+	return gulp.src(paths.fontawesome_fonts)
+	.pipe(rename({
+		dirname: '/fonts'
+	}))
+	.pipe(gulp.dest('src/main/resources/static/lib'));
 });
 
 gulp.task('copy-bootstrap_fonts', function() {
