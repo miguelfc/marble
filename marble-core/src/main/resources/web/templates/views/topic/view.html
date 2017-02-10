@@ -317,7 +317,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-rocket fa-fw"></i> Shortcuts
+                        <i class="fa fa-rocket fa-fw"></i> Other Actions
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
@@ -330,29 +330,22 @@
                                             of the ids accordingly."
                                             tooltip-placement="left"
                                         ><i class="fa fa-fw fa fa-sign-in"></i> Reboot Extraction</a></td>
-
                                     </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- .panel-body -->
-                </div>
-                <!-- /.panel -->
-                
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <i class="fa fa-file fa-fw"></i> Datasets
-                    </div>
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
+                                    <tr data-ng-show="hidDatasetsActions">
+                                        <td><a data-ng-click="showDatasetsActions()" class="btn btn-outline btn-block btn-default"
+                                            tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-file"></i> Datasets Actions</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDatasetsActions">
+                                        <td><a class="btn btn-outline btn-block disabled"><i
+                                                class="fa fa-fw fa-file"
+                                            ></i> Datasets Actions</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDatasetsActions">
                                         <td><a data-ng-click="downloadPosts()" class="btn btn-default btn-block"
                                         ><i class="fa fa-fw fa-download"></i> Download Posts</a></td>
                                     </tr>
-                                    <tr>
+                                    <tr data-ng-hide="hidDatasetsActions">
                                         <td><a data-ng-click="downloadProcessedPosts()" class="btn btn-default btn-block"
                                         ><i class="fa fa-fw fa-download"></i> Download Processed Posts</a></td>
                                     </tr>

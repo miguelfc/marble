@@ -217,6 +217,10 @@ angular.module('marbleCoreApp')
 	$scope.showDangerActions = function () {
 		$scope.hidDangerActions = false;
 	}
+	$scope.hidDatasetsActions = true;
+	$scope.showDatasetsActions = function () {
+		$scope.hidDatasetsActions = false;
+	}
 
 	// TODO: Handle 404
 	$scope.topic = TopicFactory.show({name: $stateParams.topicName}).$promise.then(function(data) {
