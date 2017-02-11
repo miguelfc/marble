@@ -1,5 +1,7 @@
 package org.marble.commons.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.marble.commons.exception.InvalidPostException;
@@ -22,5 +24,7 @@ public interface ProcessedPostService {
     Long deleteByTopicName(String topicName);
 
     Long count();
+
+    Long addFromFile(InputStream inputStream, String topicName) throws IOException;
 
 }

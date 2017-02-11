@@ -8,6 +8,7 @@ import org.marble.commons.domain.projections.ChartListProjection;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Chart;
 import org.marble.model.domain.model.Post;
+import org.marble.model.domain.model.ProcessedPost;
 import org.marble.model.domain.model.Topic;
 import org.marble.commons.domain.projections.FullTopicProjection;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class RestRepositoryConfig extends RepositoryRestMvcConfiguration {
         config.exposeIdsFor(TwitterApiKey.class);
         config.exposeIdsFor(GeneralProperty.class);
         config.exposeIdsFor(Post.class);
+        config.exposeIdsFor(ProcessedPost.class);
         config.getProjectionConfiguration()
                 .addProjection(FullTopicProjection.class)
                 .addProjection(JobExtendedProjection.class)

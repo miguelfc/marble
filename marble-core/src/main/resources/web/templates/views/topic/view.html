@@ -258,7 +258,7 @@
                                         ><i class="fa fa-fw fa-stop-circle"></i> Stop Streaming</a></td>
                                     </tr>
                                     <tr>
-                                        <td> <app-modal modal-button="Process" modal-title="Process Topic" modal-action="process(options)"
+                                        <td><app-modal modal-button="Process" modal-title="Process Topic" modal-action="process(options)"
                                                 modal-type="process" modal-icon="fa-scissors" modal-options="topic.lastProcessParameters"
                                             ></app-modal> 
                                             </td>
@@ -348,6 +348,14 @@
                                     <tr data-ng-hide="hidDatasetsActions">
                                         <td><a data-ng-click="downloadProcessedPosts()" class="btn btn-default btn-block"
                                         ><i class="fa fa-fw fa-download"></i> Download Processed Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDatasetsActions">
+                                        <td><a class="btn btn-default btn-block" ng-model="postsFile" ngf-select="uploadPosts($file)"
+                                        ><i class="fa fa-fw fa-upload"></i> Upload Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDatasetsActions">
+                                        <td><a class="btn btn-default btn-block" ng-model="processedPostsFile" ngf-select="uploadProcessedPosts($file)"
+                                        ><i class="fa fa-fw fa-upload"></i> Upload Processed Posts</a></td>
                                     </tr>
                                 </tbody>
                             </table>

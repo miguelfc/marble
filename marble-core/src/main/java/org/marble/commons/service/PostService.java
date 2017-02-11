@@ -1,5 +1,7 @@
 package org.marble.commons.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.marble.commons.exception.InvalidPostException;
@@ -24,5 +26,7 @@ public interface PostService {
     public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException;
 
     Page<Post> findByTopicName(String name, Pageable pageable);
+    
+    Long addFromFile(InputStream inputStream, String topicName) throws IOException; 
 
 }

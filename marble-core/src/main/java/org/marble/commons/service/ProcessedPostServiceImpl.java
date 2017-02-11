@@ -1,5 +1,9 @@
 package org.marble.commons.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.marble.commons.domain.repository.ProcessedPostRepository;
@@ -13,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class ProcessedPostServiceImpl implements ProcessedPostService {
@@ -68,6 +75,33 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
     @Override
     public Long count() {
         return processedPostRepository.count();
+    }
+    
+    @Override
+    public Long addFromFile(InputStream inputStream, String topicName) throws IOException {
+        Long count = 0L;
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            for (String line; (line = br.readLine()) != null;) {
+                // process the line.
+                try {
+                    ProcessedPost post = mapper.readValue(line, ProcessedPost.class);
+                    this.save(post);
+                    count++;
+                } catch (InvalidPostException e) {
+                    log.error("An error occurred while importing a post.", e);
+                }
+            }
+        } catch (IOException e) {
+            throw (e);
+        }
+
+        log.info("A total of <" + count + "> processed posts were uploaded for topic <" + topicName + ">");
+        return count;
     }
 
 }

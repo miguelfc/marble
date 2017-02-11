@@ -7,6 +7,7 @@ angular.module('marbleCoreApp')
 				$stateParams, 
 				$timeout, 
 				$uibModal,  
+				Upload,
 				TopicFactory, 
 				TopicInfoFactory, 
 				TopicExtractFactory,
@@ -230,5 +231,33 @@ angular.module('marbleCoreApp')
 		}
 	}, function(error) {
 	});
+	
+	// upload on file select or drop
+	
+	$scope.uploadPosts = function(file) {
+		$scope.upload(file, "/api/posts/upload/topic/" + $scope.topic.name);
+		$scope.postsFile = null;
+	}
+	$scope.uploadProcessedPosts = function(file) {
+		$scope.upload(file, "/api/processedPosts/upload/topic/" + $scope.topic.name);
+		$scope.processedPostsFile = null;
+	}
+    $scope.upload = function (file, url) {
+        Upload.upload({
+            url: url,
+            data: {file: file, 'time': new Date()}
+        }).then(function (resp) {
+        	$scope.error = "";
+        	$scope.success = resp.data.message;
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+            $scope.error = "An error ocurred while uploading the file. Error status: " + resp.status;
+			$scope.success = "";
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+        });
+    };
+    
 
 });
