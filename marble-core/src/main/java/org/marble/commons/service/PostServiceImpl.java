@@ -1,5 +1,10 @@
 package org.marble.commons.service;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.marble.commons.domain.repository.PostRepository;
@@ -15,6 +20,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -45,7 +53,7 @@ public class PostServiceImpl implements PostService {
         }
         return post;
     }
-    
+
     @Override
     public Page<Post> findByTopicName(@Param("name") String name, Pageable pageable) {
         return postRepository.findByTopicName(name, pageable);
@@ -77,11 +85,36 @@ public class PostServiceImpl implements PostService {
         Post post = this.findOne(postId);
         if (polarity != null) {
             post.addPolarityTag(user, polarity);
-        }
-        else {
+        } else {
             post.removePolarityTag(user);
         }
         this.save(post);
+    }
+
+    @Override
+    public Long addFromFile(InputStream inputStream, String topicName) throws IOException {
+        Long count = 0L;
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            for (String line; (line = br.readLine()) != null;) {
+                // process the line.
+                try {
+                    Post post = mapper.readValue(line, Post.class);
+                    this.save(post);
+                    count++;
+                } catch (InvalidPostException e) {
+                    log.error("An error occurred while importing a post.", e);
+                }
+            }
+        } catch (IOException e) {
+            throw (e);
+        }
+        log.info("A total of <" + count + "> posts were uploaded for topic <" + topicName + ">");
+        return count;
     }
 
 }

@@ -1,6 +1,8 @@
 package org.marble.commons.web;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import twitter4j.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 @RepositoryRestController
 public class ProcessedPostRestController {
@@ -50,17 +54,35 @@ public class ProcessedPostRestController {
         log.debug("Downloading all the posts of topic <" + topicName + ">.");
         response.setHeader("Content-Disposition", "attachment;filename=" + topicName + "_processedPosts.json");
 
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter writer = mapper.writer();
         PrintWriter out = response.getWriter();
         Pageable page = new PageRequest(0, 100);
         Page<ProcessedPost> results;
         do {
             results = processedPostService.findByTopicName(topicName, page);
             for (ProcessedPost post : results.getContent()) {
-                JSONObject jsonObject = new JSONObject(post);
-                out.println(jsonObject.toString());
+                out.println(writer.writeValueAsString(post));
             }
             page = page.next();
         } while (results.hasNext());
         out.close();
     }
+
+    @RequestMapping(value = "/processedPosts/upload/topic/{topicName}", method = RequestMethod.POST)
+    public ResponseEntity<RestResult> uploadByTopicId(@PathVariable(value = "topicName") String topicName, @RequestParam("file") MultipartFile file) {
+        RestResult restResult = new RestResult();
+
+        Long count = 0L;
+        try {
+            InputStream inputStream = new BufferedInputStream(file.getInputStream());
+            count = processedPostService.addFromFile(inputStream, topicName);
+        } catch (IOException e) {
+            log.error("An error occurred while uploading posts", e);
+            return new ResponseEntity<RestResult>(restResult, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        restResult.setMessage("A total of <" + count + "> processed posts from topic <" + topicName + "> were uploaded.");
+        return new ResponseEntity<RestResult>(restResult, HttpStatus.OK);
+    }
+
 }

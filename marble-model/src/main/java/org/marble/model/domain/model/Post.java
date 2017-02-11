@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.marble.model.model.SymplifiedProcessingItem;
+import org.marble.model.model.User;
 import org.marble.util.LongSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,16 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import twitter4j.ExtendedMediaEntity;
 import twitter4j.GeoLocation;
-import twitter4j.HashtagEntity;
-import twitter4j.MediaEntity;
 import twitter4j.Place;
 import twitter4j.Scopes;
-import twitter4j.SymbolEntity;
-import twitter4j.URLEntity;
-import twitter4j.User;
-import twitter4j.UserMentionEntity;
 
 @Document(collection = "posts")
 public class Post {
@@ -52,16 +46,11 @@ public class Post {
     private String lang;
     private long[] contributorsIDs;
     private Post retweetedStatus;
-    private UserMentionEntity[] userMentionEntities;
-    private URLEntity[] urlEntities;
-    private HashtagEntity[] hashtagEntities;
-    private MediaEntity[] mediaEntities;
-    private SymbolEntity[] symbolEntities;
     private long currentUserRetweetId = -1L;
     private Scopes scopes;
     private User user = null;
     private String[] withheldInCountries = null;
-    
+
     @JsonIgnoreProperties(allowGetters = true)
     private Map<String, Integer> polarityTags = new LinkedHashMap<>();
 
@@ -89,11 +78,6 @@ public class Post {
         this.lang = status.getLang();
         this.contributorsIDs = status.getContributorsIDs();
         this.retweetedStatus = status.getRetweetedStatus();
-        this.userMentionEntities = status.getUserMentionEntities();
-        this.urlEntities = status.getUrlEntities();
-        this.hashtagEntities = status.getHashtagEntities();
-        this.mediaEntities = status.getMediaEntities();
-        this.symbolEntities = status.getSymbolEntities();
         this.currentUserRetweetId = status.getCurrentUserRetweetId();
         this.scopes = status.getScopes();
         this.user = status.getUser();
@@ -121,21 +105,11 @@ public class Post {
         if (status.getRetweetedStatus() != null) {
             this.retweetedStatus = new Post(status.getRetweetedStatus(), null);
         }
-        
-        this.userMentionEntities = status.getUserMentionEntities();
-        this.urlEntities = status.getURLEntities();
-        this.hashtagEntities = status.getHashtagEntities();
-        this.mediaEntities = status.getMediaEntities();
-        this.symbolEntities = status.getSymbolEntities();
+
         this.currentUserRetweetId = status.getCurrentUserRetweetId();
         this.scopes = status.getScopes();
-        this.user = status.getUser();
+        this.user = new User(status.getUser());
 
-        // TODO Fix this (it throws an exception when filled)
-        this.mediaEntities = null;
-        if (this.retweetedStatus != null) {
-            this.retweetedStatus.mediaEntities = null;
-        }
     }
 
     public String getTopicName() {
@@ -290,46 +264,6 @@ public class Post {
         this.retweetedStatus = retweetedStatus;
     }
 
-    public UserMentionEntity[] getUserMentionEntities() {
-        return userMentionEntities;
-    }
-
-    public void setUserMentionEntities(UserMentionEntity[] userMentionEntities) {
-        this.userMentionEntities = userMentionEntities;
-    }
-
-    public URLEntity[] getUrlEntities() {
-        return urlEntities;
-    }
-
-    public void setUrlEntities(URLEntity[] urlEntities) {
-        this.urlEntities = urlEntities;
-    }
-
-    public HashtagEntity[] getHashtagEntities() {
-        return hashtagEntities;
-    }
-
-    public void setHashtagEntities(HashtagEntity[] hashtagEntities) {
-        this.hashtagEntities = hashtagEntities;
-    }
-
-    public MediaEntity[] getMediaEntities() {
-        return mediaEntities;
-    }
-
-    public void setMediaEntities(MediaEntity[] mediaEntities) {
-        this.mediaEntities = mediaEntities;
-    }
-    
-    public SymbolEntity[] getSymbolEntities() {
-        return symbolEntities;
-    }
-
-    public void setSymbolEntities(SymbolEntity[] symbolEntities) {
-        this.symbolEntities = symbolEntities;
-    }
-
     public long getCurrentUserRetweetId() {
         return currentUserRetweetId;
     }
@@ -361,7 +295,7 @@ public class Post {
     public void setWithheldInCountries(String[] withheldInCountries) {
         this.withheldInCountries = withheldInCountries;
     }
-    
+
     public SymplifiedProcessingItem getSymplifiedProcessingItem() {
         SymplifiedProcessingItem symplifiedProcessingItem = new SymplifiedProcessingItem();
         symplifiedProcessingItem.setId(this.id);
@@ -374,7 +308,6 @@ public class Post {
         return polarityTags;
     }
 
-    
     public void setPolarityTags(Map<String, Integer> polarityTags) {
         this.polarityTags = polarityTags;
     }
@@ -382,7 +315,7 @@ public class Post {
     public void addPolarityTag(String user, Integer polarity) {
         this.polarityTags.put(user, polarity);
     }
-    
+
     public void removePolarityTag(String user) {
         this.polarityTags.remove(user);
     }
