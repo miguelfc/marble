@@ -270,43 +270,6 @@
                                             </td>
 
                                     </tr>
-                                    <tr data-ng-show="hidDangerActions">
-                                        <td><a data-ng-click="showDangerActions()" class="btn btn-outline btn-block btn-danger"
-                                            uib-tooltip="The actions behind this button are dangerous and do not have an undo button.
-                                             Proceed with care."
-                                            tooltip-placement="left"
-                                        ><i class="fa fa-fw fa-exclamation-triangle"></i> Dangerous Actions</a></td>
-                                    </tr>
-                                    <tr data-ng-hide="hidDangerActions">
-                                        <td><a class="btn btn-outline btn-block disabled"><i
-                                                class="fa fa-fw fa-exclamation-triangle"
-                                            ></i> Dangerous Actions</a></td>
-                                    </tr>
-                                    <tr data-ng-hide="hidDangerActions">
-                                        <td><a data-ng-click="deletePostsByTopic()" class="btn btn-danger btn-block"
-                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
-                                        ><i class="fa fa-fw fa-twitter"></i> Cleanup Posts</a></td>
-                                    </tr>
-                                    <tr data-ng-hide="hidDangerActions">
-                                        <td><a data-ng-click="deleteProcessedPostsByTopic()" class="btn btn-danger btn-block"
-                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
-                                        ><i class="fa fa-fw fa-twitter"></i> Cleanup Processed Posts</a></td>
-                                    </tr>
-                                    <tr data-ng-hide="hidDangerActions">
-                                        <td><a data-ng-click="deleteJobsByTopic()" class="btn btn-danger btn-block"
-                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
-                                        ><i class="fa fa-fw fa-briefcase"></i> Cleanup Jobs</a></td>
-                                    </tr>
-                                    <tr data-ng-hide="hidDangerActions">
-                                        <td><a data-ng-click="deletePlotsByTopic()" class="btn btn-danger btn-block"
-                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
-                                        ><i class="fa fa-fw fa-bar-chart-o"></i> Cleanup Plots</a></td>
-                                    </tr>
-                                    <tr data-ng-hide="hidDangerActions">
-                                        <td><a data-ng-click="delete()" class="btn btn-danger btn-block"
-                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
-                                        ><i class="fa fa-fw fa-trash-o"></i> Delete Topic</a></td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -356,6 +319,43 @@
                                     <tr data-ng-hide="hidDatasetsActions">
                                         <td><a class="btn btn-default btn-block" ng-model="processedPostsFile" ngf-select="uploadProcessedPosts($file)"
                                         ><i class="fa fa-fw fa-upload"></i> Upload Processed Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-show="hidDangerActions">
+                                        <td><a data-ng-click="showDangerActions()" class="btn btn-outline btn-block btn-danger"
+                                            uib-tooltip="The actions behind this button are dangerous and do not have an undo button.
+                                             Proceed with care."
+                                            tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-exclamation-triangle"></i> Dangerous Actions</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a class="btn btn-outline btn-block disabled"><i
+                                                class="fa fa-fw fa-exclamation-triangle"
+                                            ></i> Dangerous Actions</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deletePostsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-twitter"></i> Cleanup Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deleteProcessedPostsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-twitter"></i> Cleanup Processed Posts</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deleteJobsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-briefcase"></i> Cleanup Jobs</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="deletePlotsByTopic()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-bar-chart-o"></i> Cleanup Plots</a></td>
+                                    </tr>
+                                    <tr data-ng-hide="hidDangerActions">
+                                        <td><a data-ng-click="delete()" class="btn btn-danger btn-block"
+                                            uib-tooltip="Careful, there is no way to restore the data after this." tooltip-placement="left"
+                                        ><i class="fa fa-fw fa-trash-o"></i> Delete Topic</a></td>
                                     </tr>
                                 </tbody>
                             </table>
