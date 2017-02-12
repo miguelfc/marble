@@ -4,8 +4,8 @@ server:
     timeout: 10800
 
 multipart:
-  max-file-size: 50MB
-  max-request-size: 50MB
+  max-file-size: 500MB
+  max-request-size: 500MB
 
 spring:
   application:

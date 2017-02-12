@@ -2,6 +2,10 @@ package org.marble.model.model;
 
 import java.util.Date;
 
+import org.marble.model.serializers.CustomDateAndTimeDeserializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 public class User {
     private long id;
     private String name;
@@ -30,6 +34,7 @@ public class User {
     private boolean defaultProfile;
     private boolean showAllInlineMedia;
     private int friendsCount;
+    @JsonDeserialize(using = CustomDateAndTimeDeserializer.class)
     private Date createdAt;
     private int favouritesCount;
     private int utcOffset;
