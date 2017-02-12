@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.marble.commons.domain.repository.PostRepository;
 import org.marble.commons.exception.InvalidPostException;
@@ -98,10 +100,26 @@ public class PostServiceImpl implements PostService {
 
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
+        log.info("Adding posts from file to topic <" + topicName + ">");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             for (String line; (line = br.readLine()) != null;) {
                 // process the line.
+
+                // TODO Remove when legacy marble formats are completely
+                // migrated
+                {
+                    // Replacing odd "createdAt" : { "$date" :
+                    // "2011-06-12T13:02:01.000Z"} definitions
+                    Pattern createdAtPattern = Pattern.compile("\"createdAt\" *: *\\{ *\"\\$date\" *: *\"([^\"]+)\" *\\}");
+                    Matcher createdAtMatcher = createdAtPattern.matcher(line);
+                    while (createdAtMatcher.find()) {
+                        line = line.replace(createdAtMatcher.group(0), "\"createdAt\": \"" + createdAtMatcher.group(1) + "\"");
+                    }
+                    line = line.replaceAll("\"_id\"", "\"id\"");
+                }
+
                 try {
                     Post post = mapper.readValue(line, Post.class);
                     post.setTopicId(topicName);
@@ -109,6 +127,10 @@ public class PostServiceImpl implements PostService {
                     count++;
                 } catch (InvalidPostException e) {
                     log.error("An error occurred while importing a post.", e);
+                }
+                
+                if (count % 100 == 0) {
+                    log.info("Posts uploaded so far: <" + count + ">");
                 }
             }
         } catch (IOException e) {

@@ -84,6 +84,8 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
 
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        
+        log.info("Adding processed posts from file to topic <" + topicName + ">");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             for (String line; (line = br.readLine()) != null;) {
@@ -95,6 +97,10 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
                     count++;
                 } catch (InvalidPostException e) {
                     log.error("An error occurred while importing a post.", e);
+                }
+                
+                if (count % 100 == 0) {
+                    log.info("Posts uploaded so far: <" + count + ">");
                 }
             }
         } catch (IOException e) {

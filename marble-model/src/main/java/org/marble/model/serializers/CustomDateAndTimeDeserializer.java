@@ -25,7 +25,6 @@ public class CustomDateAndTimeDeserializer extends JsonDeserializer<Date> {
             DeserializationContext paramDeserializationContext)
             throws IOException, JsonProcessingException {
         String str = paramJsonParser.getText().trim();
-        log.error("Deserializing " + str);
         try {
             return dateFormat.parse(str);
         } catch (ParseException e) {
