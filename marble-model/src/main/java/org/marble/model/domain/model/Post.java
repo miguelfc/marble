@@ -4,25 +4,27 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.marble.model.model.SymplifiedProcessingItem;
+import org.marble.model.model.GeoLocation;
+import org.marble.model.model.Place;
+import org.marble.model.model.Scopes;
 import org.marble.model.model.User;
+import org.marble.model.serializers.CustomDateAndTimeDeserializer;
 import org.marble.util.LongSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import twitter4j.GeoLocation;
-import twitter4j.Place;
-import twitter4j.Scopes;
 
 @Document(collection = "posts")
 public class Post {
 
     @Indexed
     private String topicName;
+    
+    @JsonDeserialize(using = CustomDateAndTimeDeserializer.class)
     private Date createdAt;
 
     @Id
@@ -96,8 +98,8 @@ public class Post {
         this.isRetweeted = status.isRetweeted();
         this.favoriteCount = status.getFavoriteCount();
         this.inReplyToScreenName = status.getInReplyToScreenName();
-        this.geoLocation = status.getGeoLocation();
-        this.place = status.getPlace();
+        this.geoLocation = new GeoLocation(status.getGeoLocation());
+        this.place = new Place(status.getPlace());
         this.retweetCount = status.getRetweetCount();
         this.isPossiblySensitive = status.isPossiblySensitive();
         this.lang = status.getLang();
@@ -107,7 +109,7 @@ public class Post {
         }
 
         this.currentUserRetweetId = status.getCurrentUserRetweetId();
-        this.scopes = status.getScopes();
+        this.scopes = new Scopes(status.getScopes());
         this.user = new User(status.getUser());
 
     }
@@ -294,14 +296,6 @@ public class Post {
 
     public void setWithheldInCountries(String[] withheldInCountries) {
         this.withheldInCountries = withheldInCountries;
-    }
-
-    public SymplifiedProcessingItem getSymplifiedProcessingItem() {
-        SymplifiedProcessingItem symplifiedProcessingItem = new SymplifiedProcessingItem();
-        symplifiedProcessingItem.setId(this.id);
-        symplifiedProcessingItem.setCreatedAt(this.createdAt);
-        symplifiedProcessingItem.setText(this.text);
-        return symplifiedProcessingItem;
     }
 
     public Map<String, Integer> getPolarityTags() {

@@ -104,6 +104,7 @@ public class PostServiceImpl implements PostService {
                 // process the line.
                 try {
                     Post post = mapper.readValue(line, Post.class);
+                    post.setTopicId(topicName);
                     this.save(post);
                     count++;
                 } catch (InvalidPostException e) {

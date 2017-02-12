@@ -90,6 +90,7 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
                 // process the line.
                 try {
                     ProcessedPost post = mapper.readValue(line, ProcessedPost.class);
+                    post.setTopicName(topicName);
                     this.save(post);
                     count++;
                 } catch (InvalidPostException e) {
