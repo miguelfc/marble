@@ -1,6 +1,11 @@
 version: '2'
 
 services:
+  mongodb:
+      image: mongo:3.4
+      ports:
+      - "27017"
+      
   registry:
     image: marble/marble-registry
     ports:
@@ -12,10 +17,10 @@ services:
      - "8080:8080"
     depends_on:
      - registry
-    extra_hosts:
-     - "mongodb:172.17.0.1"
+     - mongodb
     links:
      - registry
+     - mongodb
 
   preprocessor-simple:
     image: marble/marble-preprocessor-simple
@@ -23,8 +28,6 @@ services:
      - "8080"
     depends_on:
      - registry
-    extra_hosts:
-     - "mongodb:172.17.0.1"
     links:
      - registry
 
@@ -34,10 +37,10 @@ services:
      - "8080"
     depends_on:
      - registry
-    extra_hosts:
-     - "mongodb:172.17.0.1"
+     - mongodb
     links:
      - registry
+     - mongodb
      
   processor-stanford:
     image: marble/marble-processor-stanford
@@ -45,10 +48,10 @@ services:
      - "8080"
     depends_on:
      - registry
-    extra_hosts:
-     - "mongodb:172.17.0.1"
+     - mongodb
     links:
      - registry
+     - mongodb
      
   plotter-simple:
     image: marble/marble-plotter-simple
@@ -56,8 +59,16 @@ services:
      - "8080"
     depends_on:
      - registry
-    extra_hosts:
-     - "mongodb:172.17.0.1"
+     - mongodb
     links:
      - registry
+     - mongodb
      
+  processor-python2:
+    image: marble/marble-processor-python2
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    links:
+     - registry
