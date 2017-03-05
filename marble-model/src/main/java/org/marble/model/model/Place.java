@@ -20,41 +20,43 @@ public class Place {
     }
 
     public Place(twitter4j.Place place) {
-        this.name = place.getName();
-        this.streetAddress = place.getStreetAddress();
-        this.countryCode = place.getCountryCode();
-        this.id = place.getId();
-        this.country = place.getCountry();
-        this.placeType = place.getPlaceType();
-        this.url = place.getURL();
-        this.fullName = place.getFullName();
-        this.boundingBoxType = place.getBoundingBoxType();
-        if (place.getBoundingBoxCoordinates() != null) {
-            this.boundingBoxCoordinates = new GeoLocation[place.getBoundingBoxCoordinates().length][];
-            for (int i = 0; i < place.getBoundingBoxCoordinates().length; i++) {
-                twitter4j.GeoLocation[] row = place.getBoundingBoxCoordinates()[i];
-                for (int j = 0; j < row.length; j++) {
-                    this.boundingBoxCoordinates[i][j] = new GeoLocation(row[j]);
+        if (place != null) {
+            this.name = place.getName();
+            this.streetAddress = place.getStreetAddress();
+            this.countryCode = place.getCountryCode();
+            this.id = place.getId();
+            this.country = place.getCountry();
+            this.placeType = place.getPlaceType();
+            this.url = place.getURL();
+            this.fullName = place.getFullName();
+            this.boundingBoxType = place.getBoundingBoxType();
+            if (place.getBoundingBoxCoordinates() != null) {
+                this.boundingBoxCoordinates = new GeoLocation[place.getBoundingBoxCoordinates().length][];
+                for (int i = 0; i < place.getBoundingBoxCoordinates().length; i++) {
+                    twitter4j.GeoLocation[] row = place.getBoundingBoxCoordinates()[i];
+                    for (int j = 0; j < row.length; j++) {
+                        this.boundingBoxCoordinates[i][j] = new GeoLocation(row[j]);
+                    }
                 }
             }
-        }
 
-        this.geometryType = place.getGeometryType();
+            this.geometryType = place.getGeometryType();
 
-        if (place.getGeometryCoordinates() != null) {
-            this.geometryCoordinates = new GeoLocation[place.getGeometryCoordinates().length][];
-            for (int i = 0; i < place.getGeometryCoordinates().length; i++) {
-                twitter4j.GeoLocation[] row = place.getGeometryCoordinates()[i];
-                for (int j = 0; j < row.length; j++) {
-                    this.geometryCoordinates[i][j] = new GeoLocation(row[j]);
+            if (place.getGeometryCoordinates() != null) {
+                this.geometryCoordinates = new GeoLocation[place.getGeometryCoordinates().length][];
+                for (int i = 0; i < place.getGeometryCoordinates().length; i++) {
+                    twitter4j.GeoLocation[] row = place.getGeometryCoordinates()[i];
+                    for (int j = 0; j < row.length; j++) {
+                        this.geometryCoordinates[i][j] = new GeoLocation(row[j]);
+                    }
                 }
             }
-        }
 
-        if (place.getContainedWithIn() != null) {
-            this.containedWithIn = new Place[place.getContainedWithIn().length];
-            for (int i = 0; i < place.getContainedWithIn().length; i++) {
-                this.containedWithIn[i] = new Place(place.getContainedWithIn()[i]);
+            if (place.getContainedWithIn() != null) {
+                this.containedWithIn = new Place[place.getContainedWithIn().length];
+                for (int i = 0; i < place.getContainedWithIn().length; i++) {
+                    this.containedWithIn[i] = new Place(place.getContainedWithIn()[i]);
+                }
             }
         }
     }
