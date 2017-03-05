@@ -1,5 +1,6 @@
 package org.marble.model.model;
 
+
 public class Place {
     private String name;
     private String streetAddress;
@@ -30,12 +31,21 @@ public class Place {
             this.url = place.getURL();
             this.fullName = place.getFullName();
             this.boundingBoxType = place.getBoundingBoxType();
+            
             if (place.getBoundingBoxCoordinates() != null) {
-                this.boundingBoxCoordinates = new GeoLocation[place.getBoundingBoxCoordinates().length][];
+                Integer max2dSize = 0;
+                for (int i = 0; i < place.getBoundingBoxCoordinates().length; i++) {
+                    if (place.getBoundingBoxCoordinates()[i].length > max2dSize) {
+                        max2dSize = place.getBoundingBoxCoordinates()[i].length;
+                    }
+                }
+                this.boundingBoxCoordinates = new GeoLocation[place.getBoundingBoxCoordinates().length][max2dSize];
                 for (int i = 0; i < place.getBoundingBoxCoordinates().length; i++) {
                     twitter4j.GeoLocation[] row = place.getBoundingBoxCoordinates()[i];
                     for (int j = 0; j < row.length; j++) {
-                        this.boundingBoxCoordinates[i][j] = new GeoLocation(row[j]);
+                        new GeoLocation(row[j]);
+                        System.out.println("> " + i + " ; " + j);
+                        this.boundingBoxCoordinates[i][j] = new GeoLocation();
                     }
                 }
             }
@@ -43,7 +53,13 @@ public class Place {
             this.geometryType = place.getGeometryType();
 
             if (place.getGeometryCoordinates() != null) {
-                this.geometryCoordinates = new GeoLocation[place.getGeometryCoordinates().length][];
+                Integer max2dSize = 0;
+                for (int i = 0; i < place.getGeometryCoordinates().length; i++) {
+                    if (place.getGeometryCoordinates()[i].length > max2dSize) {
+                        max2dSize = place.getGeometryCoordinates()[i].length;
+                    }
+                }
+                this.geometryCoordinates = new GeoLocation[place.getGeometryCoordinates().length][max2dSize];
                 for (int i = 0; i < place.getGeometryCoordinates().length; i++) {
                     twitter4j.GeoLocation[] row = place.getGeometryCoordinates()[i];
                     for (int j = 0; j < row.length; j++) {
