@@ -44,7 +44,6 @@ public class Place {
                     twitter4j.GeoLocation[] row = place.getBoundingBoxCoordinates()[i];
                     for (int j = 0; j < row.length; j++) {
                         new GeoLocation(row[j]);
-                        System.out.println("> " + i + " ; " + j);
                         this.boundingBoxCoordinates[i][j] = new GeoLocation();
                     }
                 }
