@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.marble.commons.domain.model.TwitterApiKey;
 import org.marble.commons.exception.InvalidExecutionException;
 import org.marble.commons.executor.processor.ProcessorExecutor;
@@ -152,21 +151,32 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
 
             String[] languages = getListenersLanguages();
             String[] keywords = getListenersKeywords();
+            double[][] locations = getLocations();
 
-            if (keywords.length > 0) {
-                query = query.track(keywords);
+            if (keywords.length > 0 || locations.length > 0) {
+
+                if (keywords.length > 0) {
+                    log.info("Adding " + keywords.length + " keywords.");
+                    query = query.track(keywords);
+                }
 
                 if (languages.length > 0) {
+                    log.info("Adding " + languages.length + " languages.");
                     query = query.language(languages);
+                }
+
+                if (locations.length > 0) {
+                    log.info("Adding " + locations.length + " locations.");
+                    query = query.locations(locations);
                 }
 
                 topic.setStreaming(Boolean.TRUE);
                 topicService.save(topic);
 
-                log.error("Adding query...");
+                log.info("Adding query...");
                 twitterStream.filter(query);
             } else {
-                msg = "No keywords defined for the stream. It will not be restarted.";
+                msg = "No keywords or locations defined for the stream. It will not be restarted.";
                 log.info(msg);
                 job.appendLog(msg);
                 job.setStatus(JobStatus.Aborted);
@@ -206,17 +216,17 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             jobService.save(job);
 
             Topic topic = topicService.findOne(job.getTopic().getName());
-            
+
             topic.setStreaming(Boolean.FALSE);
             topicService.save(topic);
-            
+
             // Changing execution state
             msg = "Stop operation finished.";
             log.info(msg);
             job.appendLog(msg);
             job.setStatus(JobStatus.Stopped);
             job = jobService.save(job);
-            
+
             FilterQuery query = new FilterQuery();
 
             TwitterStreamingListener listener = twitterStreamingListeners.get(topic.getName());
@@ -226,21 +236,30 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             twitterStream.shutdown();
             twitterStream.removeListener(listener);
             twitterStreamingListeners.remove(topic.getName());
-            
+
             if (!twitterStreamingListeners.isEmpty()) {
                 String[] languages = getListenersLanguages();
                 String[] keywords = getListenersKeywords();
+                double[][] locations = getLocations();
 
-                if (keywords.length > 0) {
+                if (keywords.length > 0 || locations.length > 0) {
+
                     // Signaling the stopped listener job.
                     msg = "Restarting the stream with keywords <" + Arrays.toString(keywords) + ">.";
                     log.info(msg);
                     job.appendLog(msg);
                     job = jobService.save(job);
 
-                    query = query.track(keywords);
+                    if (keywords.length > 0) {
+                        query = query.track(keywords);
+                    }
+
                     if (languages.length > 0) {
                         query = query.language(languages);
+                    }
+
+                    if (locations.length > 0) {
+                        query = query.locations(locations);
                     }
 
                     topic.setStreaming(Boolean.TRUE);
@@ -259,7 +278,6 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             } else {
                 twitterStream.cleanUp();
             }
-
 
         } catch (Exception e) {
             msg = "An error ocurred while manipulating jobs <" + job.getId() + ">. Execution aborted.";
@@ -298,5 +316,22 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
         }
         String[] result = {};
         return languages.toArray(result);
+    }
+
+    public double[][] getLocations() {
+        ArrayList<double[]> locations = new ArrayList<double[]>();
+        for (String topicName : twitterStreamingListeners.keySet()) {
+            TwitterStreamingListener listener = twitterStreamingListeners.get(topicName);
+            ArrayList<double[]> listenerLocation = listener.getLocations();
+            if (listenerLocation != null) {
+                locations.addAll(listenerLocation);
+            }
+        }
+        double[][] result = {  };
+        //log.error("MFC Array : " +locations.size());
+        double[][] returnResult = locations.toArray(result);
+        //log.error("MFC result : " + result.length);
+        //log.error("MFC ArrayReturn : " + returnResult.length);
+        return returnResult;
     }
 }
