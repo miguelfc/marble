@@ -53,6 +53,16 @@ public class Topic implements Serializable {
     private Set<JobParameters> lastProcessParameters;
     private Set<JobParameters> lastPlotterParameters;
     
+    @Min(-90)
+    @Max(90)
+    private Double geoLatitude;
+    
+    @Min(-180)
+    @Max(180)
+    private Double geoLongitude;
+    
+    private Double geoRadius;
+    
     private Boolean streaming;
 
     public String getName() {
@@ -141,6 +151,30 @@ public class Topic implements Serializable {
 
     public void setLastPlotterParameters(Set<JobParameters> lastPlotterParameters) {
         this.lastPlotterParameters = lastPlotterParameters;
+    }
+
+    public Double getGeoLatitude() {
+        return geoLatitude;
+    }
+
+    public void setGeoLatitude(Double geoLatitude) {
+        this.geoLatitude = geoLatitude;
+    }
+
+    public Double getGeoLongitude() {
+        return geoLongitude;
+    }
+
+    public void setGeoLongitude(Double geoLongitude) {
+        this.geoLongitude = geoLongitude;
+    }
+
+    public Double getGeoRadius() {
+        return geoRadius;
+    }
+
+    public void setGeoRadius(Double geoRadius) {
+        this.geoRadius = geoRadius;
     }
 
     public Boolean isStreaming() {

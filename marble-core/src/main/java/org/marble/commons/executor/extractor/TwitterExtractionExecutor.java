@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import twitter4j.GeoLocation;
 import twitter4j.TwitterException;
 
 @Component
@@ -102,6 +103,8 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
 
             Integer apiKeysIndex = 0;
             String keyword = topic.getKeywords();
+            // Modify the criteria to have the same "OR" separator as the streaming relative
+            keyword = keyword.replace("|", " OR ");
             String language = topic.getLanguage();
 
             twitterSearchService.configure(apiKeys.get(apiKeysIndex));
@@ -120,13 +123,22 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
             if (topic.getPostsPerFullExtraction() != null) {
                 maxPosts = topic.getPostsPerFullExtraction();
             }
+            
+            Double longitude = topic.getGeoLongitude();
+            Double latitude = topic.getGeoLatitude();
+            Double radius = topic.getGeoRadius();
+            
+            GeoLocation geoLocation = null;
+            if (longitude != null && latitude != null){
+                geoLocation = new GeoLocation(latitude.doubleValue(), longitude.doubleValue());
+            }
 
             int count = 0;
             do {
                 List<twitter4j.Status> statusList;
 
                 try {
-                    statusList = twitterSearchService.search(keyword, lastId, language);
+                    statusList = twitterSearchService.search(keyword, lastId, language, geoLocation, radius);
                 } catch (TwitterException e) {
                     // TODO Auto-generated catch block
 
