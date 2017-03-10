@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import org.marble.commons.domain.model.TwitterApiKey;
 
+import twitter4j.GeoLocation;
 import twitter4j.Query;
+import twitter4j.Query.Unit;
 import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -73,32 +75,42 @@ public class TwitterSearchServiceImpl implements TwitterSearchService {
     }
 
     @Override
-    public List<Status> search(String keyword) throws TwitterException {
-        return this.search(keyword, this.DEFAULT_MAX_ID);
-    }
-    
-    @Override
-    public List<Status> search(String keyword, long maxId) throws TwitterException {
-        return this.search(keyword, maxId, null);
+    public List<Status> search(String keywords) throws TwitterException {
+        return this.search(keywords, this.DEFAULT_MAX_ID);
     }
 
     @Override
-    public List<Status> search(String keyword, long maxId, String language) throws TwitterException {
-        // TODO Multiple keywords
+    public List<Status> search(String keywords, long maxId) throws TwitterException {
+        return this.search(keywords, maxId, null);
+    }
+
+    @Override
+    public List<Status> search(String keywords, long maxId, String language) throws TwitterException {
+        return this.search(keywords, maxId, language);
+    }
+
+    @Override
+    public List<Status> search(String keywords, long maxId, String language, GeoLocation geoLocation, Double radius) throws TwitterException {
 
         QueryResult result = null;
 
-        Query query = new Query(keyword);
+        Query query = new Query(keywords);
+
         if (maxId != this.DEFAULT_MAX_ID) {
             query.setMaxId(maxId - 1);
         }
         if (language != null) {
             query.setLang(language);
         }
-        
+
+        if (geoLocation != null && radius != null) {
+            query.setGeoCode(geoLocation, radius.doubleValue(), Unit.km);
+        }
+
         query.setCount(this.statusesPerCall);
 
         result = twitter.search(query);
+
         return result.getTweets();
     }
 
