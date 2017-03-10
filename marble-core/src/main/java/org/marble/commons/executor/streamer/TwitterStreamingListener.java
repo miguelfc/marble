@@ -3,7 +3,6 @@ package org.marble.commons.executor.streamer;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
-import org.marble.model.domain.model.Topic.Unit;
 import org.marble.model.model.GeoLocation;
 import org.marble.model.model.JobParameters;
 
@@ -48,60 +47,44 @@ public class TwitterStreamingListener implements StatusListener {
 
     public TwitterStreamingListener(Topic topic, Job job, PostService postService, JobService executionService) {
         this.topic = topic;
-        this.keywords = topic.getKeywords().toLowerCase();
+        this.keywords = topic.getKeywords();
+        if (keywords != null) {
+            keywords = keywords.toLowerCase();
+        }
         this.job = job;
         this.postService = postService;
         this.topicName = topic.getName();
         this.jobService = executionService;
-        
+
         Double longitude = topic.getGeoLongitude();
         Double latitude = topic.getGeoLatitude();
         Double radius = topic.getGeoRadius();
-        Unit unit = topic.getGeoUnit();
-        if (longitude != null && latitude != null && radius != null
-                && unit != null) {
-            locations = getSquareAroundPoint(latitude, longitude, radius,
-                    unit);
+        if (longitude != null && latitude != null && radius != null) {
+            this.locations = getSquareAroundPoint(latitude, longitude, radius);
         }
         count = 0;
     }
-    
-    private ArrayList<double[]> getSquareAroundPoint(Double lat, Double lon,
-            Double radius, Unit unit) {
+
+    private ArrayList<double[]> getSquareAroundPoint(Double lat, Double lon, Double radius) {
         double R = 6371;
         double distance = radius.doubleValue();
-        if (unit == Unit.mi) {
-            distance = distance * 0.621371192;
-        }
 
         double north = (lat * Math.PI / 180 + distance / R) * 180 / Math.PI;
         if (north > 90)
             north = 90;
 
-        double neast = (lon + (Math.atan2(
-                Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
-                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
-                        * Math.sin(lat * Math.PI / 180 + distance / R)))
-                * 180 / Math.PI);
-        double nwest = (lon + (Math.atan2(
-                -Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
-                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
-                        * Math.sin(lat * Math.PI / 180 + distance / R)))
-                * 180 / Math.PI);
+        double neast = (lon + (Math.atan2(Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180) * Math.sin(lat * Math.PI / 180 + distance / R))) * 180 / Math.PI);
+        double nwest = (lon + (Math.atan2(-Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180) * Math.sin(lat * Math.PI / 180 + distance / R))) * 180 / Math.PI);
 
         double south = (lat * Math.PI / 180 - distance / R) * 180 / Math.PI;
         if (south < -90)
             south = -90;
-        double seast = (lon + (Math.atan2(
-                Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
-                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
-                        * Math.sin(lat * Math.PI / 180 - distance / R)))
-                * 180 / Math.PI);
-        double swest = (lon + (Math.atan2(
-                -Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
-                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
-                        * Math.sin(lat * Math.PI / 180 - distance / R)))
-                * 180 / Math.PI);
+        double seast = (lon + (Math.atan2(Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180) * Math.sin(lat * Math.PI / 180 - distance / R))) * 180 / Math.PI);
+        double swest = (lon + (Math.atan2(-Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180) * Math.sin(lat * Math.PI / 180 - distance / R))) * 180 / Math.PI);
 
         double east = Math.max(seast, neast);
         double west = Math.min(swest, nwest);
@@ -187,7 +170,7 @@ public class TwitterStreamingListener implements StatusListener {
     public String getLanguage() {
         return topic.getLanguage();
     }
-    
+
     public ArrayList<double[]> getLocations() {
         return locations;
     }
@@ -212,47 +195,42 @@ public class TwitterStreamingListener implements StatusListener {
             log.error("Couldn't persist job object.", e);
         }
 
-        if (!"".equals(keywords)) {
-            String[] kwords = keywords.split(" ");
+        if (keywords != null && !"".equals(keywords)) {
+            String[] kwords = keywords.split("|");
             String tweetText = status.getText().toLowerCase();
             for (String kword : kwords) {
-                if (!tweetText.contains(kword)) {
+                if (!tweetText.toLowerCase().contains(kword.toLowerCase())) {
+                    log.debug("Tweet didn't match keywords <" + keywords + ">");
                     return;
                 }
             }
         }
 
-        if (!"".equals(topic.getLanguage())) {
+        if (topic.getLanguage() != null && !"".equals(topic.getLanguage())) {
             if (!topic.getLanguage().equals(status.getLang())) {
+                log.debug("Tweet didn't match language <" + topic.getLanguage() + ">");
                 return;
             }
         }
-        
+
         Double longitude = topic.getGeoLongitude();
         Double latitude = topic.getGeoLatitude();
         Double radius = topic.getGeoRadius();
-        Unit unit = topic.getGeoUnit();
 
-        if (longitude != null && latitude != null && radius != null
-                && unit != null) {
+        if (longitude != null && latitude != null && radius != null) {
             if (status.getGeoLocation() == null) {
+                log.debug("Tweet don't have geolocation info. Discarding for topic <" + topic.getName() + ">");
                 return;
             } else {
                 GeoLocation tweetGeo = new GeoLocation(status.getGeoLocation());
                 double R = 6371; // Earth's radius
-                double tweetLat = tweetGeo.getLatitude() * Math.PI / 180; 
+                double tweetLat = tweetGeo.getLatitude() * Math.PI / 180;
                 double tweetLng = tweetGeo.getLongitude() * Math.PI / 180;
                 double centerLat = latitude.doubleValue() * Math.PI / 180;
                 double centerLng = longitude.doubleValue() * Math.PI / 180;
-                double dist = Math.acos(Math.sin(tweetLat)
-                        * Math.sin(centerLat) + Math.cos(tweetLat)
-                        * Math.cos(centerLat) * Math.cos(tweetLng - centerLng))
-                        * R;
-                if (unit.equals(Unit.mi)) {
-                    // convertir la distancia a millas
-                    dist = dist * 0.621371192;
-                }
+                double dist = Math.acos(Math.sin(tweetLat) * Math.sin(centerLat) + Math.cos(tweetLat) * Math.cos(centerLat) * Math.cos(tweetLng - centerLng)) * R;
                 if (dist > radius) {
+                    log.debug("Tweet is not within geolocation area of topic <" + topic.getName() + ">");
                     return;
                 }
 
@@ -262,7 +240,7 @@ public class TwitterStreamingListener implements StatusListener {
         // Save the post
         if (!stopping) {
 
-            msg = "Post <" + status.getId() + "> matched keywords <" + keywords + ">.";
+            msg = "Post <" + status.getId() + "> matched topic <" + topic.getName() + ">.";
             log.debug(msg);
             job.appendLog(msg);
 
@@ -290,7 +268,7 @@ public class TwitterStreamingListener implements StatusListener {
                     Set<JobParameters> extraParameters = new HashSet<>();
                     JobParameters filterParameters = new JobParameters();
                     filterParameters.setName(ProcessorExecutor.MARBLE_FILTER);
-                    Map<String, Object>filterOptions = new HashMap<>();
+                    Map<String, Object> filterOptions = new HashMap<>();
                     filterOptions.put(ProcessorExecutor.MARBLE_FILTER_FROM_ID, Long.toString(streamingStatus.getId()));
                     filterOptions.put(ProcessorExecutor.MARBLE_FILTER_TO_ID, Long.toString(streamingStatus.getId()));
                     filterParameters.setOptions(filterOptions);
