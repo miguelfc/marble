@@ -20,10 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "changeSet", "executions" })
 public class Topic implements Serializable {
     private static final long serialVersionUID = -4417618450499483945L;
-    
-    public enum Unit {
-        mi, km
-    }
 
     @Id
     @NotEmpty
@@ -66,8 +62,6 @@ public class Topic implements Serializable {
     private Double geoLongitude;
     
     private Double geoRadius;
-    
-    private Unit geoUnit;
     
     private Boolean streaming;
 
@@ -181,14 +175,6 @@ public class Topic implements Serializable {
 
     public void setGeoRadius(Double geoRadius) {
         this.geoRadius = geoRadius;
-    }
-
-    public Unit getGeoUnit() {
-        return geoUnit;
-    }
-
-    public void setGeoUnit(Unit geoUnit) {
-        this.geoUnit = geoUnit;
     }
 
     public Boolean isStreaming() {

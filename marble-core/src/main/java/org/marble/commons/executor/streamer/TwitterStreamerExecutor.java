@@ -297,7 +297,7 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
         Set<String> keywords = new HashSet<String>();
         for (String topicName : twitterStreamingListeners.keySet()) {
             TwitterStreamingListener listener = twitterStreamingListeners.get(topicName);
-            if (listener.getKeywords() != "")
+            if (listener.getKeywords() != null && listener.getKeywords() != "")
                 keywords.add(listener.getKeywords());
 
         }
@@ -310,7 +310,7 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
         Set<String> languages = new HashSet<String>();
         for (String topicName : twitterStreamingListeners.keySet()) {
             TwitterStreamingListener listener = twitterStreamingListeners.get(topicName);
-            if (!"".equals(listener.getLanguage())) {
+            if (listener.getLanguage() != null && listener.getLanguage() != "") {
                 languages.add(listener.getLanguage());
             }
         }
@@ -328,10 +328,7 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             }
         }
         double[][] result = {  };
-        //log.error("MFC Array : " +locations.size());
         double[][] returnResult = locations.toArray(result);
-        //log.error("MFC result : " + result.length);
-        //log.error("MFC ArrayReturn : " + returnResult.length);
         return returnResult;
     }
 }
