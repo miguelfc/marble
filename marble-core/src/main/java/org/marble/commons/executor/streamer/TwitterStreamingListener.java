@@ -3,9 +3,12 @@ package org.marble.commons.executor.streamer;
 import org.marble.model.domain.model.Job;
 import org.marble.model.domain.model.Post;
 import org.marble.model.domain.model.Topic;
+import org.marble.model.domain.model.Topic.Unit;
+import org.marble.model.model.GeoLocation;
 import org.marble.model.model.JobParameters;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,6 +40,7 @@ public class TwitterStreamingListener implements StatusListener {
     private boolean stopping = false;
     private String topicName;
     private String keywords;
+    private ArrayList<double[]> locations;
     private Topic topic;
     private static final Logger log = LoggerFactory.getLogger(TwitterExtractionExecutor.class);
     private long count;
@@ -49,7 +53,72 @@ public class TwitterStreamingListener implements StatusListener {
         this.postService = postService;
         this.topicName = topic.getName();
         this.jobService = executionService;
+        
+        Double longitude = topic.getGeoLongitude();
+        Double latitude = topic.getGeoLatitude();
+        Double radius = topic.getGeoRadius();
+        Unit unit = topic.getGeoUnit();
+        if (longitude != null && latitude != null && radius != null
+                && unit != null) {
+            locations = getSquareAroundPoint(latitude, longitude, radius,
+                    unit);
+        }
         count = 0;
+    }
+    
+    private ArrayList<double[]> getSquareAroundPoint(Double lat, Double lon,
+            Double radius, Unit unit) {
+        double R = 6371;
+        double distance = radius.doubleValue();
+        if (unit == Unit.mi) {
+            distance = distance * 0.621371192;
+        }
+
+        double north = (lat * Math.PI / 180 + distance / R) * 180 / Math.PI;
+        if (north > 90)
+            north = 90;
+
+        double neast = (lon + (Math.atan2(
+                Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
+                        * Math.sin(lat * Math.PI / 180 + distance / R)))
+                * 180 / Math.PI);
+        double nwest = (lon + (Math.atan2(
+                -Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
+                        * Math.sin(lat * Math.PI / 180 + distance / R)))
+                * 180 / Math.PI);
+
+        double south = (lat * Math.PI / 180 - distance / R) * 180 / Math.PI;
+        if (south < -90)
+            south = -90;
+        double seast = (lon + (Math.atan2(
+                Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
+                        * Math.sin(lat * Math.PI / 180 - distance / R)))
+                * 180 / Math.PI);
+        double swest = (lon + (Math.atan2(
+                -Math.sin(distance / R) * Math.cos(lat * Math.PI / 180),
+                Math.cos(distance / R) - Math.sin(lat * Math.PI / 180)
+                        * Math.sin(lat * Math.PI / 180 - distance / R)))
+                * 180 / Math.PI);
+
+        double east = Math.max(seast, neast);
+        double west = Math.min(swest, nwest);
+        while (east > 180)
+            east -= 360;
+        while (east <= -180)
+            east += 360;
+        while (west > 180)
+            east -= 360;
+        while (west <= -180)
+            east += 360;
+        ArrayList<double[]> coords = new ArrayList<double[]>();
+        double[] southwest = { west, south };
+        double[] northeast = { east, north };
+        coords.add(southwest);
+        coords.add(northeast);
+        return coords;
     }
 
     @Override
@@ -118,6 +187,10 @@ public class TwitterStreamingListener implements StatusListener {
     public String getLanguage() {
         return topic.getLanguage();
     }
+    
+    public ArrayList<double[]> getLocations() {
+        return locations;
+    }
 
     public Job getJob() {
         return job;
@@ -152,6 +225,37 @@ public class TwitterStreamingListener implements StatusListener {
         if (!"".equals(topic.getLanguage())) {
             if (!topic.getLanguage().equals(status.getLang())) {
                 return;
+            }
+        }
+        
+        Double longitude = topic.getGeoLongitude();
+        Double latitude = topic.getGeoLatitude();
+        Double radius = topic.getGeoRadius();
+        Unit unit = topic.getGeoUnit();
+
+        if (longitude != null && latitude != null && radius != null
+                && unit != null) {
+            if (status.getGeoLocation() == null) {
+                return;
+            } else {
+                GeoLocation tweetGeo = new GeoLocation(status.getGeoLocation());
+                double R = 6371; // Earth's radius
+                double tweetLat = tweetGeo.getLatitude() * Math.PI / 180; 
+                double tweetLng = tweetGeo.getLongitude() * Math.PI / 180;
+                double centerLat = latitude.doubleValue() * Math.PI / 180;
+                double centerLng = longitude.doubleValue() * Math.PI / 180;
+                double dist = Math.acos(Math.sin(tweetLat)
+                        * Math.sin(centerLat) + Math.cos(tweetLat)
+                        * Math.cos(centerLat) * Math.cos(tweetLng - centerLng))
+                        * R;
+                if (unit.equals(Unit.mi)) {
+                    // convertir la distancia a millas
+                    dist = dist * 0.621371192;
+                }
+                if (dist > radius) {
+                    return;
+                }
+
             }
         }
 
