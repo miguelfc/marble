@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.marble.commons.domain.model.TwitterApiKey;
 
+import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
@@ -25,5 +26,7 @@ public interface TwitterSearchService {
     public List<Status> search(String keyword, long maxId) throws TwitterException;
     
     public List<Status> search(String keyword, long maxId, String language) throws TwitterException;
+
+    public List<Status> search(String keyword, long maxId, String language, GeoLocation geoLocation, Double radius) throws TwitterException;
 
 }
