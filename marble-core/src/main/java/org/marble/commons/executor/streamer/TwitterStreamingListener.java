@@ -140,7 +140,7 @@ public class TwitterStreamingListener implements StatusListener {
         }
 
         if (!"".equals(keywords)) {
-            String[] kwords = keywords.split(" ");
+            String[] kwords = keywords.split("|");
             String tweetText = status.getText().toLowerCase();
             for (String kword : kwords) {
                 if (!tweetText.contains(kword)) {
