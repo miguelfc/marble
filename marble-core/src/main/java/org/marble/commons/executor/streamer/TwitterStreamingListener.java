@@ -8,6 +8,7 @@ import org.marble.model.model.JobParameters;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class TwitterStreamingListener implements StatusListener {
     private boolean failure = false;
     private boolean stopping = false;
     private String topicName;
-    private String keywords;
+    private String[] keywords;
     private ArrayList<double[]> locations;
     private Topic topic;
     private static final Logger log = LoggerFactory.getLogger(TwitterExtractionExecutor.class);
@@ -47,10 +48,12 @@ public class TwitterStreamingListener implements StatusListener {
 
     public TwitterStreamingListener(Topic topic, Job job, PostService postService, JobService executionService) {
         this.topic = topic;
-        this.keywords = topic.getKeywords();
-        if (keywords != null) {
-            keywords = keywords.toLowerCase();
+        String keywordsString = topic.getKeywords();
+        if (keywordsString != null) {
+            keywordsString = keywordsString.toLowerCase();
         }
+        this.keywords = keywordsString.split("\\|");
+
         this.job = job;
         this.postService = postService;
         this.topicName = topic.getName();
@@ -151,11 +154,11 @@ public class TwitterStreamingListener implements StatusListener {
         this.count = count;
     }
 
-    public void setKeywords(String keywords) {
+    public void setKeywords(String[] keywords) {
         this.keywords = keywords;
     }
 
-    public String getKeywords() {
+    public String[] getKeywords() {
         return keywords;
     }
 
@@ -195,14 +198,26 @@ public class TwitterStreamingListener implements StatusListener {
             log.error("Couldn't persist job object.", e);
         }
 
-        if (keywords != null && !"".equals(keywords)) {
-            String[] kwords = keywords.split("|");
+        if (keywords != null && keywords.length > 0) {
+            String[] phrases = keywords;
             String tweetText = status.getText().toLowerCase();
-            for (String kword : kwords) {
-                if (!tweetText.toLowerCase().contains(kword.toLowerCase())) {
-                    log.debug("Tweet didn't match keywords <" + keywords + ">");
-                    return;
+            Boolean matchesOne = Boolean.FALSE;
+            for (String phrase : phrases) {
+                String[] individualKeywords = phrase.split(" ");
+                Integer matches = 0;
+                for (String individualKeyword : individualKeywords) {
+                    if (tweetText.toLowerCase().contains(individualKeyword.toLowerCase())) {
+                        matches++;
+                    }
                 }
+                if (matches == individualKeywords.length) {
+                    matchesOne = Boolean.TRUE;
+                    break;
+                }
+            }
+            if (!matchesOne) {
+                log.debug("Tweet didn't match keywords <" + Arrays.toString(keywords) + ">");
+                return;
             }
         }
 
