@@ -8,7 +8,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 
 	<properties>
-		<docker.image.prefix>marble</docker.image.prefix>
+		<docker.image.prefix>marbleinitiative</docker.image.prefix>
 		<docker.plugin.version>0.3.258</docker.plugin.version>
 		<java.version>1.8</java.version>
 		<twitter4j.version>4.0.6</twitter4j.version>
