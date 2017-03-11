@@ -297,8 +297,8 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
         Set<String> keywords = new HashSet<String>();
         for (String topicName : twitterStreamingListeners.keySet()) {
             TwitterStreamingListener listener = twitterStreamingListeners.get(topicName);
-            if (listener.getKeywords() != null && listener.getKeywords() != "")
-                keywords.add(listener.getKeywords());
+            if (listener.getKeywords() != null && listener.getKeywords().length > 0)
+                keywords.addAll(Arrays.asList(listener.getKeywords()));
 
         }
         String[] result = {};
