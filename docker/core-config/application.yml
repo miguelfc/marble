@@ -1,0 +1,10 @@
+access:
+  admin:
+    username: ''
+    password: ''
+  oper:
+    username: ''
+    password: ''
+  guest:
+    username: ''
+    password: ''
