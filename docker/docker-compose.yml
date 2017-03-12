@@ -21,6 +21,8 @@ services:
     links:
      - registry
      - mongodb
+    volumes:
+     - './core-config:/config'
 
   preprocessor-simple:
     image: miguelfc/marble-preprocessor-simple
