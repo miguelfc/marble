@@ -7,12 +7,12 @@ services:
       - "27017"
       
   registry:
-    image: marbleinitiative/marble-registry
+    image: miguelfc/marble-registry
     ports:
      - "1111:1111"
 
   core:
-    image: marbleinitiative/marble-core
+    image: miguelfc/marble-core
     ports:
      - "8080:8080"
     depends_on:
@@ -23,7 +23,7 @@ services:
      - mongodb
 
   preprocessor-simple:
-    image: marbleinitiative/marble-preprocessor-simple
+    image: miguelfc/marble-preprocessor-simple
     ports:
      - "8080"
     depends_on:
@@ -32,7 +32,7 @@ services:
      - registry
 
   processor-simple:
-    image: marbleinitiative/marble-processor-simple
+    image: miguelfc/marble-processor-simple
     ports:
      - "8080"
     depends_on:
@@ -43,7 +43,7 @@ services:
      - mongodb
      
   processor-stanford:
-    image: marbleinitiative/marble-processor-stanford
+    image: miguelfc/marble-processor-stanford
     ports:
      - "8080"
     depends_on:
@@ -54,7 +54,7 @@ services:
      - mongodb
      
   plotter-simple:
-    image: marbleinitiative/marble-plotter-simple
+    image: miguelfc/marble-plotter-simple
     ports:
      - "8080"
     depends_on:
@@ -65,7 +65,7 @@ services:
      - mongodb
      
   processor-python2:
-    image: marbleinitiative/marble-processor-python2
+    image: miguelfc/marble-processor-python2
     ports:
      - "8080"
     depends_on:
