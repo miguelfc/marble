@@ -7,15 +7,13 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>Brixton.RELEASE</version>
-        <relativePath></relativePath>
+        <groupId>org.marble</groupId>
+        <artifactId>marble</artifactId>        
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <docker.image.prefix>marbleinitiative</docker.image.prefix>
-        <docker.plugin.version>0.3.258</docker.plugin.version>
         <start-class>org.marble.preprocessor.simple.Server</start-class>
         <java.version>1.8</java.version>
     </properties>
