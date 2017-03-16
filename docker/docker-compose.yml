@@ -74,3 +74,12 @@ services:
      - registry
     links:
      - registry
+
+  processor-python3:
+    image: miguelfc/marble-processor-python3
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    links:
+     - registry

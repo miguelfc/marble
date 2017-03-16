@@ -1,0 +1,4 @@
+flask
+dnspython
+netifaces
+future
