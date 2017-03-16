@@ -13,7 +13,10 @@ All modules for this project are published in docker hub for free (as in speech)
 - [miguelfc/marble-processor-simple](https://hub.docker.com/r/miguelfc/marble-processor-simple/)
 - [miguelfc/marble-processor-stanford](https://hub.docker.com/r/miguelfc/marble-processor-stanford/)
 - [miguelfc/marble-processor-python2](https://hub.docker.com/r/miguelfc/marble-processor-python2/)
+- [miguelfc/marble-processor-python3](https://hub.docker.com/r/miguelfc/marble-processor-python3/)
 - [miguelfc/marble-plotter-simple](https://hub.docker.com/r/miguelfc/marble-plotter-simple/)
+
+*(The python2 and python3 processor images are just the base structure for future python processors, they don't perform any processing at the moment)*
 
 A `docker-compose.yml` configuration file is available for you to use directly on a docker-capable server. You will only need access to internet to start using marble (you don't even need a database, as it will be provided by docker too!).
 
