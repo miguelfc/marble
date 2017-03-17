@@ -1,0 +1,6 @@
+flask
+dnspython
+netifaces
+future
+nltk
+twython

@@ -23,7 +23,7 @@ services:
      - mongodb
     volumes:
      - './core-config:/config'
-
+     
   preprocessor-simple:
     image: miguelfc/marble-preprocessor-simple
     ports:
@@ -65,18 +65,9 @@ services:
     links:
      - registry
      - mongodb
-     
-  processor-python2:
-    image: miguelfc/marble-processor-python2
-    ports:
-     - "8080"
-    depends_on:
-     - registry
-    links:
-     - registry
 
-  processor-python3:
-    image: miguelfc/marble-processor-python3
+  processor-nltk:
+    image: miguelfc/marble-processor-nltk
     ports:
      - "8080"
     depends_on:
