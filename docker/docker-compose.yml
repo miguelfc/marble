@@ -74,3 +74,12 @@ services:
      - registry
     links:
      - registry
+
+  processor-sklearn:
+    image: miguelfc/marble-processor-sklearn
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    links:
+     - registry
