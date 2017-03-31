@@ -1,10 +1,10 @@
 access:
   admin:
-    username: ''
-    password: ''
+    username: 'youshouldchangethis'
+    password: 'yesyoudo'
   oper:
-    username: ''
-    password: ''
+    username: 'pleasechangethis'
+    password: 'prettyplease'
   guest:
-    username: ''
-    password: ''
+    username: 'youmustchangethisnow'
+    password: 'changeitnowplease'
