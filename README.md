@@ -4,6 +4,7 @@ This is the main repository for the Marble Initiative project.
 
 [Marble](http://marble.miguelfc.com/) is an opinion mining platform, modular and open sourced. This is part of a PhD project, being developed by [Miguel Fernandes](http://miguelfernandes.com/) for the University of Vigo, under the supervision of Ana Fernández Vilas and Rebeca Díaz Redondo.
 
+The platform is able to extract tweets from [Twitter](https://twitter.com), using both the Search (history) and the Streaming (real-time) API, process the tweets extracted and extract their polarity values, and visualize the results using charts and reports.
 
 More information about it could be found in the [main website](http://marble.miguelfc.com/), and more technical information in
 the [Wiki pages](https://github.com/miguelfc/marble/wiki) of this repository. 
