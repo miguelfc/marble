@@ -89,7 +89,7 @@ public class PostRestController {
     }
 
     @RequestMapping(value = "/posts/tag/{id}", method = RequestMethod.PATCH)
-    public @ResponseBody ResponseEntity<RestResult> tag(@PathVariable(value = "id") Long id, @RequestBody(required = true) TagPostRestRequest tagRequest) {
+    public @ResponseBody ResponseEntity<RestResult> tag(@PathVariable(value = "id") String id, @RequestBody(required = true) TagPostRestRequest tagRequest) {
         log.debug("Tagging post <" + id + "> by user <" + tagRequest.getUser() + ">.");
         RestResult restResult = new RestResult();
 

@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findOne(Long id) throws InvalidPostException {
+    public Post findOne(String id) throws InvalidPostException {
         Post post = postRepository.findOne(id);
         if (post == null) {
             throw new InvalidPostException();
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         postRepository.delete(id);
         return;
     }
@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException {
+    public void tagPost(String postId, String user, Integer polarity) throws InvalidPostException {
         Post post = this.findOne(postId);
         if (polarity != null) {
             post.addPolarityTag(user, polarity);
@@ -122,6 +122,11 @@ public class PostServiceImpl implements PostService {
 
                 try {
                     Post post = mapper.readValue(line, Post.class);
+                    // Temporary provision to allow uploads from previous marble versions
+                    // TODO: Remove in 2017-10
+                    if (post.getOriginalId() == 0) {
+                      post.composeId(Long.parseLong(post.getId()), topicName);
+                    }
                     post.setTopicId(topicName);
                     this.save(post);
                     count++;

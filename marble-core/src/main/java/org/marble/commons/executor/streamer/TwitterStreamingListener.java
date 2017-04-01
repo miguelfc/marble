@@ -284,13 +284,13 @@ public class TwitterStreamingListener implements StatusListener {
                     JobParameters filterParameters = new JobParameters();
                     filterParameters.setName(ProcessorExecutor.MARBLE_FILTER);
                     Map<String, Object> filterOptions = new HashMap<>();
-                    filterOptions.put(ProcessorExecutor.MARBLE_FILTER_FROM_ID, Long.toString(streamingStatus.getId()));
-                    filterOptions.put(ProcessorExecutor.MARBLE_FILTER_TO_ID, Long.toString(streamingStatus.getId()));
+                    filterOptions.put(ProcessorExecutor.MARBLE_FILTER_FROM_ID, Long.toString(streamingStatus.getOriginalId()));
+                    filterOptions.put(ProcessorExecutor.MARBLE_FILTER_TO_ID, Long.toString(streamingStatus.getOriginalId()));
                     filterParameters.setOptions(filterOptions);
                     extraParameters.add(filterParameters);
                     jobService.executeProcessor(topicName, job, extraParameters);
                 } catch (InvalidTopicException | InvalidExecutionException | InvalidModuleException e) {
-                    msg = "An error occurred while starting the processor for post <" + streamingStatus.getId() + ">.";
+                    msg = "An error occurred while starting the processor for post <" + streamingStatus.getOriginalId() + ">.";
                     log.error(msg);
                     job.appendLog(msg);
                 }

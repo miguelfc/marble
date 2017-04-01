@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 public interface ProcessedPostRepository
-        extends PagingAndSortingRepository<ProcessedPost, Long> {
+        extends PagingAndSortingRepository<ProcessedPost, String> {
     List<ProcessedPost> findAll();
 
     Page<ProcessedPost> findByTopicName(@Param("name") String name, Pageable pageable);

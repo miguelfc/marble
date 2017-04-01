@@ -25,8 +25,10 @@ public class ProcessedPost {
     private Date createdAt;
 
     @Id
+    private String id;
+
     @JsonSerialize(using = LongSerializer.class)
-    private long id;
+    private long originalId;
     private String text;
     private String originalText;
 
@@ -43,10 +45,11 @@ public class ProcessedPost {
     }
 
     public ProcessedPost(ProcessedPost post) {
+        this.id = post.getId();
         this.topicName = post.getTopicName();
         this.polarity = post.getPolarity();
         this.createdAt = post.getCreatedAt();
-        this.id = post.getId();
+        this.originalId = post.getOriginalId();
         this.text = post.getText();
         this.originalText = post.getText();
         this.isRetweeted = post.isRetweeted();
@@ -56,10 +59,11 @@ public class ProcessedPost {
     }
 
     public ProcessedPost(Post post) {
+        this.id = post.getId();
         this.topicName = post.getTopicName();
         this.polarity = null;
         this.createdAt = post.getCreatedAt();
-        this.id = post.getId();
+        this.originalId = post.getOriginalId();
         this.text = post.getText();
         this.originalText = post.getText();
         if (post.getUser() != null) {
@@ -96,12 +100,20 @@ public class ProcessedPost {
         this.createdAt = createdAt;
     }
 
-    public long getId() {
-        return id;
+    public String getId() {
+      return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public long getOriginalId() {
+        return originalId;
+    }
+
+    public void setOriginalId(long id) {
+        this.originalId = id;
     }
 
     public String getText() {

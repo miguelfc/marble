@@ -13,13 +13,13 @@ public interface ProcessedPostService {
 
     public ProcessedPost save(ProcessedPost post) throws InvalidPostException;
 
-    public ProcessedPost findOne(Long id) throws InvalidPostException;
+    public ProcessedPost findOne(String id) throws InvalidPostException;
 
     Page<ProcessedPost> findByTopicName(String name, Pageable pageable);
 
     List<ProcessedPost> findAll();
 
-    public void delete(Long id);
+    public void delete(String id);
 
     Long deleteByTopicName(String topicName);
 

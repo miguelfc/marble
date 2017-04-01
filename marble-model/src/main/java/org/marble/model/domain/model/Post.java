@@ -28,8 +28,10 @@ public class Post {
     private Date createdAt;
 
     @Id
+    private String id;
+
     @JsonSerialize(using = LongSerializer.class)
-    private long id;
+    private long originalId;
     private String text;
     private String source;
     private boolean isTruncated;
@@ -62,8 +64,9 @@ public class Post {
 
     public Post(Post status) {
         this.topicName = status.getTopicName();
-        this.createdAt = status.getCreatedAt();
         this.id = status.getId();
+        this.createdAt = status.getCreatedAt();
+        this.originalId = status.getOriginalId();
         this.text = status.getText();
         this.source = status.getSource();
         this.isTruncated = status.isTruncated();
@@ -86,9 +89,8 @@ public class Post {
     }
 
     public Post(twitter4j.Status status, String topicName) {
-        this.topicName = topicName;
+        this.composeId(status.getId(), topicName);  
         this.createdAt = status.getCreatedAt();
-        this.id = status.getId();
         this.text = status.getText();
         this.source = status.getSource();
         this.isTruncated = status.isTruncated();
@@ -129,13 +131,27 @@ public class Post {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-
-    public long getId() {
-        return id;
+    
+    public String getId() {
+      return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(String id) {
+      this.id = id;
+    }
+    
+    public void composeId(long originalId, String topicName) {
+      this.originalId = originalId;
+      this.topicName = topicName;
+      this.id = topicName + "_" + originalId;
+    }
+
+    public long getOriginalId() {
+        return originalId;
+    }
+
+    public void setOriginalId(long originalId) {
+        this.originalId = originalId;
     }
 
     public String getText() {

@@ -178,7 +178,7 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
                         topic.setUpperLimit(lastId);
                         // save
                         Post originalPost = new Post(status, topic.getName());
-                        if(topic.getLowerLimit() != null && topic.getLowerLimit() >= originalPost.getId()) {
+                        if(topic.getLowerLimit() != null && topic.getLowerLimit() >= originalPost.getOriginalId()) {
                             inRange = false;
                             msg = "Reached the lower limit for this topic.";
                             log.info(msg);

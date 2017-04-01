@@ -13,17 +13,17 @@ public interface PostService {
 
     public Post save(Post post) throws InvalidPostException;
 
-    public Post findOne(Long id) throws InvalidPostException;
+    public Post findOne(String id) throws InvalidPostException;
 
     List<Post> findAll();
 
-    public void delete(Long id);
+    public void delete(String id);
 
     Long deleteByTopicName(String topicName);
 
     Long count();
 
-    public void tagPost(Long postId, String user, Integer polarity) throws InvalidPostException;
+    public void tagPost(String postId, String user, Integer polarity) throws InvalidPostException;
 
     Page<Post> findByTopicName(String name, Pageable pageable);
     
