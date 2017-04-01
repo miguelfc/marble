@@ -1,6 +1,7 @@
 # Supported tags and respective `Dockerfile` links
 
--	[`1.0.0-RELEASE`, `latest` (*Dockerfile*)](https://github.com/miguelfc/marble/blob/76d5017b1438a4c2c00fd401b9f1a8f8bcdb73db/marble-core/src/main/docker/Dockerfile)
+-	[`1.0.1-RELEASE`, `latest`]
+-	[`1.0.0-RELEASE`]
 
 # What is Marble?
 
