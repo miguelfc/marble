@@ -96,11 +96,11 @@ public class TopicServiceImpl implements TopicService {
             if (topicStats.getTotalPostsExtracted() > 0) {
                 Post post = datastoreService.findOneByTopicIdSortBy(name, "createdAt", Sort.Direction.ASC, Post.class);
                 topicStats.setOldestPostDate(post.getCreatedAt());
-                topicStats.setOldestPostId(post.getId());
+                topicStats.setOldestPostId(post.getOriginalId());
 
                 post = datastoreService.findOneByTopicIdSortBy(name, "createdAt", Sort.Direction.DESC, Post.class);
                 topicStats.setNewestPostDate(post.getCreatedAt());
-                topicStats.setNewestPostId(post.getId());
+                topicStats.setNewestPostId(post.getOriginalId());
 
                 topicStats.setTotalJobs(jobService.countByTopicName(name));
             }

@@ -43,7 +43,7 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
     }
 
     @Override
-    public ProcessedPost findOne(Long id) throws InvalidPostException {
+    public ProcessedPost findOne(String id) throws InvalidPostException {
         ProcessedPost processedPost = processedPostRepository.findOne(id);
         if (processedPost == null) {
             throw new InvalidPostException();
@@ -62,7 +62,7 @@ public class ProcessedPostServiceImpl implements ProcessedPostService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         processedPostRepository.delete(id);
         return;
     }

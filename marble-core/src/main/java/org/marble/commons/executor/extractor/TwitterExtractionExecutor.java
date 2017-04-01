@@ -229,7 +229,7 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
                 // save
                 Post originalPost = new Post(status, topic.getName());
                 if (topic.getLowerLimit() != null
-                    && topic.getLowerLimit() >= originalPost.getId()) {
+                    && topic.getLowerLimit() >= originalPost.getOriginalId()) {
                   inRange = false;
                   msg = "Reached the lower limit for this topic.";
                   log.info(msg);
@@ -352,7 +352,7 @@ public class TwitterExtractionExecutor implements ExtractorExecutor {
                 // save
                 Post originalPost = new Post(status, topic.getName());
                 if (topic.getLowerLimit() != null
-                    && topic.getLowerLimit() >= originalPost.getId()) {
+                    && topic.getLowerLimit() >= originalPost.getOriginalId()) {
                   inRange = false;
                   keywordGroup.put(selectedGroupName, -1L);
                   msg = "Reached the lower limit for this topic and group (" + selectedGroupName

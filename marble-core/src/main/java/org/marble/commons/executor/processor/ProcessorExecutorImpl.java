@@ -166,7 +166,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
             }
             String text = post.getText();
             if (text == null) {
-                logMsg("Post text for id <" + post.getId() + "> is null. Skipping...", "debug", null);
+                logMsg("Post text for id <" + post.getOriginalId() + "> is null. Skipping...", "debug", null);
                 continue;
             }
             ProcessedPost processedPost = new ProcessedPost(post);

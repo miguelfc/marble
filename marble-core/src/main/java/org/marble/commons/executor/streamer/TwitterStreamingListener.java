@@ -286,9 +286,9 @@ public class TwitterStreamingListener implements StatusListener {
           filterParameters.setName(ProcessorExecutor.MARBLE_FILTER);
           Map<String, Object> filterOptions = new HashMap<>();
           filterOptions.put(ProcessorExecutor.MARBLE_FILTER_FROM_ID,
-              Long.toString(streamingStatus.getId()));
+              Long.toString(streamingStatus.getOriginalId()));
           filterOptions.put(ProcessorExecutor.MARBLE_FILTER_TO_ID,
-              Long.toString(streamingStatus.getId()));
+              Long.toString(streamingStatus.getOriginalId()));
           filterParameters.setOptions(filterOptions);
           extraParameters.add(filterParameters);
           jobService.executeProcessor(topicName, job, extraParameters);
