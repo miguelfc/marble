@@ -1,6 +1,7 @@
 # Supported tags
 
--	[`1.0.0-RELEASE`, `latest`]
+-	[`1.0.1-RELEASE`, `latest`]
+-	[`1.0.0-RELEASE`]
 
 # What is Marble?
 
