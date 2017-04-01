@@ -8,20 +8,22 @@
             <p>{{modalProperties.text}}</p>
         </div>
         <div ng-if="modalProperties.type == 'plot'">
-            <p>Please select the module and the type of plot to generate and click {{modalProperties.button}} to
-                continue.</p>
-            <p>Please enter the processing recipe and click {{modalProperties.button}} to continue.</p>
+            <p>Please enter the plotting recipe and click {{modalProperties.button}} to continue.
+            <label class="help-icon"><a href="https://github.com/miguelfc/marble/wiki/Plotters" target="_blank"><i class="fa fa-question-circle fa-fw"></i></a></label>
+            </p>
             <fieldset>
                 <div class="form-group ">
-                    <textarea rows="6" cols="70" ng-model="$parent.plotterRecipe"></textarea>
+                    <textarea rows="6" cols="75" ng-model="$parent.plotterRecipe"></textarea>
                 </div>
             </fieldset>
         </div>
         <div ng-if="modalProperties.type == 'process'">
-            <p>Please enter the processing recipe and click {{modalProperties.button}} to continue.</p>
+            <p>Please enter the processing recipe and click {{modalProperties.button}} to continue.
+            <label class="help-icon"><a href="https://github.com/miguelfc/marble/wiki/Preprocessors-and-Processors" target="_blank"><i class="fa fa-question-circle fa-fw"></i></a></label>
+            </p>
             <fieldset>
                 <div class="form-group ">
-                    <textarea rows="6" cols="70" ng-model="$parent.processRecipe"></textarea>
+                    <textarea rows="6" cols="75" ng-model="$parent.processRecipe"></textarea>
                 </div>
             </fieldset>
         </div>
