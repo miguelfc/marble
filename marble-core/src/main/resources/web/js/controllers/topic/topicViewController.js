@@ -124,10 +124,14 @@ angular.module('marbleCoreApp')
 	};
 
 	$scope.rebootExtraction = function () {
-		$scope.topic.lowerLimit = $scope.topic.upperLimit;
-		$scope.topic.upperLimit = "";
-		$scope.update();
-		$scope.extract();
+		TopicInfoFactory.show({name: $stateParams.topicName}).$promise.then(function(data) {
+			if (data.newestPostId) {
+				$scope.topic.lowerLimit = data.newestPostId;
+				$scope.topic.upperLimit = "";
+				$scope.update();
+				$scope.extract();
+			}
+		});
 	};
 
 	$scope.deletePostsByTopic = function () {	
