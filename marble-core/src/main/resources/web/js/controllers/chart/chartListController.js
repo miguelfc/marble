@@ -11,18 +11,6 @@ angular
 					$scope.tableState.page = "0";
 					$scope.tableState.sort = "";
 
-					$scope.view = function(chartId) {
-						$state.go('dashboard.chart.view', {
-							'chartId' : chartId
-						});
-					};
-
-					$scope.viewTopic = function(topicName) {
-						$state.go('dashboard.topic.view', {
-							'topicName' : topicName
-						});
-					};
-
 					$scope.gridOptions = {
 						data : 'gridData',
 						rowHeight : 40,
@@ -36,7 +24,7 @@ angular
 								{
 									field : 'topicName',
 									displayName : 'Topic',
-									cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.viewTopic(row.entity.topicName)" class="btn btn-default"><i class="fa fa-tags fa-fw"></i><span class="hidden-xs hidden-sm"> {{row.entity.topicName}}</span></a></div>'
+									cellTemplate : '<div class="grid-action-cell"><a ui-sref="dashboard.topic.view({topicName: row.entity.topicName})" class="btn btn-default"><i class="fa fa-tags fa-fw"></i><span class="hidden-xs hidden-sm"> {{row.entity.topicName}}</span></a></div>'
 								},
 								{
 									field : 'name',
@@ -61,7 +49,7 @@ angular
 									name : 'actions',
 									displayName : 'Actions',
 									enableFiltering : false,
-									cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.view(row.entity.id)" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
+									cellTemplate : '<div class="grid-action-cell"><a ui-sref="dashboard.chart.view({chartId: row.entity.id})" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
 								} ],
 						onRegisterApi : function(gridApi) {
 							$scope.gridApi = gridApi;
@@ -90,6 +78,8 @@ angular
 							$scope.gridApi.pagination.on.paginationChanged($scope, function(newPage, pageSize) {
 								$scope.tableState.size = pageSize;
 								$scope.tableState.page = newPage - 1;
+								$scope.gridOptions.minRowsToShow = pageSize;
+								$scope.gridOptions.virtualizationThreshold = pageSize;
 								updateTable($scope);
 							});
 						}

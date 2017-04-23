@@ -31,7 +31,7 @@ angular.module('marbleCoreApp').constant('AuthLevels', {
     $scope.logout = function() {
       Auth.logout();
       this.currentUser = {};
-      $state.go('home', {}, { reload: true });
+      $state.go('dashboard.home', {}, { reload: true });
     }
     
     $scope.auth = function(credentials) {

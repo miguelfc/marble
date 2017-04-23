@@ -11,10 +11,12 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.marble.model.model.JobParameters;
+import org.marble.util.LongSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Document(collection = "topics")
 @JsonIgnoreProperties({ "changeSet", "executions" })
@@ -32,9 +34,11 @@ public class Topic implements Serializable {
     private String keywords;
 
     @Digits(fraction = 0, integer = 24)
+    @JsonSerialize(using = LongSerializer.class)
     private Long upperLimit;
 
     @Digits(fraction = 0, integer = 24)
+    @JsonSerialize(using = LongSerializer.class)
     private Long lowerLimit;
 
     @Pattern(regexp = "[a-zA-Z]{2}|")

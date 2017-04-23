@@ -8,12 +8,6 @@ function ($scope, $compile, $state, TwitterApiKeysFactory) {
 	$scope.tableState.page = "0";
 	$scope.tableState.sort = "";
 
-	$scope.edit = function(twitterApiKeyName) {
-		$state.go('dashboard.settings.twitterApiKey.view', {
-			'twitterApiKeyName' : twitterApiKeyName
-		});
-	};
-
 	$scope.create = function() {
 		$state.go('dashboard.settings.twitterApiKey.create');
 	};
@@ -37,7 +31,7 @@ function ($scope, $compile, $state, TwitterApiKeysFactory) {
 				{
 					name : 'actions',
 					displayName : 'Actions',
-					cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.edit(row.entity.id)" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
+					cellTemplate : '<div class="grid-action-cell"><a ui-sref="dashboard.settings.twitterApiKey.view({twitterApiKeyName: row.entity.id})" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
 				} ],
 		onRegisterApi : function(gridApi) {
 			$scope.gridApi = gridApi;
@@ -56,6 +50,8 @@ function ($scope, $compile, $state, TwitterApiKeysFactory) {
 					newPage, pageSize) {
 				$scope.tableState.size = pageSize;
 				$scope.tableState.page = newPage - 1;
+				$scope.gridOptions.minRowsToShow = pageSize;
+				$scope.gridOptions.virtualizationThreshold = pageSize;
 				updateTable($scope);
 			});
 		}

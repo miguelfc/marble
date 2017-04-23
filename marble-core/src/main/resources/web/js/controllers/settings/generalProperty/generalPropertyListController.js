@@ -9,12 +9,6 @@ function ($scope, $compile, $state, $timeout, GeneralPropertiesSearchByNameFacto
 	$scope.tableState.page = "0";
 	$scope.tableState.sort = "";
 
-	$scope.edit = function(generalPropertyName) {
-		$state.go('dashboard.settings.generalProperty.view', {
-			'generalPropertyName' : generalPropertyName
-		});
-	};
-
 	$scope.create = function() {
 		$state.go('dashboard.settings.generalProperty.create');
 	};
@@ -42,7 +36,7 @@ function ($scope, $compile, $state, $timeout, GeneralPropertiesSearchByNameFacto
 					name : 'actions',
 					displayName : 'Actions',
 					enableFiltering : false,
-					cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.edit(row.entity.name)" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
+					cellTemplate : '<div class="grid-action-cell"><a ui-sref="dashboard.settings.generalProperty.view({generalPropertyName: row.entity.name})" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
 				} ],
 		onRegisterApi : function(gridApi) {
 			$scope.gridApi = gridApi;
@@ -71,6 +65,8 @@ function ($scope, $compile, $state, $timeout, GeneralPropertiesSearchByNameFacto
 					newPage, pageSize) {
 				$scope.tableState.size = pageSize;
 				$scope.tableState.page = newPage - 1;
+				$scope.gridOptions.minRowsToShow = pageSize;
+				$scope.gridOptions.virtualizationThreshold = pageSize;
 				updateTable($scope);
 			});
 		}
