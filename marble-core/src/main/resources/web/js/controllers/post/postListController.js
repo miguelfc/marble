@@ -9,18 +9,6 @@ function ($scope, $compile, $state, PostsSearchByTopicNameFactory) {
 	$scope.tableState.page = "0";
 	$scope.tableState.sort = "";
 
-	$scope.view = function(postId) {
-		$state.go('dashboard.post.view', {
-			'postId' : postId
-		});
-	};
-
-	$scope.viewTopic = function(topicName) {
-		$state.go('dashboard.topic.view', {
-			'topicName' : topicName
-		});
-	};
-
 	$scope.gridOptions = {
 		data : 'gridData',
 		rowHeight : 40,
@@ -34,7 +22,7 @@ function ($scope, $compile, $state, PostsSearchByTopicNameFactory) {
 				{
 					field : 'topicName',
 					displayName : 'Topic',
-					cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.viewTopic(row.entity.topicName)" class="btn btn-default"><i class="fa fa-tags fa-fw"></i><span class="hidden-xs hidden-sm"> {{row.entity.topicName}}</span></a></div>'
+					cellTemplate : '<div class="grid-action-cell"><a ui-sref="dashboard.topic.view({topicName: row.entity.topicName})" class="btn btn-default"><i class="fa fa-tags fa-fw"></i><span class="hidden-xs hidden-sm"> {{row.entity.topicName}}</span></a></div>'
 				},
 				{
 					field : 'text',
@@ -52,7 +40,7 @@ function ($scope, $compile, $state, PostsSearchByTopicNameFactory) {
 					name : 'actions',
 					displayName : 'Actions',
 					enableFiltering : false,
-					cellTemplate : '<div class="grid-action-cell"><a data-ng-click="grid.appScope.view(row.entity.id)" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
+					cellTemplate : '<div class="grid-action-cell"><a ui-sref="dashboard.post.view({postId: row.entity.id})" class="btn btn-default"><i class="fa fa-info-circle"></i><span class="hidden-xs hidden-sm"> Details</span></a></div>'
 				} ],
 		onRegisterApi : function(gridApi) {
 			$scope.gridApi = gridApi;
@@ -82,6 +70,8 @@ function ($scope, $compile, $state, PostsSearchByTopicNameFactory) {
 					newPage, pageSize) {
 				$scope.tableState.size = pageSize;
 				$scope.tableState.page = newPage - 1;
+				$scope.gridOptions.minRowsToShow = pageSize;
+				$scope.gridOptions.virtualizationThreshold = pageSize;
 				updateTable($scope);
 			});
 		}
