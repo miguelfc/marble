@@ -24,9 +24,9 @@ spring:
 #  1. Define URL of registration server (defaultZone)
 #  2. Reduce lease-renewal time so processes register more quickly
 eureka:
-  instance:
-     leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
-     leaseExpirationDurationInSeconds: 10
+  #instance:
+     #leaseRenewalIntervalInSeconds: 5   # DO NOT DO THIS IN PRODUCTION
+     #leaseExpirationDurationInSeconds: 10
   client:
     serviceUrl:
       defaultZone: http://registry:1111/eureka/
@@ -41,3 +41,6 @@ access:
   guest:
     username: '@access.guest.username@'
     password: '@access.guest.password@'
+
+processor:
+  maxCallPerModule: 1
