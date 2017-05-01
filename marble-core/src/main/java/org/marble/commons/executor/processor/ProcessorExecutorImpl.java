@@ -2,7 +2,6 @@ package org.marble.commons.executor.processor;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,8 +81,6 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     @Value("${processor.maxCallPerModule:10}")
     private Integer maxCallPerModule;
     
-    private SecureRandom random = new SecureRandom();
-
     @Override
     public void setJob(Job job) {
         this.job = job;
@@ -266,8 +263,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
                 log.info("Instance selected: <" + serviceInstanceAvailableUrl + ">");
                 AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
 
-                String processId = new BigInteger(130, random).toString(32);
-                currentCalls.push(processId);
+                currentCalls.push(new Date().toString());
                 
                 @SuppressWarnings("unused")
                 CompletableFuture<Response> promise = asyncHttpClient.preparePost(serviceInstanceAvailableUrl + "api/process").setBody(gson.toJson(input))

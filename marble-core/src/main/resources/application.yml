@@ -43,4 +43,4 @@ access:
     password: '@access.guest.password@'
 
 processor:
-  maxCallPerModule: 1
+  maxCallPerModule: 10
