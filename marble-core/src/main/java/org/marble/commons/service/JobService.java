@@ -1,6 +1,7 @@
 package org.marble.commons.service;
 
 import java.math.BigInteger;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,13 +31,13 @@ public interface JobService {
 
     public BigInteger stopStreamer(String topicName) throws InvalidTopicException, InvalidExecutionException;
 
-    public BigInteger executeProcessor(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+    public BigInteger executeProcessor(String topicName, LinkedHashSet<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
-    public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+    public BigInteger executeProcessor(LinkedHashSet<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
-    public BigInteger executeProcessor(String topicName, Job job, Set<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+    public BigInteger executeProcessor(String topicName, Job job, LinkedHashSet<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
-    public BigInteger executePlotter(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
+    public BigInteger executePlotter(String topicName, LinkedHashSet<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException;
 
     public void cleanOldJobs();
 

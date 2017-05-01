@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -281,7 +282,7 @@ public class TwitterStreamingListener implements StatusListener {
       if (topic.getStreamerProcessParameters() != null
           && topic.getStreamerProcessParameters().size() > 0) {
         try {
-          Set<JobParameters> extraParameters = new HashSet<>();
+          LinkedHashSet<JobParameters> extraParameters = new LinkedHashSet<>();
           JobParameters filterParameters = new JobParameters();
           filterParameters.setName(ProcessorExecutor.MARBLE_FILTER);
           Map<String, Object> filterOptions = new HashMap<>();
