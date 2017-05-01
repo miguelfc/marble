@@ -1,6 +1,7 @@
 package org.marble.commons.service;
 
 import java.math.BigInteger;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.marble.commons.domain.repository.JobRepository;
@@ -169,7 +170,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Transactional
-    private BigInteger executeProcessor(String topicName, Set<JobParameters> parameters, Job job, Set<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+    private BigInteger executeProcessor(String topicName, Set<JobParameters> parameters, Job job, LinkedHashSet<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
 
         if (topicName != null) {
             log.info("Executing the processor for topic <" + topicName + ">.");
@@ -217,25 +218,25 @@ public class JobServiceImpl implements JobService {
 
     @Override
     @Transactional
-    public BigInteger executeProcessor(Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+    public BigInteger executeProcessor(LinkedHashSet<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
         return this.executeProcessor(null, processParameters, null, null);
     }
 
     @Override
     @Transactional
-    public BigInteger executeProcessor(String topicName, Set<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+    public BigInteger executeProcessor(String topicName, LinkedHashSet<JobParameters> processParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
         return this.executeProcessor(topicName, processParameters, null, null);
     }
 
     @Override
     @Transactional
-    public BigInteger executeProcessor(String topicName, Job job, Set<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
+    public BigInteger executeProcessor(String topicName, Job job, LinkedHashSet<JobParameters> extraParameters) throws InvalidTopicException, InvalidExecutionException, InvalidModuleException {
         return this.executeProcessor(topicName, null, job, extraParameters);
     }
 
     @Override
     @Transactional
-    public BigInteger executePlotter(String topicName, Set<JobParameters> parameters) throws InvalidTopicException, InvalidExecutionException {
+    public BigInteger executePlotter(String topicName, LinkedHashSet<JobParameters> parameters) throws InvalidTopicException, InvalidExecutionException {
 
         if (topicName != null) {
             log.info("Executing the plotter for topic <" + topicName + ">.");

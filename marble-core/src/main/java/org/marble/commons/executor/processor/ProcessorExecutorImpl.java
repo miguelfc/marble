@@ -2,14 +2,11 @@ package org.marble.commons.executor.processor;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 
@@ -76,7 +73,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
 
     private Job job;
 
-    private Set<JobParameters> extraParameters;
+    private LinkedHashSet<JobParameters> extraParameters;
     
     @Value("${processor.maxCallPerModule:10}")
     private Integer maxCallPerModule;
@@ -87,7 +84,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
     }
 
     @Override
-    public void setExtraParameters(Set<JobParameters> extraParameters) {
+    public void setExtraParameters(LinkedHashSet<JobParameters> extraParameters) {
         this.extraParameters = extraParameters;
     }
 
@@ -147,7 +144,7 @@ public class ProcessorExecutorImpl implements ProcessorExecutor {
         logMsg("Getting posts for topic <" + topic.getName() + ">.", "info", null);
 
         // Add extraparameters, if any
-        Set<JobParameters> parameters = new HashSet<>();
+        LinkedHashSet<JobParameters> parameters = new LinkedHashSet<>();
         if (extraParameters != null) {
             parameters.addAll(extraParameters);
         }
