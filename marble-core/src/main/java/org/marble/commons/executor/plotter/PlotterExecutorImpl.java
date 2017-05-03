@@ -126,6 +126,7 @@ public class PlotterExecutorImpl implements PlotterExecutor {
             }
             catch (Exception e) {
                 logMsg("Service <"+processorName+"> doesn't exists. Skipping.", "warn", null);
+                continue;
             }
             String serviceUrl = hostInfo.getHomePageUrl() + "api/plot";
             log.error("Home page: " + serviceUrl);

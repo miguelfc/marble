@@ -41,7 +41,8 @@
                     <!-- /.panel-heading -->
 
                     <div class="panel-body">
-                        <div ng-if="chartObject" google-chart="google-chart" chart="chartObject" style="height: 600px; width: 100%;"></div>
+                    {{googleChartObject}}
+                        <div ng-if="googleChartObject" google-chart="google-chart" chart="googleChartObject" style="height: 600px; width: 100%;"></div>
                     </div>
                     <!-- .panel-body -->
                 </div>

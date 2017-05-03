@@ -19,6 +19,7 @@ public interface ChartExtendedProjection {
     String getName();
     String getDescription();
     String getType();
+    String getCustomType();
     
     @Value("#{target.topic != null? target.topic.name : null}")
     String getTopicName();

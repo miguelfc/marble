@@ -26,6 +26,8 @@ public class Chart implements Serializable {
 
     private static final long serialVersionUID = 6936532299491147949L;
 
+    public static final String TYPE_GOOGLE_CHART = "Google Chart";
+
     @Id
     @JsonSerialize(using = BigIntegerSerializer.class)
     private BigInteger id;
@@ -35,8 +37,10 @@ public class Chart implements Serializable {
     private String name;
 
     private String description;
-
+    
     private String type;
+
+    private String customType;
 
     @DBRef
     private Topic topic;
@@ -76,11 +80,19 @@ public class Chart implements Serializable {
     }
 
     public String getType() {
-        return type;
+      return type;
     }
 
     public void setType(String type) {
-        this.type = type;
+      this.type = type;
+    }
+
+    public String getCustomType() {
+        return customType;
+    }
+
+    public void setCustomType(String type) {
+        this.customType = type;
     }
 
     public Topic getTopic() {

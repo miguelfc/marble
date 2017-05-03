@@ -33,13 +33,15 @@ angular.module('marbleCoreApp').controller(
 					$scope.updateDate = new Date();
 					
 					// Google Chart
-					$scope.chartObject = {};
+					if ($scope.chart.type == "Google Chart") {						
+						$scope.googleChartObject = {};
+						$scope.googleChartObject.type = $scope.chart.customType;
+						$scope.googleChartObject.data = $scope.chart.data;
+						$scope.googleChartObject.options = $scope.chart.options;
+					}
 				    
-				    $scope.chartObject.type = $scope.chart.type;
 				    
-				    $scope.chartObject.data = $scope.chart.data;
 				    
-				    $scope.chartObject.options = $scope.chart.options;
 				    
 				}, function(error) {
 					// TODO Handle Error 404
