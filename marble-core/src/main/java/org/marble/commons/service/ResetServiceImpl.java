@@ -149,7 +149,7 @@ public class ResetServiceImpl implements ResetService {
 
             mainPlotData.add(itemData);
         }
-        plot.setData(mainPlotData);
+        //plot.setData(mainPlotData);
 
         Map<String, Object> mainOptions = new HashMap<>();
 

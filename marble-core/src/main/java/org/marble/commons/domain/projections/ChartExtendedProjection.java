@@ -1,6 +1,7 @@
 package org.marble.commons.domain.projections;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.marble.model.domain.model.Chart;
@@ -29,6 +30,7 @@ public interface ChartExtendedProjection {
     
     BasicDBObject getOptions();
     BasicDBObject getData();
+    ArrayList<String> getFigures();
     
     Date getCreatedAt();
 }

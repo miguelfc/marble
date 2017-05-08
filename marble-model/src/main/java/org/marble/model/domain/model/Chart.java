@@ -2,6 +2,7 @@ package org.marble.model.domain.model;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,8 @@ public class Chart implements Serializable {
     private BasicDBObject options;
 
     private BasicDBObject data;
+    
+    private ArrayList<String> figures;
 
     @CreatedDate
     public Date createdAt;
@@ -116,13 +119,16 @@ public class Chart implements Serializable {
         return data;
     }
 
-    @Deprecated
-    public void setData(List<Map<String, Object>> data) {
-        this.data = null;
-    }
-
     public void setData(Map<String, Object> data) {
         this.data = new BasicDBObject(data);
+    }
+
+    public ArrayList<String> getFigures() {
+      return figures;
+    }
+
+    public void setFigures(ArrayList<String> figures) {
+      this.figures = figures;
     }
 
     public Date getCreatedAt() {
