@@ -1,0 +1,9 @@
+flask
+dnspython
+netifaces
+future
+nltk
+twython
+numpy
+scipy
+scikit-learn
