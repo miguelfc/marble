@@ -112,11 +112,12 @@ public class PlotterServiceImpl implements PlotterService {
         log.info("Creating plot for topic <" + topicName + ">...");
 
         // Here starts the execution
-        Chart plot = new Chart();
-        plot.setTopic(topic);
-        plot.setName(plotTitle);
-        plot.setDescription(plotDescription);
-        plot.setType(plotGraphic);
+        Chart chart = new Chart();
+        chart.setTopic(topic);
+        chart.setName(plotTitle);
+        chart.setType(Chart.TYPE_GOOGLE_CHART);
+        chart.setDescription(plotDescription);
+        chart.setCustomType(plotGraphic);
 
         Map<String, Object> singleData = new HashMap<>();
         singleData.put("cols", getPostsColumns(topic, plotType));
@@ -171,10 +172,10 @@ public class PlotterServiceImpl implements PlotterService {
             break;
         }
 
-        plot.setData(singleData);
-        plot.setOptions(getOptions(topic, plotType));
+        chart.setData(singleData);
+        chart.setOptions(getOptions(topic, plotType));
 
-        plotList.add(plot);
+        plotList.add(chart);
         return plotList;
     }
 

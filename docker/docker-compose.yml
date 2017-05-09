@@ -83,3 +83,12 @@ services:
      - registry
     links:
      - registry
+  
+  plotter-dous:
+    image: miguelfc/marble-plotter-dous
+    ports:
+     - "8080"
+    depends_on:
+     - registry
+    links:
+     - registry

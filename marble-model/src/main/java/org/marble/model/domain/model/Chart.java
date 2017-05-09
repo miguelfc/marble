@@ -2,6 +2,7 @@ package org.marble.model.domain.model;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ public class Chart implements Serializable {
 
     private static final long serialVersionUID = 6936532299491147949L;
 
+    public static final String TYPE_GOOGLE_CHART = "Google Chart";
+
     @Id
     @JsonSerialize(using = BigIntegerSerializer.class)
     private BigInteger id;
@@ -35,8 +38,10 @@ public class Chart implements Serializable {
     private String name;
 
     private String description;
-
+    
     private String type;
+
+    private String customType;
 
     @DBRef
     private Topic topic;
@@ -47,6 +52,8 @@ public class Chart implements Serializable {
     private BasicDBObject options;
 
     private BasicDBObject data;
+    
+    private ArrayList<String> figures;
 
     @CreatedDate
     public Date createdAt;
@@ -76,11 +83,19 @@ public class Chart implements Serializable {
     }
 
     public String getType() {
-        return type;
+      return type;
     }
 
     public void setType(String type) {
-        this.type = type;
+      this.type = type;
+    }
+
+    public String getCustomType() {
+        return customType;
+    }
+
+    public void setCustomType(String type) {
+        this.customType = type;
     }
 
     public Topic getTopic() {
@@ -104,13 +119,16 @@ public class Chart implements Serializable {
         return data;
     }
 
-    @Deprecated
-    public void setData(List<Map<String, Object>> data) {
-        this.data = null;
-    }
-
     public void setData(Map<String, Object> data) {
         this.data = new BasicDBObject(data);
+    }
+
+    public ArrayList<String> getFigures() {
+      return figures;
+    }
+
+    public void setFigures(ArrayList<String> figures) {
+      this.figures = figures;
     }
 
     public Date getCreatedAt() {

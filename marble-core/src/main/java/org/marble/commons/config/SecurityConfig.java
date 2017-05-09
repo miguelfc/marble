@@ -70,7 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/jobs/**",
                         "/api/charts/**",
                         "/api/posts/**",
-                        "/api/processedPosts/**")
+                        "/api/processedPosts/**",
+                        "/api/mongo_file/**")
                 .hasRole(ROLE_GUEST)
                 .antMatchers("/api/topics/**",
                         "/api/jobs/**",

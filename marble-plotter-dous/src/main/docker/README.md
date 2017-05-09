@@ -1,13 +1,12 @@
 # Supported tags and respective `Dockerfile` links
 
--	[`1.0.1-RELEASE`, `latest`]
--	[`1.0.0-RELEASE`]
+-	[`1.0.0-RELEASE`, `latest`]
 
 # What is Marble?
 
 [Marble](http://marble.miguelfc.com/) is an opinion mining platform, modular and open sourced. This is part of a PhD project, being developed by [Miguel Fernandes](http://miguelfernandes.com/) for the University of Vigo, under the supervision of Ana Fernández Vilas and Rebeca Díaz Redondo.
 
-Marble is composed of several modules. This one, marble-plotter-simple, is a plotter module, providing charts and reports to the system.
+Marble is composed of several modules. This one, marble-processor-dous, is a plotter module, providing charts and reports to the system.
 
 All the modules of the platform them described in the [Github project](https://github.com/miguelfc/marble).
 
