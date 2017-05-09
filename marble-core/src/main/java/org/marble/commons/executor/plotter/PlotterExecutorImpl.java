@@ -175,26 +175,25 @@ public class PlotterExecutorImpl implements PlotterExecutor {
                   // This will be converted to bytes and saved in gridfs, and the ids will be saved
                   // in the same list.
                   if (chart.getFigures() != null) {
-                    log.error("XXXX" + chart.getId());
                     ArrayList<String> figureReferences = new ArrayList<>();
                     for (String figure : chart.getFigures()) {
                       byte[] binaryFigure = BaseEncoding.base64().decode(figure);
-                      // sssx;
                       InputStream in = new ByteArrayInputStream(binaryFigure);
-                      GridFSFile insertedFile = mongoFileService.insert(
-                          new MongoFile<DBObject>(chart.getId() + ".png", in, new BasicDBObject()));
+                      MongoFile<DBObject> mongoFile =
+                          new MongoFile<DBObject>(chart.getId() + ".png", in, "image/png", new BasicDBObject());
+                      GridFSFile insertedFile = mongoFileService.insert(mongoFile);
                       figureReferences.add(insertedFile.getId().toString());
                     }
                     chart.setFigures(figureReferences);
                   }
-                  
+
                   try {
                     chart = plotService.save(chart);
                   } catch (Exception e) {
                     logMsg("Chart for topic <" + topic.getName() + "> couldn't be saved.", "error",
                         e);
                   }
-                  
+
                   chartsList.add(chart);
                 }
                 // TODO Create plot object

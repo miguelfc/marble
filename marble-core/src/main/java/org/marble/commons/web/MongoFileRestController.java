@@ -35,7 +35,8 @@ public class MongoFileRestController {
     @RequestMapping(value = "/api/mongo_file/{id}", method = RequestMethod.GET)
     public void getHomeInfo(@PathVariable(value = "id") String id, HttpServletResponse response) throws IOException {
       MongoFile<DBObject> file = mongoFileService.findById(id);
-      response.setHeader("Content-Disposition", "attachment;filename=" + file.getFilename());
+      response.setHeader("Content-Disposition", "inline");
+      response.setHeader("Content-Type", file.getContentType());
       
       OutputStream output = response.getOutputStream();
       InputStream input = file.getContent();

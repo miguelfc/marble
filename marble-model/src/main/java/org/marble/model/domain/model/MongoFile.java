@@ -36,9 +36,10 @@ public class MongoFile<T> {
         this.md5 = builder.md5;
     }
 
-    public MongoFile(String filename, InputStream content, T metadata) {
+    public MongoFile(String filename, InputStream content, String contentType, T metadata) {
         this.filename = filename;
         this.content = content;
+        this.contentType = contentType;
         this.metadata = metadata;
     }
 

@@ -39,10 +39,11 @@ angular.module('marbleCoreApp').controller(
 						$scope.googleChartObject.data = $scope.chart.data;
 						$scope.googleChartObject.options = $scope.chart.options;
 					}
-				    
-				    
-				    
-				    
+					// Figure List
+					else if ($scope.chart.type == "Figure List") {						
+						$scope.figureListObject = {};
+						$scope.figureListObject.figures = $scope.chart.figures;
+					}
 				}, function(error) {
 					// TODO Handle Error 404
 				});
