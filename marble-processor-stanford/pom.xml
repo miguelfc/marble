@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.marble</groupId>
     <artifactId>marble-processor-stanford</artifactId>
-    <version>1.0.1-RELEASE</version>
+    <version>1.0.2-RELEASE</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -19,11 +19,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.marble</groupId>
-            <artifactId>marble-model</artifactId>
-            <version>1.0.1-RELEASE</version>
-        </dependency>
 
         <dependency>
 			<!-- Setup Spring Boot -->

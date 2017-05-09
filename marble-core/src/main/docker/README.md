@@ -1,6 +1,7 @@
 # Supported tags and respective `Dockerfile` links
 
--	[`1.0.4-RELEASE`, `latest`]
+-	[`1.1.0-RELEASE`, `latest`]
+-	[`1.0.4-RELEASE`]
 -	[`1.0.3-RELEASE`]
 -	[`1.0.2-RELEASE`]
 -	[`1.0.1-RELEASE`]

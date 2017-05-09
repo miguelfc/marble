@@ -1,0 +1,10 @@
+flask
+dnspython
+netifaces
+future
+nltk
+twython
+numpy
+pymongo
+matplotlib
+pandas

@@ -35,7 +35,7 @@ try:
     app_ip = ni.ifaddresses('eth0')[2][0]['addr']
 except Exception:
     app_ip = "localhost"
-app_host = socket.gethostname()
+app_host = socket.getfqdn()
 app_port = 8080
 secure_app_port = 8443
 
