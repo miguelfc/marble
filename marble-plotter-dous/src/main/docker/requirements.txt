@@ -5,7 +5,6 @@ future
 nltk
 twython
 numpy
-scipy
 pymongo
 matplotlib
 pandas
