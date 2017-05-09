@@ -18,7 +18,7 @@
 		<module>marble-plotter-simple</module>
 		<module>marble-processor-nltk</module>
 		<module>marble-processor-sklearn</module>
-		<module>marble-processor-dous</module>
+		<module>marble-plotter-dous</module>
 	</modules>
 
 	<parent>
