@@ -15,10 +15,13 @@ import time
 # Plotter libs
 from io import BytesIO
 import gridfs
+import pymongo
 from pymongo import MongoClient
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 import base64
+import datetime
 
 DATABASE_NAME = 'marble'
 POSTS_COLLECTION = 'posts'
@@ -135,49 +138,72 @@ def plotTopic(topicName, options):
     chartName = options['title']
     chartDescription = options['description']
 
-    '''
-    if (options['type'] == "svc_rbf"):
-        logger.debug("Processing message <" + message + "> using svc_rbf.")
-        transformed = vectorizer.transform([message])
-        ss = classifier_rbf.decision_function(transformed)[0]
-        polarity = ss
-    elif (options['type'] == "svc_linear"):
-        logger.debug("Processing message <" + message + "> using svc_linear.")
-        transformed = vectorizer.transform([message])
-        ss = classifier_linear.decision_function(transformed)[0]
-        polarity = ss
-    elif (options['type'] == "svc_liblinear"):
-        logger.debug("Processing message <" +
-                     message + "> using svc_liblinear.")
-        transformed = vectorizer.transform([message])
-        ss = classifier_rbf.decision_function(transformed)[0]
-        polarity = ss
-    '''
-
-    N = 50
-    x = np.random.rand(N)
-    y = np.random.rand(N)
-    colors = np.random.rand(N)
-    area = np.pi * (15 * np.random.rand(N))**2  # 0 to 15 point radii
-
-    plt.scatter(x, y, s=area, c=colors, alpha=0.5)
-    # plt.show()
-    my_plot = plt.gcf()
-    imgdata = BytesIO()
-
-    my_plot.savefig(imgdata, format='png')
-
-    encoded_chart = base64.b64encode(imgdata.getvalue())
-
     client = MongoClient('mongodb', 27017)
     db = client[DATABASE_NAME]
 
     posts_collection = db.get_collection(POSTS_COLLECTION)
     processed_posts_collection = db.get_collection(PROCESSED_POSTS_COLLECTION)
 
-    posts = posts_collection.find({'topicName': topicName})
+    invalid_plot = False
+    if (options['type'] == "scatter"):
+        logger.debug("Plotting scatter.")
+
+        collection = options.get('collection', PROCESSED_POSTS_COLLECTION)
+        point_size = options.get('point_size', 2)
+        color = options.get('color', 'green')
+        y_axis_field = options.get('y_axis_field', 'polarity')
+        y_min = options.get('y_min', None)
+        y_max = options.get('y_max', None)
+
+        if (collection == POSTS_COLLECTION):
+            posts = posts_collection.find(
+                {'topicName': topicName}).sort('createdAt', pymongo.ASCENDING)
+        else:
+            posts = processed_posts_collection.find(
+                {'topicName': topicName}).sort('createdAt', pymongo.ASCENDING)
+
+        dates_axis = []
+        y_axis = []
+        for post in posts:
+            if (y_axis_field in post):
+                dates_axis.append(post['createdAt'])
+                y_axis.append(post[y_axis_field])
+
+        dates = [pd.to_datetime(d) for d in dates_axis]
+
+        fig = plt.figure(1, figsize=(11, 6))
+
+        plt.title(chartName)
+        plt.xlabel('createdAt')
+        plt.ylabel(y_axis_field)
+
+        # the scatter plot:
+        axScatter = plt.subplot(111)
+        axScatter.scatter(x=dates, y=y_axis, s=point_size, color=color)
+
+        # set axes range
+        plt.xlim(dates[0], dates[len(dates) - 1])
+        if y_min == None:
+            y_min = min(y_axis)
+        if y_max == None:
+            y_max = max(y_axis)
+        plt.ylim(y_min, y_max)
+
+        my_plot = plt.gcf()
+        imgdata = BytesIO()
+
+        # my_plot.show()
+
+        my_plot.savefig(imgdata, format='png')
+
+        encoded_chart = base64.b64encode(imgdata.getvalue())
+    else:
+        invalid_plot = True
 
     client.close()
+
+    if invalid_plot:
+        return None
 
     singleChart = {
         "id": None,
@@ -212,8 +238,14 @@ def process():
         abort(400)
     response = plotTopic(
         request.json['topicName'], request.json.get('options', {}))
-    return jsonify(response), 200
+    if (response != None):
+        return jsonify(response), 200
+    else:
+        return "", 500
 
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=app_port)
+    # plotTopic("Apple Microsoft", {
+    #          'title': 'Titlte', 'description': 'Dscription'})
+    #input("Press Enter to continue...")
