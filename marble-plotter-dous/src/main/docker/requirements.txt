@@ -6,4 +6,6 @@ nltk
 twython
 numpy
 scipy
-scikit-learn
+pymongo
+matplotlib
+pandas

@@ -14,7 +14,6 @@ import time
 
 # Plotter libs
 from io import BytesIO
-import gridfs
 import pymongo
 from pymongo import MongoClient
 import numpy as np
