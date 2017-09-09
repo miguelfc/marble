@@ -65,10 +65,9 @@ if __name__ == '__main__':
 
         if (status != 200):
             sys.exit("Wrong response code received: <" + str(status) + ">")
-        token_dict = json.loads(buffer.getvalue())
+        token_dict = json.loads(buffer.getvalue().decode('utf-8'))
         token = token_dict['token']
-        #print(token)
-
+        
         for image in images_to_update:
             docker_path = os.path.join("../", image, docker_subpath)
             short_desc = os.path.join(docker_path, short_desc_name)
