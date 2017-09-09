@@ -19,7 +19,7 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
         jobService.cleanOldJobs();
-        topicService.cleanOldStreamingTopics();
+        topicService.restartStreamingTopics();
         return;
     }
 }

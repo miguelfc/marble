@@ -257,9 +257,6 @@ public class TwitterStreamerExecutor implements StreamerExecutor {
             query = query.locations(locations);
           }
 
-          topic.setStreaming(Boolean.TRUE);
-          topicService.save(topic);
-
           twitterStream.filter(query);
           msg = "Stop operation finished.";
           log.info(msg);

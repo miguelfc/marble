@@ -20,6 +20,6 @@ public interface TopicService {
 
 	TopicStats getStats(String name) throws InvalidTopicException;
 
-    void cleanOldStreamingTopics();	
+    void restartStreamingTopics();	
 
 }
