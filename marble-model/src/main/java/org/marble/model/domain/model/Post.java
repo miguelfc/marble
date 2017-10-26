@@ -25,6 +25,7 @@ public class Post {
     private String topicName;
     
     @JsonDeserialize(using = CustomDateAndTimeDeserializer.class)
+    @Indexed
     private Date createdAt;
 
     @Id

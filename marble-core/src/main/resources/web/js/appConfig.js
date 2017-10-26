@@ -1,42 +1,42 @@
 'use strict';
-angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$httpProvider', function ($stateProvider,$urlRouterProvider,$httpProvider) {
-    
+angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$httpProvider', '$showdownProvider', function ($stateProvider,$urlRouterProvider,$httpProvider, $showdownProvider) {
+
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
     
     $urlRouterProvider.otherwise('/dashboard/home');
     
     $stateProvider
-      .state('dashboard', {
+    .state('dashboard', {
         url:'/dashboard',
         templateUrl: 'templates/views/dashboard/main.html',
     })
-      .state('dashboard.home',{
+    .state('dashboard.home',{
         url:'/home',
         controller: 'MainCtrl',
         templateUrl:'templates/views/dashboard/home.html',
         resolve: {
           $title: function() { return 'Home'; }
-        }
-      })
-      .state('dashboard.login',{
+      }
+  })
+    .state('dashboard.login',{
     	controller: 'LoginCtrl',
         templateUrl:'templates/views/pages/login.html',
         url:'/login',
         params: { 'reason': null,
-        		  'origin': null
-        		  },
-        resolve : {
-        	$reason: function($stateParams) { return $stateParams.reason; },
-        	$origin: function($stateParams) { return $stateParams.origin; }
-        }
-    })
-      .state('dashboard.topic',{
+        'origin': null
+    },
+    resolve : {
+       $reason: function($stateParams) { return $stateParams.reason; },
+       $origin: function($stateParams) { return $stateParams.origin; }
+   }
+})
+    .state('dashboard.topic',{
     	url:'/topics',
     	data : {requireGuest : true },
         templateUrl:'templates/views/topic/main.html'
         
     })
-      .state('dashboard.topic.list',{
+    .state('dashboard.topic.list',{
         templateUrl:'templates/views/topic/list.html',
         url:'/list',
         data : {requireGuest : true },
@@ -45,7 +45,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'List of Topics'; }
         }
     })
-      .state('dashboard.topic.view',{
+    .state('dashboard.topic.view',{
         templateUrl:'templates/views/topic/view.html',
         url:'/view/{topicName}',
         data : {requireGuest : true },
@@ -54,7 +54,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Details for Topic ' + $stateParams.topicName; }
         }
     })
-      .state('dashboard.topic.create',{
+    .state('dashboard.topic.create',{
         templateUrl:'templates/views/topic/create.html',
         url:'/create',
         data : {requireOper : true },
@@ -63,17 +63,17 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'Create a new Topic' }
         }
     })
-    	.state('dashboard.settings',{
+    .state('dashboard.settings',{
     	url:'/settings',
     	data : {requireAdmin : true },
         templateUrl:'templates/views/settings/main.html'
     })
-      .state('dashboard.settings.generalProperty',{
+    .state('dashboard.settings.generalProperty',{
     	url:'/generalProperties',
     	data : {requireAdmin : true },
         templateUrl:'templates/views/settings/generalProperty/main.html'
     })
-      .state('dashboard.settings.generalProperty.list',{
+    .state('dashboard.settings.generalProperty.list',{
         templateUrl:'templates/views/settings/generalProperty/list.html',
         url:'/list',
         data : {requireAdmin : true },
@@ -82,7 +82,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'General Properties'; }
         }
     })
-      .state('dashboard.settings.generalProperty.view',{
+    .state('dashboard.settings.generalProperty.view',{
         templateUrl:'templates/views/settings/generalProperty/view.html',
         url:'/view/{generalPropertyName}',
         data : {requireAdmin : true },
@@ -91,7 +91,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'Edit Property'; }
         }
     })
-      .state('dashboard.settings.generalProperty.create',{
+    .state('dashboard.settings.generalProperty.create',{
         templateUrl:'templates/views/settings/generalProperty/create.html',
         url:'/create',
         data : {requireAdmin : true },
@@ -100,12 +100,12 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'Add a new property'; }
         }
     })
-      .state('dashboard.settings.twitterApiKey',{
+    .state('dashboard.settings.twitterApiKey',{
     	url:'/twitterApiKeys',
     	data : {requireAdmin : true },
         templateUrl:'templates/views/settings/twitterApiKey/main.html'
     })
-      .state('dashboard.settings.twitterApiKey.list',{
+    .state('dashboard.settings.twitterApiKey.list',{
         templateUrl:'templates/views/settings/twitterApiKey/list.html',
         url:'/list',
         data : {requireAdmin : true },
@@ -114,7 +114,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'List of Twitter API keys'; }
         }
     })
-      .state('dashboard.settings.twitterApiKey.view',{
+    .state('dashboard.settings.twitterApiKey.view',{
         templateUrl:'templates/views/settings/twitterApiKey/view.html',
         url:'/view/{twitterApiKeyName}',
         data : {requireAdmin : true },
@@ -123,7 +123,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Details for Twitter API key ' + $stateParams.twitterApiKeyName; }
         }
     })
-      .state('dashboard.settings.twitterApiKey.create',{
+    .state('dashboard.settings.twitterApiKey.create',{
         templateUrl:'templates/views/settings/twitterApiKey/create.html',
         url:'/create',
         data : {requireAdmin : true },
@@ -132,12 +132,12 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function() { return 'Add a new Twitter API key' }
         }
     })
-      .state('dashboard.job',{
+    .state('dashboard.job',{
     	url:'/jobs',
     	data : {requireGuest : true },
         templateUrl:'templates/views/job/main.html'
     })
-      .state('dashboard.job.list',{
+    .state('dashboard.job.list',{
         templateUrl:'templates/views/job/list.html',
         url:'/list',
         data : {requireGuest : true },
@@ -146,7 +146,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'List of Jobs'; }
         }
     })
-      .state('dashboard.job.listByTopic',{
+    .state('dashboard.job.listByTopic',{
         templateUrl:'templates/views/job/listByTopic.html',
         url:'/list/{topicName}',
         data : {requireGuest : true },
@@ -155,7 +155,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Jobs for Topic ' + $stateParams.topicName; }
         }
     })
-      .state('dashboard.job.view',{
+    .state('dashboard.job.view',{
         templateUrl:'templates/views/job/view.html',
         url:'/view/{jobId}',
         data : {requireGuest : true },
@@ -164,12 +164,12 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Details for Job ' + $stateParams.jobId; }
         }
     })
-      .state('dashboard.chart',{
+    .state('dashboard.chart',{
     	url:'/charts',
     	data : {requireGuest : true },
         templateUrl:'templates/views/chart/main.html'
     })
-      .state('dashboard.chart.list',{
+    .state('dashboard.chart.list',{
         templateUrl:'templates/views/chart/list.html',
         url:'/list',
         data : {requireGuest : true },
@@ -178,7 +178,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'List of Charts'; }
         }
     })
-      .state('dashboard.chart.listByTopic',{
+    .state('dashboard.chart.listByTopic',{
         templateUrl:'templates/views/chart/listByTopic.html',
         url:'/list/{topicName}',
         data : {requireGuest : true },
@@ -187,7 +187,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Charts for Topic ' + $stateParams.topicName; }
         }
     })
-      .state('dashboard.chart.view',{
+    .state('dashboard.chart.view',{
         templateUrl:'templates/views/chart/view.html',
         url:'/view/{chartId}',
         data : {requireGuest : true },
@@ -196,12 +196,12 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Details for Chart ' + $stateParams.chartId; }
         }
     })
-      .state('dashboard.post',{
+    .state('dashboard.post',{
     	url:'/posts',
     	data : {requireOper : true },
         templateUrl:'templates/views/post/main.html'
     })
-      .state('dashboard.post.list',{
+    .state('dashboard.post.list',{
         templateUrl:'templates/views/post/list.html',
         url:'/list',
         data : {requireOper : true },
@@ -210,7 +210,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'List of Posts'; }
         }
     })
-      .state('dashboard.post.listByTopic',{
+    .state('dashboard.post.listByTopic',{
         templateUrl:'templates/views/post/listByTopic.html',
         url:'/list/{topicName}',
         data : {requireOper : true },
@@ -219,7 +219,7 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Posts for Topic ' + $stateParams.topicName; }
         }
     })
-      .state('dashboard.post.view',{
+    .state('dashboard.post.view',{
         templateUrl:'templates/views/post/view.html',
         url:'/view/{postId}',
         data : {requireOper : true },
@@ -228,79 +228,99 @@ angular.module('marbleCoreApp').config(['$stateProvider','$urlRouterProvider','$
             $title: function($stateParams) { return 'Details for Post ' + $stateParams.postId; }
         }
     })
-  }]);
+
+      // Custom stuff for showdown
+      const classMap = {
+        h1: 'ui large header',
+        h2: 'ui medium header',
+        ul: 'ui list',
+        li: 'ui item',
+        table: 'table table-condensed table-striped table-bordered'
+    }
+
+    const bindings = Object.keys(classMap)
+    .map(key => ({
+        type: 'output',
+        regex: new RegExp(`<${key}>`, 'g'),
+        replace: `<${key} class="${classMap[key]}">`
+    }));
+
+    $showdownProvider.setOption("tables", true);
+
+    $showdownProvider.loadExtension(bindings);
+}]);
 
 app.run(function ($rootScope, $state, $location, AuthService) {
 	$rootScope.$on('authenticated', function(event, toState, toParams, fromState) {
-		  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
-	      console.trace("Caught state change event from: " + fromState.name + " to: " + toState.name);
-		  var shouldLogin = toState.data !== undefined
-	                  && toState.data.requireLogin 
-	                  && !AuthService.isLoggedIn() ;
-	      
-	      var requireAdmin = toState.data !== undefined
-			          && toState.data.requireAdmin 
-			          && !AuthService.isAdmin();
-	      
-	      var requireOper = toState.data !== undefined
-			          && toState.data.requireOper 
-			          && !AuthService.isOper();
-	      
-	      var requireGuest = toState.data !== undefined
-			          && toState.data.requireGuest
-			          && !AuthService.isGuest();
-	      
+        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
+         console.trace("Caught state change event from: " + fromState.name + " to: " + toState.name);
+         var shouldLogin = toState.data !== undefined
+         && toState.data.requireLogin 
+         && !AuthService.isLoggedIn() ;
+
+         var requireAdmin = toState.data !== undefined
+         && toState.data.requireAdmin 
+         && !AuthService.isAdmin();
+
+         var requireOper = toState.data !== undefined
+         && toState.data.requireOper 
+         && !AuthService.isOper();
+
+         var requireGuest = toState.data !== undefined
+         && toState.data.requireGuest
+         && !AuthService.isGuest();
+
 	      // NOT authenticated - wants any private stuff
 	      if(requireAdmin || requireOper || requireGuest)
 	      {
-	    	console.trace("User not authorized.");
-	    	if (!AuthService.isLoggedIn()) {
-	    		$state.go('dashboard.login', {
-	    			reason: "You need to be logged in to access this area.",
-	    			origin: toState.name
-	    				});
-	    	}
-	    	else {
-	    		$state.go('dashboard.login', {
-	    			reason: "You need higher priviledges to access this area." +
-	    				" Please login with an appropiated user.",
-	    			origin: toState.name
-		    			});
-	    	}
-	        event.preventDefault();
-	        return;
-	      }
-	      
-	      
+          console.trace("User not authorized.");
+          if (!AuthService.isLoggedIn()) {
+             $state.go('dashboard.login', {
+                reason: "You need to be logged in to access this area.",
+                origin: toState.name
+            });
+         }
+         else {
+             $state.go('dashboard.login', {
+                reason: "You need higher priviledges to access this area." +
+                " Please login with an appropiated user.",
+                origin: toState.name
+            });
+         }
+         event.preventDefault();
+         return;
+     }
+
+
 	      // authenticated (previously) comming not to root main
 	      if(AuthService.isLoggedIn()) 
 	      {
-	        var shouldGoToMain = fromState.name === ""
-	                          && toState.name !== "dashboard.home" ;
-	          
-	        if (shouldGoToMain)
-	        {
-	            $state.go('dashboard.home');
-	            event.preventDefault();
-	        } 
-	        return;
-	      }
-	      
+           var shouldGoToMain = fromState.name === ""
+           && toState.name !== "dashboard.home" ;
+
+           if (shouldGoToMain)
+           {
+               $state.go('dashboard.home');
+               event.preventDefault();
+           } 
+           return;
+       }
+
 	      // UNauthenticated (previously) comming not to root public 
 	      var shouldGoToPublic = fromState.name === ""
-	                        && toState.name !== "dashboard.home"
-	                        && toState.name !== "dashboard.login" ;
-	        
-	      if(shouldGoToPublic)
-	      {
-	          $state.go('dashboard.home');
-	          console.trace('Going public');
-	          event.preventDefault();
-	      } 
-	      
+         && toState.name !== "dashboard.home"
+         && toState.name !== "dashboard.login" ;
+
+         if(shouldGoToPublic)
+         {
+             $state.go('dashboard.home');
+             console.trace('Going public');
+             event.preventDefault();
+         } 
+
 	      // unmanaged
-	    });
-	});
+     });
+    });
 	
 });
-    
+

@@ -22,6 +22,7 @@ var app = angular
     'ngAnimate',
     'ngCookies',
     'ngResource',
-    'ngSanitize'
+    'ngSanitize',
+    'ng-showdown'
   ]);
 

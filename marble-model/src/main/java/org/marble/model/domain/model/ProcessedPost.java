@@ -22,6 +22,7 @@ public class ProcessedPost {
     @Indexed
     private Double polarity;
 
+    @Indexed
     private Date createdAt;
 
     @Id

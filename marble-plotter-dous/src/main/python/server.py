@@ -11,6 +11,7 @@ import netifaces as ni
 import sys
 import os
 import time
+import re
 
 # Plotter libs
 from io import BytesIO
@@ -144,6 +145,19 @@ def plotTopic(topicName, options):
     processed_posts_collection = db.get_collection(PROCESSED_POSTS_COLLECTION)
 
     invalid_plot = False
+
+    singleChart = {
+        "id": None,
+        "name": chartName,
+        "description": chartDescription,
+        "customType": "",
+        "jobId": None,
+        "options": {},
+        "data": {},
+        "figures": [],
+        "createdAt": None
+    }
+
     if (options['type'] == "scatter"):
         logger.debug("Plotting scatter.")
 
@@ -178,7 +192,7 @@ def plotTopic(topicName, options):
 
         # the scatter plot:
         axScatter = plt.subplot(111)
-        axScatter.scatter(x=dates, y=y_axis, s=point_size, color=color)
+        axScatter.scatter(x=dates, y=y_axis, s=point_size, color=color, edgecolors='none', alpha=0.5)
 
         # set axes range
         plt.xlim(dates[0], dates[len(dates) - 1])
@@ -196,6 +210,53 @@ def plotTopic(topicName, options):
         my_plot.savefig(imgdata, format='png')
 
         encoded_chart = base64.b64encode(imgdata.getvalue())
+
+        singleChart['type'] = "Figure List"
+        singleChart['figures'] = [encoded_chart.decode('ascii')]
+        
+    elif (options['type'] == "word_frequency"):
+        logger.debug("Plotting Word Frequency.")
+
+        topCount = options.get('top_count', 50)
+        collection = options.get('collection', PROCESSED_POSTS_COLLECTION)
+
+        if (collection == POSTS_COLLECTION):
+            posts = posts_collection.find(
+                {'topicName': topicName}).sort('createdAt', pymongo.ASCENDING)
+        else:
+            posts = processed_posts_collection.find(
+                {'topicName': topicName}).sort('createdAt', pymongo.ASCENDING)
+
+        freq = {}
+
+        for post in posts:
+            if ('text' in post):
+                processedText = post['text']
+                processedText = re.sub("[^\w]", " ", processedText)
+                # TODO Add URL removal and remove common words, prepositions and such
+                word_set = processedText.split()
+                for word in word_set:
+                    if (word in freq):
+                        freq[word] = freq[word] + 1
+                    else:
+                        freq[word] = 1
+                
+        body = """# Word Frequency\n\n
+
+| Word | Count |
+|------|-------|
+"""
+        sortedFreq = [(k, freq[k]) for k in sorted(freq, key=freq.get, reverse=True)]
+
+        i = 0
+        for word, count in sortedFreq:
+            body = body + "|" + word + "|" + str(count) + "|\n"
+            i = i + 1
+            if (i >= topCount):
+                break
+
+        singleChart['type'] = "Report"
+        singleChart['data']['body'] = body
     else:
         invalid_plot = True
 
@@ -204,19 +265,7 @@ def plotTopic(topicName, options):
     if invalid_plot:
         return None
 
-    singleChart = {
-        "id": None,
-        "name": chartName,
-        "description": chartDescription,
-        "type": "Figure List",
-        "customType": "",
-        "jobId": None,
-        "options": {},
-        "data": {},
-        "figures": [encoded_chart.decode('ascii')],
-        #"figures": [],
-        "createdAt": None
-    }
+    
 
     response = {
         "charts": [
@@ -245,6 +294,6 @@ def process():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=app_port)
-    # plotTopic("Apple Microsoft", {
-    #          'title': 'Titlte', 'description': 'Dscription'})
+    #response = plotTopic("Apple Microsoft", {
+    #         'title': 'Titlte', 'description': 'Dscription', 'type': 'word_frequency'})
     #input("Press Enter to continue...")
