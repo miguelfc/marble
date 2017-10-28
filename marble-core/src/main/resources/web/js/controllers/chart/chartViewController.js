@@ -21,12 +21,10 @@ angular.module('marbleCoreApp').controller(
 
 			// TODO: Handle 404
 			var refresh = function() {
-				console.log($stateParams);
 				ChartFactory.show({
 					id : $stateParams.chartId
 				}).$promise.then(function(data) {
 					$scope.chart = data;
-					console.log($scope.chart.data.rows);
 					for (var i in $scope.chart.data.rows) {
 						 //console.log($scope.chart.data.rows[i].c[0].v);
 						 $scope.chart.data.rows[i].c[0].v = new Date($scope.chart.data.rows[i].c[0].v);
@@ -47,7 +45,6 @@ angular.module('marbleCoreApp').controller(
 					}
 					// Text Report
 					else if ($scope.chart.type == "Report") {
-						console.log("Aqui voy");
 						$scope.reportObject = {};
 						$scope.reportObject.data = $scope.chart.data;
 						$scope.reportObject.figures = $scope.chart.figures;

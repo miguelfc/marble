@@ -217,7 +217,9 @@ def plotTopic(topicName, options):
     elif (options['type'] == "word_frequency"):
         logger.debug("Plotting Word Frequency.")
 
-        topCount = options.get('top_count', 50)
+        top_count = options.get('top_count', 40)
+        width = options.get('width', 24)
+        height = options.get('height', 10)
         collection = options.get('collection', PROCESSED_POSTS_COLLECTION)
 
         if (collection == POSTS_COLLECTION):
@@ -228,35 +230,58 @@ def plotTopic(topicName, options):
                 {'topicName': topicName}).sort('createdAt', pymongo.ASCENDING)
 
         freq = {}
+        double_freq = {}
+        triple_freq = {}
 
         for post in posts:
             if ('text' in post):
                 processedText = post['text']
-                processedText = re.sub("[^\w]", " ", processedText)
+                processedText = re.sub("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", "__URL__", processedText)
+                processedText = re.sub('[^\w\'-\\\#@]', " ", processedText)
+                processedText = re.sub(" +[^\w] +", " ", processedText)
+                processedText = processedText.lower()
                 # TODO Add URL removal and remove common words, prepositions and such
                 word_set = processedText.split()
-                for word in word_set:
+                
+                for idx, word in enumerate(word_set):
                     if (word in freq):
                         freq[word] = freq[word] + 1
                     else:
                         freq[word] = 1
-                
-        body = """# Word Frequency\n\n
+                    if idx+1 < len(word_set):
+                        double_word = word + " " + word_set[idx+1]
+                        if double_word in double_freq:
+                            double_freq[double_word] += 1
+                        else:
+                            double_freq[double_word] = 1
+                    if idx+2 < len(word_set):
+                        triple_word = word + " " + word_set[idx+1] + " " + word_set[idx+2]
+                        if triple_word in triple_freq:
+                            triple_freq[triple_word] += 1
+                        else:
+                            triple_freq[triple_word] = 1
 
-| Word | Count |
-|------|-------|
-"""
-        sortedFreq = [(k, freq[k]) for k in sorted(freq, key=freq.get, reverse=True)]
+        body = ""
+        sorted_single_freq = [(k, freq[k]) for k in sorted(freq, key=freq.get, reverse=True)]
+        body += getWordFreqBody("Single Words Frequencies", sorted_single_freq, top_count)
+        single_imgdata = getWordFreqFigure(1,"Single Words Frequencies", sorted_single_freq, top_count, width, height)
+        single_encoded_chart = base64.b64encode(single_imgdata.getvalue())
+        
+        sorted_double_freq = [(k, double_freq[k]) for k in sorted(double_freq, key=double_freq.get, reverse=True)]
+        body += getWordFreqBody("Double Words Frequencies", sorted_double_freq, top_count)
+        double_imgdata = getWordFreqFigure(2,"Double Words Frequencies", sorted_double_freq, top_count, width, height+0.5)
+        double_encoded_chart = base64.b64encode(double_imgdata.getvalue())
+        
+        sorted_triple_freq = [(k, triple_freq[k]) for k in sorted(triple_freq, key=triple_freq.get, reverse=True)]
+        body += getWordFreqBody("Triple Words Frequencies", sorted_triple_freq, top_count)
+        triple_imgdata = getWordFreqFigure(3,"Triple Words Frequencies", sorted_triple_freq, top_count, width, height+1)
+        triple_encoded_chart = base64.b64encode(triple_imgdata.getvalue())
+        
 
-        i = 0
-        for word, count in sortedFreq:
-            body = body + "|" + word + "|" + str(count) + "|\n"
-            i = i + 1
-            if (i >= topCount):
-                break
-
+        
         singleChart['type'] = "Report"
         singleChart['data']['body'] = body
+        singleChart['figures'] = [single_encoded_chart.decode('ascii'),double_encoded_chart.decode('ascii'),triple_encoded_chart.decode('ascii')]
     else:
         invalid_plot = True
 
@@ -264,8 +289,6 @@ def plotTopic(topicName, options):
 
     if invalid_plot:
         return None
-
-    
 
     response = {
         "charts": [
@@ -290,6 +313,50 @@ def process():
         return jsonify(response), 200
     else:
         return "", 500
+
+# Auxiliar Functions
+def getWordFreqBody(title,sorted_freq,top_count):
+    body = "\n# " + title
+    body += """
+
+| Words | Count |
+|-------|-------|
+"""
+
+    i = 0
+    for word, count in sorted_freq:
+        body = body + "|" + word + "|" + str(count) + "|\n"
+        i = i + 1
+        if (i >= top_count):
+            break
+    return body
+
+def getWordFreqFigure(id,title,sorted_freq,top_count, width, height):
+    freq = sorted_freq[:top_count]
+    words = list(zip(*freq))[0]
+    count = list(zip(*freq))[1]
+    x_pos = np.arange(len(words)) 
+
+    plt.figure(id)
+    plt.bar(x_pos, count, align='center')
+
+    plt.title(title)
+    plt.ylabel('Count')
+    plt.xticks(x_pos, words) 
+    plt.grid()
+
+    locs, labels = plt.xticks()
+    plt.setp(labels, rotation=50)
+    my_plot = plt.gcf()
+    #my_plot.set_size_inches(18.5, 10.5)
+    my_plot.set_figwidth(width, forward=False)
+    my_plot.set_figheight(height, forward=False)
+    my_plot.tight_layout()
+    
+    imgdata = BytesIO()
+    my_plot.savefig(imgdata, format='png')
+
+    return imgdata
 
 
 if __name__ == '__main__':

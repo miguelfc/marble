@@ -50,6 +50,9 @@
 						<img class="chart-figure"
 						ng-repeat="(key, figureId) in figureListObject.figures"
 						ng-src="/api/mongo_file/{{figureId}}" />
+						<img class="chart-figure"
+						ng-repeat="(key, figureId) in reportObject.figures"
+						ng-src="/api/mongo_file/{{figureId}}" />
 					</div>
 					<div class="chart-figures-container" ng-if="reportObject">
 						<pre>{{reportObject.data.body}}</pre>
