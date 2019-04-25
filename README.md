@@ -1,5 +1,7 @@
 # Marble Initiative
 
+### *Important: this project is inactive and won't be maintained.* 
+
 This is the main repository for the Marble Initiative project. 
 
 [Marble](http://marble.miguelfc.com/) is an opinion mining platform, modular and open sourced. This is part of a PhD project, being developed by [Miguel Fernandes](http://miguelfernandes.com/) for the University of Vigo, under the supervision of Ana Fernández Vilas and Rebeca Díaz Redondo.
