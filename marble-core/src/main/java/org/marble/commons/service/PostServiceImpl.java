@@ -38,8 +38,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post save(Post post) throws InvalidPostException {
-        // TODO Modify this in order to update only certain fields (and do not
-        // overwrite the post)
         post = postRepository.save(post);
         if (post == null) {
             throw new InvalidPostException();
@@ -107,8 +105,6 @@ public class PostServiceImpl implements PostService {
             for (String line; (line = br.readLine()) != null;) {
                 // process the line.
 
-                // TODO Remove when legacy marble formats are completely
-                // migrated
                 {
                     // Replacing odd "createdAt" : { "$date" :
                     // "2011-06-12T13:02:01.000Z"} definitions
@@ -123,7 +119,6 @@ public class PostServiceImpl implements PostService {
                 try {
                     Post post = mapper.readValue(line, Post.class);
                     // Temporary provision to allow uploads from previous marble versions
-                    // TODO: Remove in 2017-10
                     if (post.getOriginalId() == 0) {
                       post.composeId(Long.parseLong(post.getId()), topicName);
                     }
