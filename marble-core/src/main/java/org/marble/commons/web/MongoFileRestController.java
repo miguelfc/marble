@@ -54,13 +54,11 @@ public class MongoFileRestController {
         try {
             JobModuleParameters jobModuleParameters = new JobModuleParameters();
             
-            // TODO Check getProcessorModules, it seems broken
             List<JobModuleDefinition> modules = moduleService.getProcessorModules();
             for (JobModuleDefinition module : modules) {
                 log.error(module.getName());
             }
             
-            // TODO Validate the module name
             if (jobRestRequest != null && jobRestRequest.getModule() != null) {
                 jobModuleParameters.setModule("org.marble.commons.executor.processor." + jobRestRequest.getModule());
                 jobModuleParameters.setOperation(jobRestRequest.getOperation());
