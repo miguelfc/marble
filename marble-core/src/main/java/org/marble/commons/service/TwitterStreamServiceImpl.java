@@ -53,7 +53,6 @@ public class TwitterStreamServiceImpl implements TwitterStreamService {
     public TwitterStream addListener(StatusListener listener){
         twitterStream.shutdown();
         twitterStream.addListener(listener);
-        //TODO: Cambiar por filter con las palabras de los topics
         twitterStream.sample();
         return this.twitterStream;
     }
@@ -62,7 +61,6 @@ public class TwitterStreamServiceImpl implements TwitterStreamService {
     public TwitterStream removeListener(StatusListener listener){
         twitterStream.shutdown();
         twitterStream.removeListener(listener);
-        //TODO: Cambiar por filter con las palabras de los topics
         twitterStream.sample();
         return this.twitterStream;
     }
