@@ -18,7 +18,7 @@ import com.mongodb.MongoException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;x
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,8 +48,7 @@ public class TopicServiceImpl implements TopicService {
 
   @Override
   public Topic save(Topic topic) throws InvalidTopicException {
-    // TODO Modify this in order to update only certain fields (and do not
-    // overwrite the post)
+
     topic = topicRepository.save(topic);
     if (topic == null) {
       throw new InvalidTopicException();
@@ -79,7 +78,6 @@ public class TopicServiceImpl implements TopicService {
     postService.deleteByTopicName(name);
     jobService.deleteByTopicName(name);
     plotService.deleteByTopicName(name);
-    // TODO remove processed posts
     return;
   }
 
