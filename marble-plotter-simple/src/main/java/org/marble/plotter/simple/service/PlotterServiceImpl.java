@@ -171,6 +171,10 @@ public class PlotterServiceImpl implements PlotterService {
         }
             break;
         }
+        //missing default case
+        default:
+            // add default case
+            break;
 
         chart.setData(singleData);
         chart.setOptions(getOptions(topic, plotType));
@@ -293,6 +297,11 @@ public class PlotterServiceImpl implements PlotterService {
             col.put("type", "number");
             cols.add(col);
         }
+        //missing default case
+        default:
+            // add default case
+            break;
+
         }
         return cols;
     }
@@ -716,6 +725,11 @@ public class PlotterServiceImpl implements PlotterService {
         }
             break;
         }
+        //missing default case
+        default:
+            // add default case
+            break;
+
         return col;
 
     }
